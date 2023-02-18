@@ -8,6 +8,8 @@ using Blish_HUD.Controls;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
+using DanceDanceRotationModule.NoteDisplay;
+using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -55,7 +57,7 @@ namespace DanceDanceRotationModule
         // and render loop, so be sure to not do anything here that takes too long.
         protected override void Initialize()
         {
-
+            _notesContainer = new NotesContainer();
         }
 
         // Load content and more here. This call is asynchronous, so it is a good time to run
@@ -73,8 +75,7 @@ namespace DanceDanceRotationModule
             }
 
             // Load content from the ref directory in the module.bhm automatically with the ContentsManager
-            _mugTexture       = ContentsManager.GetTexture("603447.png");
-            _windowBackgroundTexture = ContentsManager.GetTexture("155985.png");
+            Resources.Instance.LoadResources(ContentsManager);
         }
 
         // Allows you to perform an action once your module has finished loading (once
@@ -85,7 +86,7 @@ namespace DanceDanceRotationModule
             // Add a mug corner icon in the top left next to the other icons in guild wars 2 (e.g. inventory icon, Mail icon)
             _exampleCornerIcon = new CornerIcon()
             {
-                Icon             = _mugTexture,
+                Icon             = Resources.Instance.MugTexture,
                 BasicTooltipText = $"Dance Dance Rotation",
                 Parent           = GameService.Graphics.SpriteScreen
             };
@@ -106,6 +107,7 @@ namespace DanceDanceRotationModule
         // slowing down the overlay.
         protected override void Update(GameTime gameTime)
         {
+            _notesContainer?.Update(gameTime);
         }
 
         // For a good module experience, your module should clean up ANY and ALL entities
@@ -113,9 +115,10 @@ namespace DanceDanceRotationModule
         // Be sure to remove any tabs added to the Director window, CornerIcons, etc.
         protected override void Unload()
         {
+            Resources.Instance.Unload();
+
             _exampleCornerIcon?.Dispose();
-            _windowBackgroundTexture?.Dispose();
-            _mugTexture?.Dispose();
+            _notesContainer?.Dispose();
 
             // All static members must be manually unset
             // Static members are not automatically cleared and will keep a reference to your,
@@ -125,9 +128,9 @@ namespace DanceDanceRotationModule
 
 
         internal static DanceDanceRotationModule DanceDanceRotationModuleInstance;
-        private Texture2D _windowBackgroundTexture;
-        private Texture2D _mugTexture;
         private CornerIcon _exampleCornerIcon;
         private SettingEntry<bool> _boolExampleSetting;
+        private NotesContainer _notesContainer;
+
     }
 }
