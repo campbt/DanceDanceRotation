@@ -9,6 +9,7 @@ using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using MonoGame.Extended.BitmapFonts;
 using Color = Microsoft.Xna.Framework.Color;
 using BlishContainer = Blish_HUD.Controls.Container;
 
@@ -132,6 +133,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             private WindowInfo _windowInfo;
             internal Note Note { get; set; }
             internal Image Image { get; set; }
+            internal Label Label { get; set; }
             // XPosition is stored here as a double instead of only using the Image,
             // because Image can only be in int positions, and the GameTime may need to
             // be more granular than that
@@ -143,12 +145,92 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             public event EventHandler<HitType> OnHit;
 
-            public ActiveNote(WindowInfo windowInfo, Note note, Image image)
+            public ActiveNote(WindowInfo windowInfo, Note note, BlishContainer parent)
             {
                 _windowInfo = windowInfo;
                 this.Note = note;
-                this.Image = image;
-                this.XPosition = image.Location.X;
+
+                string text;
+                int lane;
+                switch (note.NoteType)
+                {
+                    case NoteType.Weapon1:
+                        text = DanceDanceRotationModule.DanceDanceRotationModuleInstance.Weapon1.Value.GetBindingDisplayText();
+                        lane = 0;
+                        break;
+                    case NoteType.Weapon2:
+                        text = DanceDanceRotationModule.DanceDanceRotationModuleInstance.Weapon2.Value.GetBindingDisplayText();
+                        lane = 1;
+                        break;
+                    case NoteType.Weapon3:
+                        text = "3";
+                        lane = 2;
+                        break;
+                    case NoteType.Weapon4:
+                        text = "4";
+                        lane = 3;
+                        break;
+                    case NoteType.Weapon5:
+                        text = "5";
+                        lane = 4;
+                        break;
+                    case NoteType.WeaponSwap:
+                        text = "WS";
+                        lane = 5;
+                        break;
+                    default:
+                        text = "?";
+                        lane = 0;
+                        break;
+                }
+
+                this.Image = new Image(
+                    Resources.Instance.MugTexture
+                )
+                {
+                    Size = _windowInfo.GetNewNoteSize(),
+                    Location = _windowInfo.GetNewNoteLocation(lane),
+                    Opacity = 0.7f,
+                    Parent = parent
+                };
+
+                BitmapFont font;
+                if (Image.Height > 32)
+                {
+                    font = GameService.Content.DefaultFont32;
+                }
+                else if (Image.Height > 18)
+                {
+                    font = GameService.Content.DefaultFont18;
+                }
+                else if (Image.Height > 14)
+                {
+                    font = GameService.Content.DefaultFont14;
+                }
+                else
+                {
+                    font = GameService.Content.DefaultFont12;
+                }
+
+                Label = new Label() // this label is used as heading
+                {
+                    Text = text,
+                    TextColor = Color.White,
+                    Font = font,
+                    StrokeText = true,
+                    ShowShadow = true,
+                    AutoSizeHeight = true,
+                    AutoSizeWidth = true,
+                    Parent = parent
+                };
+                // Must set this AFTER creation, so the auto width/height is used
+                Label.Location = new Point(
+                    (int)(XPosition) + ((Image.Width - Label.Width) / 2),
+                    Image.Location.Y + ((Image.Height - Label.Height) / 2)
+                );
+
+                this.XPosition = Image.Location.X;
+
                 _isHit = false;
                 this.ShouldRemove = false;
             }
@@ -172,6 +254,10 @@ namespace DanceDanceRotationModule.NoteDisplay
                     Image.Location = new Point(
                         (int)(XPosition),
                         Image.Location.Y
+                    );
+                    Label.Location = new Point(
+                        (int)(XPosition) + ((Image.Width - Label.Width) / 2),
+                        Label.Location.Y
                     );
                 }
             }
@@ -220,6 +306,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             public void Dispose()
             {
                 Image.Dispose();
+                Label.Dispose();
             }
 
             private void setHit(HitType hitType)
@@ -234,6 +321,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 }
 
                 _isHit = true;
+                Label.Visible = false;
             }
         }
 
@@ -482,46 +570,14 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
         }
 
+        // MARK: Adding things
+
         private void AddNote(Note note)
         {
-            int lane;
-            switch (note.NoteType)
-            {
-                case NoteType.Weapon1:
-                    lane = 0;
-                    break;
-                case NoteType.Weapon2:
-                    lane = 1;
-                    break;
-                case NoteType.Weapon3:
-                    lane = 2;
-                    break;
-                case NoteType.Weapon4:
-                    lane = 3;
-                    break;
-                case NoteType.Weapon5:
-                    lane = 4;
-                    break;
-                case NoteType.WeaponSwap:
-                    lane = 5;
-                    break;
-                default:
-                    lane = 0;
-                    break;
-            }
-
-            var noteImage = new Image(
-                Resources.Instance.MugTexture
-            )
-            {
-                Size = _windowInfo.GetNewNoteSize(),
-                Location = _windowInfo.GetNewNoteLocation(lane),
-                Parent = this
-            };
             var activeNote = new ActiveNote(
                 _windowInfo,
                 note,
-                noteImage
+                this
             );
             activeNote.OnHit += delegate(object sender, HitType hitType)
             {
@@ -543,7 +599,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 hitType,
                 new Point(
                     note.Image.Location.X,
-                    note.Image.Location.Y - (note.Image.Height / 2)
+                    note.Image.Location.Y
                 )
             );
             _info.HitTexts.Add(hitText);

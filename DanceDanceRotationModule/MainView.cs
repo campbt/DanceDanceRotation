@@ -19,15 +19,10 @@ namespace DanceDanceRotationModule
             rootPanel.CanScroll = false;
             rootPanel.Parent = buildPanel;
 
-            _startButton = new Label() // this label is used as heading
+            _startButton = new StandardButton() // this label is used as heading
             {
                 Text = "Start",
-                TextColor = Color.Red,
-                Font = GameService.Content.DefaultFont32,
-                ShowShadow = true,
-                AutoSizeHeight = true,
-                AutoSizeWidth = true,
-                Padding = new Thickness(10, 30),
+                Left = 30,
                 Parent = rootPanel
             };
             _startButton.Click += delegate
@@ -87,6 +82,6 @@ namespace DanceDanceRotationModule
         // }
 
         private NotesContainer _notesContainer;
-        private Label _startButton;
+        private StandardButton _startButton;
     }
 }
