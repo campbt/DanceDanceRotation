@@ -57,7 +57,7 @@ namespace DanceDanceRotationModule
             Weapon1.Value.Enabled = true;
             Weapon1.Value.Activated += delegate
             {
-                _notesContainer.OnHotkeyPressed(NoteType.Weapon1);
+                _mainView.OnHotkeyPressed(NoteType.Weapon1);
             };
             Weapon2 = settings.DefineSetting(nameof(this.Weapon2),
                 new KeyBinding(Keys.D2),
@@ -66,7 +66,7 @@ namespace DanceDanceRotationModule
             Weapon2.Value.Enabled = true;
             Weapon2.Value.Activated += delegate
             {
-                _notesContainer.OnHotkeyPressed(NoteType.Weapon2);
+                _mainView.OnHotkeyPressed(NoteType.Weapon2);
             };
 
         }
@@ -76,7 +76,6 @@ namespace DanceDanceRotationModule
         // and render loop, so be sure to not do anything here that takes too long.
         protected override void Initialize()
         {
-            _notesContainer = new NotesContainer();
         }
 
         // Load content and more here. This call is asynchronous, so it is a good time to run
@@ -95,6 +94,29 @@ namespace DanceDanceRotationModule
 
             // Load content from the ref directory in the module.bhm automatically with the ContentsManager
             Resources.Instance.LoadResources(ContentsManager);
+
+            _mainWindow = new StandardWindow(
+                Resources.Instance.WindowBackgroundTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+            )
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Title = "Dance Dance Rotation",
+                Subtitle = "v0.0.1",
+                Emblem = Resources.Instance.MugTexture,
+                Location = new Point(300, 300),
+                CanResize = true,
+                CanCloseWithEscape = false,
+                SavesPosition = true,
+                SavesSize = true,
+                Id = $"{nameof(DanceDanceRotationModule)}_ID"
+            };
+
+            _mainView = new MainView();
+
+            // show blish hud overlay settings content inside the window
+            _mainWindow.Show(_mainView);
         }
 
         // Allows you to perform an action once your module has finished loading (once
@@ -103,16 +125,16 @@ namespace DanceDanceRotationModule
         protected override void OnModuleLoaded(EventArgs e)
         {
             // Add a mug corner icon in the top left next to the other icons in guild wars 2 (e.g. inventory icon, Mail icon)
-            _exampleCornerIcon = new CornerIcon()
+            _cornerIcon = new CornerIcon()
             {
                 Icon             = Resources.Instance.MugTexture,
                 BasicTooltipText = $"Dance Dance Rotation",
                 Parent           = GameService.Graphics.SpriteScreen
             };
 
-            _exampleCornerIcon.Click += delegate
+            _cornerIcon.Click += delegate
             {
-                ScreenNotification.ShowNotification("Dance Dance Rotation Corner");
+                _mainWindow.ToggleWindow();
             };
 
             // Base handler must be called
@@ -126,7 +148,7 @@ namespace DanceDanceRotationModule
         // slowing down the overlay.
         protected override void Update(GameTime gameTime)
         {
-            _notesContainer?.Update(gameTime);
+            _mainView?.Update(gameTime);
         }
 
         // For a good module experience, your module should clean up ANY and ALL entities
@@ -136,8 +158,9 @@ namespace DanceDanceRotationModule
         {
             Resources.Instance.Unload();
 
-            _exampleCornerIcon?.Dispose();
-            _notesContainer?.Destroy();
+            _mainWindow?.Dispose();
+            _cornerIcon?.Dispose();
+            // _notesContainer?.Destroy();
 
             // All static members must be manually unset
             // Static members are not automatically cleared and will keep a reference to your,
@@ -147,8 +170,9 @@ namespace DanceDanceRotationModule
 
 
         internal static DanceDanceRotationModule DanceDanceRotationModuleInstance;
-        private CornerIcon _exampleCornerIcon;
-        private NotesContainer _notesContainer;
+        private CornerIcon _cornerIcon;
+        private StandardWindow _mainWindow;
+        private MainView _mainView;
 
     }
 }

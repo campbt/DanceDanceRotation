@@ -17,6 +17,9 @@ namespace DanceDanceRotationModule.NoteDisplay
 {
     public class NotesContainer : Blish_HUD.Controls.Container
     {
+
+        // MARK: Inner Types
+
         internal class CurrentSequenceInfo
         {
             internal bool IsStarted { get; set; }
@@ -54,6 +57,8 @@ namespace DanceDanceRotationModule.NoteDisplay
             internal int NoteWidth { get; private set; }
             internal int NoteHeight { get; private set; }
             internal int LaneSpacing { get; private set; }
+            /** Spacing at the very top, mostly for the note hit text to have somewhere to go */
+            internal int VerticalPadding { get; private set; }
 
             /** Where to spawn new notes */
             internal int NewNoteXPosition { get; private set; }
@@ -69,8 +74,9 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             public void Recalculate(int width, int height)
             {
-                NoteHeight = (height - 60) / 7;
+                VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
                 LaneSpacing = NoteHeight / 3;
+                NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 6;
                 NoteWidth = NoteHeight;
 
                 DestroyNotePosition = 0;
@@ -104,7 +110,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
             public Point GetNewNoteLocation(int lane)
             {
-                var yPos = 60 + NoteHeight / 7 + (lane * NoteHeight) + ((lane - 1) * LaneSpacing);
+                var yPos = VerticalPadding + (lane * (NoteHeight + LaneSpacing));
                 return new Point(NewNoteXPosition, yPos);
             }
         }
@@ -145,18 +151,6 @@ namespace DanceDanceRotationModule.NoteDisplay
                 this.XPosition = image.Location.X;
                 _isHit = false;
                 this.ShouldRemove = false;
-            }
-
-            public void MarkAsMissed()
-            {
-                if (_isHit)
-                {
-                    // Ignore
-                    return;
-                }
-
-                _isHit = true;
-                Image.BackgroundColor = Color.Red;
             }
 
             public void Update(GameTime gameTime, double moveAmount)
@@ -246,8 +240,8 @@ namespace DanceDanceRotationModule.NoteDisplay
         /** Labels like "Perfect" that appear when a note is indicated. */
         internal class HitText
         {
-            private static double MovePerSecond = 80.0;
-            private static double TotalLifeTimeMs = 1500.0;
+            internal static double MovePerSecond = 10.0;
+            internal static double TotalLifeTimeMs = 1500.0;
 
             private Label _label;
             private double _yPos;
@@ -320,40 +314,54 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
         }
 
+        // MARK: Properties
+
         private List<Note> _currentSequence = new List<Note>();
         private TimeSpan _lastGameTime;
         private CurrentSequenceInfo _info = new CurrentSequenceInfo();
         private WindowInfo _windowInfo = new WindowInfo();
 
+        // MARK: Events
+
+        /** Emits the currently started state */
+        public event EventHandler<bool> OnStartStop;
+
+        // MARK: Constructor
+
         public NotesContainer()
         {
-            // Main Window Settings
-            BackgroundColor = Color.Black;
-            Width = 800;
-            Height = 200;
-            // HeightSizingMode = SizingMode.AutoSize;
-            // WidthSizingMode = SizingMode.AutoSize;
-            Location = new Point(400, 400);
-            Parent = GameService.Graphics.SpriteScreen;
-
-            _startButton = new Label() // this label is used as heading
-            {
-                Text = "Start",
-                TextColor = Color.Red,
-                Font = GameService.Content.DefaultFont32,
-                ShowShadow = true,
-                AutoSizeHeight = true,
-                AutoSizeWidth = true,
-                Location = new Point(10, 2),
-                Parent = this
-            };
-            _startButton.Click += delegate
-            {
-                Start();
-            };
             LoadDebugSequence();
 
             _windowInfo.Recalculate(Width, Height);
+
+            // TODO: Better images
+            _perfectStartLine = new Image(Resources.Instance.MugTexture)
+            {
+                Width = 2,
+                Height = 1,
+                BackgroundColor = Color.White,
+                Location = new Point(0, 0),
+                Parent = this
+            };
+            _perfectEndLine = new Image(Resources.Instance.MugTexture)
+            {
+                Width = 2,
+                Height = 1,
+                BackgroundColor = Color.White,
+                Location = new Point(0, 0),
+                Parent = this
+            };
+        }
+
+        protected override void OnResized(ResizedEventArgs e)
+        {
+            base.OnResized(e);
+            _windowInfo.Recalculate(e.CurrentSize.X, e.CurrentSize.Y);
+            UpdatePerfectLines();
+            if (_info.IsStarted)
+            {
+                ToggleStart();
+            }
         }
 
         public void SetNoteSequence(List<Note> notes)
@@ -383,11 +391,12 @@ namespace DanceDanceRotationModule.NoteDisplay
             SetNoteSequence(notes);
         }
 
-        public void Start()
+        public void ToggleStart()
         {
             if (_info.IsStarted)
             {
                 ScreenNotification.ShowNotification("Stopped");
+                _info.IsStarted = false;
                 _info.Reset();
             }
             else
@@ -398,26 +407,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                 _info.StartTime = _lastGameTime;
             }
 
-            double perfectCenter = (_windowInfo.HitRangePerfect.Max + _windowInfo.HitRangePerfect.Min) / 2.0;
+            OnStartStop.Invoke(this, _info.IsStarted);
+        }
 
-            // TODO: Better images
-            var LineHeight = this.Height;
-            _perfectStartLine = new Image(Resources.Instance.MugTexture)
-            {
-                Width = 2,
-                Height = LineHeight,
-                BackgroundColor = Color.White,
-                Location = new Point((int)(perfectCenter - (_windowInfo.NoteWidth / 2)), 0),
-                Parent = this
-            };
-            _perfectEndLine = new Image(Resources.Instance.MugTexture)
-            {
-                Width = 2,
-                Height = LineHeight,
-                BackgroundColor = Color.White,
-                Location = new Point((int)(perfectCenter + (_windowInfo.NoteWidth / 2)), 0),
-                Parent = this
-            };
+        public bool IsStarted()
+        {
+            return _info.IsStarted;
         }
 
         public void Update(GameTime gameTime)
@@ -548,15 +543,25 @@ namespace DanceDanceRotationModule.NoteDisplay
                 hitType,
                 new Point(
                     note.Image.Location.X,
-                    note.Image.Location.Y - 20
+                    note.Image.Location.Y - (note.Image.Height / 2)
                 )
             );
             _info.HitTexts.Add(hitText);
         }
 
+        private void UpdatePerfectLines()
+        {
+            var lineHeight = this.Height - (_windowInfo.VerticalPadding * 2);
+            double perfectCenter = (_windowInfo.HitRangePerfect.Max + _windowInfo.HitRangePerfect.Min) / 2.0;
+
+            _perfectStartLine.Height = lineHeight;
+            _perfectStartLine.Location = new Point((int)(perfectCenter - (_windowInfo.NoteWidth / 2)), _windowInfo.VerticalPadding);
+            _perfectEndLine.Height = lineHeight;
+            _perfectEndLine.Location = new Point((int)(perfectCenter + (_windowInfo.NoteWidth / 2)), _windowInfo.VerticalPadding);
+        }
+
         public void Destroy()
         {
-            _startButton.Dispose();
             _perfectStartLine.Dispose();
             _perfectEndLine.Dispose();
             Dispose();
@@ -564,7 +569,6 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         // MARK: Properties
 
-        private Label _startButton;
         private Image _perfectStartLine;
         private Image _perfectEndLine;
     }
