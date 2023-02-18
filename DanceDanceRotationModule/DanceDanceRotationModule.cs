@@ -5,13 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
+using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
+using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace DanceDanceRotationModule
 {
@@ -29,6 +32,9 @@ namespace DanceDanceRotationModule
 
         #endregion
 
+        internal SettingEntry<KeyBinding> Weapon1 { get; private set; }
+        internal SettingEntry<KeyBinding> Weapon2 { get; private set; }
+
         // // public static readonly KeyBinding CustomKeyBinding = GameService.Overlay.InteractKey.Value;
         // internal readonly KeyBinding CustomKeyBinding = CustomKey.Value;
 
@@ -44,11 +50,24 @@ namespace DanceDanceRotationModule
         // between updates to both Blish HUD and your module.
         protected override void DefineSettings(SettingCollection settings)
         {
-            _boolExampleSetting = settings.DefineSetting(
-                "bool example",
-                true,
-                () => "This is a bool setting (checkbox)",
-                () => "Settings can be many different types");
+            Weapon1 = settings.DefineSetting(nameof(this.Weapon1),
+                new KeyBinding(Keys.D1),
+                () => "Weapon Attack 1",
+                () => "Hotkey used for Weapon Attack 1");
+            Weapon1.Value.Enabled = true;
+            Weapon1.Value.Activated += delegate
+            {
+                _notesContainer.OnHotkeyPressed(NoteType.Weapon1);
+            };
+            Weapon2 = settings.DefineSetting(nameof(this.Weapon2),
+                new KeyBinding(Keys.D2),
+                () => "Weapon Attack 2",
+                () => "Hotkey used for Weapon Attack 2");
+            Weapon2.Value.Enabled = true;
+            Weapon2.Value.Activated += delegate
+            {
+                _notesContainer.OnHotkeyPressed(NoteType.Weapon2);
+            };
 
         }
 
@@ -118,7 +137,7 @@ namespace DanceDanceRotationModule
             Resources.Instance.Unload();
 
             _exampleCornerIcon?.Dispose();
-            _notesContainer?.Dispose();
+            _notesContainer?.Destroy();
 
             // All static members must be manually unset
             // Static members are not automatically cleared and will keep a reference to your,
@@ -129,7 +148,6 @@ namespace DanceDanceRotationModule
 
         internal static DanceDanceRotationModule DanceDanceRotationModuleInstance;
         private CornerIcon _exampleCornerIcon;
-        private SettingEntry<bool> _boolExampleSetting;
         private NotesContainer _notesContainer;
 
     }
