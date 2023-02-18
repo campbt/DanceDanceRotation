@@ -150,39 +150,9 @@ namespace DanceDanceRotationModule.NoteDisplay
                 _windowInfo = windowInfo;
                 this.Note = note;
 
-                string text;
-                int lane;
-                switch (note.NoteType)
-                {
-                    case NoteType.Weapon1:
-                        text = DanceDanceRotationModule.DanceDanceRotationModuleInstance.Weapon1.Value.GetBindingDisplayText();
-                        lane = 0;
-                        break;
-                    case NoteType.Weapon2:
-                        text = DanceDanceRotationModule.DanceDanceRotationModuleInstance.Weapon2.Value.GetBindingDisplayText();
-                        lane = 1;
-                        break;
-                    case NoteType.Weapon3:
-                        text = "3";
-                        lane = 2;
-                        break;
-                    case NoteType.Weapon4:
-                        text = "4";
-                        lane = 3;
-                        break;
-                    case NoteType.Weapon5:
-                        text = "5";
-                        lane = 4;
-                        break;
-                    case NoteType.WeaponSwap:
-                        text = "WS";
-                        lane = 5;
-                        break;
-                    default:
-                        text = "?";
-                        lane = 0;
-                        break;
-                }
+                var keyBinding = DanceDanceRotationModule.DanceDanceRotationModuleInstance.GetKeyBindingForNoteType(note.NoteType);
+                string text = keyBinding.Value.GetBindingDisplayText();
+                int lane = NoteTypeExtensions.NoteLane(note.NoteType);
 
                 this.Image = new Image(
                     Resources.Instance.MugTexture

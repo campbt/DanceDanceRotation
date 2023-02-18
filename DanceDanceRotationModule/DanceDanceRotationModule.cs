@@ -32,8 +32,24 @@ namespace DanceDanceRotationModule
 
         #endregion
 
+        // MARK: Hotkeys
+
+        internal SettingEntry<KeyBinding> SwapWeapons { get; private set; }
         internal SettingEntry<KeyBinding> Weapon1 { get; private set; }
         internal SettingEntry<KeyBinding> Weapon2 { get; private set; }
+        internal SettingEntry<KeyBinding> Weapon3 { get; private set; }
+        internal SettingEntry<KeyBinding> Weapon4 { get; private set; }
+        internal SettingEntry<KeyBinding> Weapon5 { get; private set; }
+        internal SettingEntry<KeyBinding> HealingSkill { get; private set; }
+        internal SettingEntry<KeyBinding> UtilitySkill1 { get; private set; }
+        internal SettingEntry<KeyBinding> UtilitySkill2 { get; private set; }
+        internal SettingEntry<KeyBinding> UtilitySkill3 { get; private set; }
+        internal SettingEntry<KeyBinding> EliteSkill { get; private set; }
+        internal SettingEntry<KeyBinding> ProfessionSkill1 { get; private set; }
+        internal SettingEntry<KeyBinding> ProfessionSkill2 { get; private set; }
+        internal SettingEntry<KeyBinding> ProfessionSkill3 { get; private set; }
+        internal SettingEntry<KeyBinding> ProfessionSkill4 { get; private set; }
+        internal SettingEntry<KeyBinding> ProfessionSkill5 { get; private set; }
 
         // // public static readonly KeyBinding CustomKeyBinding = GameService.Overlay.InteractKey.Value;
         // internal readonly KeyBinding CustomKeyBinding = CustomKey.Value;
@@ -50,25 +66,42 @@ namespace DanceDanceRotationModule
         // between updates to both Blish HUD and your module.
         protected override void DefineSettings(SettingCollection settings)
         {
-            Weapon1 = settings.DefineSetting(nameof(this.Weapon1),
-                new KeyBinding(Keys.D1),
-                () => "Weapon Attack 1",
-                () => "Hotkey used for Weapon Attack 1");
-            Weapon1.Value.Enabled = true;
-            Weapon1.Value.Activated += delegate
-            {
-                _mainView.OnHotkeyPressed(NoteType.Weapon1);
-            };
-            Weapon2 = settings.DefineSetting(nameof(this.Weapon2),
-                new KeyBinding(Keys.D2),
-                () => "Weapon Attack 2",
-                () => "Hotkey used for Weapon Attack 2");
-            Weapon2.Value.Enabled = true;
-            Weapon2.Value.Activated += delegate
-            {
-                _mainView.OnHotkeyPressed(NoteType.Weapon2);
-            };
+            Weapon1          = DefineHotkeySetting(settings, NoteType.Weapon1);
+            Weapon2          = DefineHotkeySetting(settings, NoteType.Weapon2);
+            Weapon3          = DefineHotkeySetting(settings, NoteType.Weapon3);
+            Weapon4          = DefineHotkeySetting(settings, NoteType.Weapon4);
+            Weapon5          = DefineHotkeySetting(settings, NoteType.Weapon5);
+            HealingSkill     = DefineHotkeySetting(settings, NoteType.HealingSkill);
+            UtilitySkill1    = DefineHotkeySetting(settings, NoteType.UtilitySkill1);
+            UtilitySkill2    = DefineHotkeySetting(settings, NoteType.UtilitySkill2 );
+            UtilitySkill3    = DefineHotkeySetting(settings, NoteType.UtilitySkill3);
+            EliteSkill       = DefineHotkeySetting(settings, NoteType.EliteSkill );
+            ProfessionSkill1 = DefineHotkeySetting(settings, NoteType.ProfessionSkill1);
+            ProfessionSkill2 = DefineHotkeySetting(settings, NoteType.ProfessionSkill2);
+            ProfessionSkill3 = DefineHotkeySetting(settings, NoteType.ProfessionSkill3);
+            ProfessionSkill4 = DefineHotkeySetting(settings, NoteType.ProfessionSkill4);
+            ProfessionSkill5 = DefineHotkeySetting(settings, NoteType.ProfessionSkill5);
+        }
 
+        private SettingEntry<KeyBinding> DefineHotkeySetting(SettingCollection settings, NoteType noteType)
+        {
+            SettingEntry<KeyBinding> retval = settings.DefineSetting(noteType.ToString(),
+                new KeyBinding(NoteTypeExtensions.DefaultHotkey(noteType)),
+                () => NoteTypeExtensions.HotkeyDescription(noteType),
+                () => "Hotkey used for " + NoteTypeExtensions.HotkeyDescription(noteType) + "\nThis must match your in-game hotkeys to work!");
+            retval.Value.Enabled = true;
+            retval.Value.Activated += delegate
+            {
+                _mainView.OnHotkeyPressed(noteType);
+            };
+            return retval;
+        }
+
+        public SettingEntry<KeyBinding> GetKeyBindingForNoteType(NoteType noteType)
+        {
+            SettingEntry<KeyBinding> retval = new SettingEntry<KeyBinding>();
+            SettingsManager.ModuleSettings.TryGetSetting<KeyBinding>(noteType.ToString(), out retval);
+            return retval;
         }
 
         // Allows your module to perform any initialization it needs before starting to run.
