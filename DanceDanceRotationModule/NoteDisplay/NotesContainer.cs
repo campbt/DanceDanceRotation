@@ -23,6 +23,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             internal TimeSpan StartTime { get; set; }
             internal int SequenceIndex { get; set; }
             internal List<ActiveNote> ActiveNotes = new List<ActiveNote>();
+            internal List<HitText> HitTexts = new List<HitText>();
 
             public void Reset()
             {
@@ -35,6 +36,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                     activeNote.Dispose();
                 }
                 ActiveNotes.Clear();
+
+                foreach (HitText hitText in HitTexts)
+                {
+                    hitText.Dispose();
+                }
+                HitTexts.Clear();
             }
         }
 
@@ -102,6 +109,15 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
         }
 
+        internal enum HitType
+        {
+            Perfect,
+            Great,
+            Good,
+            Boo,
+            Miss
+        }
+
         /**
          * Represents a Note that is on the container and moving
          */
@@ -119,6 +135,8 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             internal bool ShouldRemove { get; private set; }
 
+            public event EventHandler<HitType> OnHit;
+
             public ActiveNote(WindowInfo windowInfo, Note note, Image image)
             {
                 _windowInfo = windowInfo;
@@ -131,8 +149,37 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             public void MarkAsMissed()
             {
+                if (_isHit)
+                {
+                    // Ignore
+                    return;
+                }
+
                 _isHit = true;
                 Image.BackgroundColor = Color.Red;
+            }
+
+            public void Update(GameTime gameTime, double moveAmount)
+            {
+                XPosition -= moveAmount;
+                if (XPosition <= _windowInfo.DestroyNotePosition)
+                {
+                    ShouldRemove = true;
+                }
+                else
+                {
+                    if (_isHit == false && XPosition <= _windowInfo.HitRangeBoo.Min)
+                    {
+                        setHit(HitType.Miss);
+                        Image.BackgroundColor = Color.Red;
+                    }
+
+                    // Move it
+                    Image.Location = new Point(
+                        (int)(XPosition),
+                        Image.Location.Y
+                    );
+                }
             }
 
             /** User pressed the hotkey for this note */
@@ -144,37 +191,132 @@ namespace DanceDanceRotationModule.NoteDisplay
                     return false;
                 }
 
-                _isHit = true;
-
+                HitType hitType;
                 if (_windowInfo.HitRangePerfect.IsInBetween(XPosition))
                 {
+                    hitType = HitType.Perfect;
                     ScreenNotification.ShowNotification("Perfect");
                 }
                 else if (_windowInfo.HitRangeGreat.IsInBetween(XPosition))
                 {
+                    hitType = HitType.Great;
                     ScreenNotification.ShowNotification("Great");
                 }
                 else if (_windowInfo.HitRangeGood.IsInBetween(XPosition))
                 {
+                    hitType = HitType.Good;
                     ScreenNotification.ShowNotification("Good");
                 }
                 else if (_windowInfo.HitRangeBoo.IsInBetween(XPosition))
                 {
+                    hitType = HitType.Boo;
                     ScreenNotification.ShowNotification("Boo");
                 }
                 else
                 {
+                    hitType = HitType.Miss;
                     ScreenNotification.ShowNotification("Miss");
                 }
 
                 ShouldRemove = true;
-
+                setHit(hitType);
                 return true;
             }
 
             public void Dispose()
             {
                 Image.Dispose();
+            }
+
+            private void setHit(HitType hitType)
+            {
+                if (_isHit)
+                    return;
+
+                EventHandler<HitType> onHit = this.OnHit;
+                if (onHit != null)
+                {
+                    onHit.Invoke(this, hitType);
+                }
+
+                _isHit = true;
+            }
+        }
+
+        /** Labels like "Perfect" that appear when a note is indicated. */
+        internal class HitText
+        {
+            private static double MovePerSecond = 80.0;
+            private static double TotalLifeTimeMs = 1500.0;
+
+            private Label _label;
+            private double _yPos;
+            private double _remainLifeMs;
+
+            public HitText(BlishContainer parent, HitType hitType, Point location)
+            {
+                String text;
+                Color textColor;
+                switch (hitType)
+                {
+                    case HitType.Perfect:
+                        text = "Perfect";
+                        textColor = Color.Aqua;
+                        break;
+                    case HitType.Great:
+                        text = "Great";
+                        textColor = Color.CornflowerBlue;
+                        break;
+                    case HitType.Good:
+                        textColor = Color.SpringGreen;
+                        text = "Good";
+                        break;
+                    case HitType.Boo:
+                        textColor = Color.OrangeRed;
+                        text = "Boo";
+                        break;
+                    case HitType.Miss:
+                        textColor = Color.Red;
+                        text = "Miss";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(hitType), hitType, null);
+                }
+
+                _label = new Label()
+                {
+                    Text = text,
+                    TextColor = textColor,
+                    Font = GameService.Content.DefaultFont18,
+                    ShowShadow = true,
+                    AutoSizeHeight = true,
+                    AutoSizeWidth = true,
+                    Location = location,
+                    Parent = parent
+                };
+                _remainLifeMs = TotalLifeTimeMs;
+                _yPos = location.Y;
+            }
+
+            public void Update(GameTime gameTime)
+            {
+                _remainLifeMs -= gameTime.ElapsedGameTime.Milliseconds;
+                _yPos -= (gameTime.ElapsedGameTime.Milliseconds / 1000.0) * MovePerSecond;
+                _label.Opacity = Math.Max(0.0f, (float)(_remainLifeMs / TotalLifeTimeMs));
+                _label.Location = new Point(
+                    _label.Location.X,
+                    (int)_yPos
+                );
+            }
+
+            public bool ShouldDispose()
+            {
+                return _remainLifeMs < 0;
+            }
+
+            public void Dispose()
+            {
+                _label.Dispose();
             }
         }
 
@@ -222,12 +364,22 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void LoadDebugSequence()
         {
+            List<NoteType> noteTypes = new List<NoteType>();
+            for (int i = 0; i < 3; i++)
+            {
+                noteTypes.Add(NoteType.Weapon1);
+                noteTypes.Add(NoteType.Weapon2);
+                noteTypes.Add(NoteType.Weapon3);
+                noteTypes.Add(NoteType.Weapon4);
+                noteTypes.Add(NoteType.Weapon5);
+            }
+
             List<Note> notes = new List<Note>();
-            notes.Add(new Note(NoteType.Weapon1, TimeSpan.Zero));
-            notes.Add(new Note(NoteType.Weapon2, TimeSpan.FromMilliseconds(1000)));
-            notes.Add(new Note(NoteType.Weapon3, TimeSpan.FromMilliseconds(2000)));
-            notes.Add(new Note(NoteType.Weapon4, TimeSpan.FromMilliseconds(3000)));
-            notes.Add(new Note(NoteType.Weapon5, TimeSpan.FromMilliseconds(4000)));
+            int time = 0;
+            foreach (NoteType noteType in noteTypes)
+            {
+                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += 300)));
+            }
             SetNoteSequence(notes);
         }
 
@@ -290,36 +442,28 @@ namespace DanceDanceRotationModule.NoteDisplay
                 }
             }
 
-            // Move Active Notes
+            // Update Active Notes and remove any that want to be destroyed
             double moveAmount = (_windowInfo.NotePositionChangePerSecond * (gameTime.ElapsedGameTime.Milliseconds) / 1000.0);
             for (int index = _info.ActiveNotes.Count - 1; index >= 0; index--)
             {
                 ActiveNote activeNote = _info.ActiveNotes[index];
-
-                activeNote.XPosition -= moveAmount;
-                if (activeNote.XPosition <= _windowInfo.DestroyNotePosition)
-                {
-                    activeNote.Dispose();
-                    _info.ActiveNotes.RemoveAt(index);
-                }
-                else
-                {
-                    if (activeNote.XPosition <= _windowInfo.HitRangeBoo.Min)
-                    {
-                        activeNote.MarkAsMissed();
-                    }
-
-                    // Move it
-                    activeNote.Image.Location = new Point(
-                        (int)(activeNote.XPosition),
-                        activeNote.Image.Location.Y
-                    );
-                }
-
+                activeNote.Update(gameTime, moveAmount);
                 if (activeNote.ShouldRemove)
                 {
-                    _info.ActiveNotes.RemoveAt(index);
                     activeNote.Dispose();
+                    _info.ActiveNotes.RemoveAt(index);
+                }
+            }
+
+            // Let all hit texts update and remove any that want to be disposed
+            for (int index = _info.HitTexts.Count - 1; index >= 0; index--)
+            {
+                HitText hitText = _info.HitTexts[index];
+                hitText.Update(gameTime);
+                if (hitText.ShouldDispose())
+                {
+                    hitText.Dispose();
+                    _info.HitTexts.RemoveAt(index);
                 }
             }
         }
@@ -345,29 +489,29 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void AddNote(Note note)
         {
-            var Lane = 0;
+            int lane;
             switch (note.NoteType)
             {
                 case NoteType.Weapon1:
-                    Lane = 0;
+                    lane = 0;
                     break;
                 case NoteType.Weapon2:
-                    Lane = 1;
+                    lane = 1;
                     break;
                 case NoteType.Weapon3:
-                    Lane = 2;
+                    lane = 2;
                     break;
                 case NoteType.Weapon4:
-                    Lane = 3;
+                    lane = 3;
                     break;
                 case NoteType.Weapon5:
-                    Lane = 4;
+                    lane = 4;
                     break;
                 case NoteType.WeaponSwap:
-                    Lane = 5;
+                    lane = 5;
                     break;
                 default:
-                    Lane = 0;
+                    lane = 0;
                     break;
             }
 
@@ -376,7 +520,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             )
             {
                 Size = _windowInfo.GetNewNoteSize(),
-                Location = _windowInfo.GetNewNoteLocation(Lane),
+                Location = _windowInfo.GetNewNoteLocation(lane),
                 Parent = this
             };
             var activeNote = new ActiveNote(
@@ -384,11 +528,30 @@ namespace DanceDanceRotationModule.NoteDisplay
                 note,
                 noteImage
             );
-            activeNote.XPosition = noteImage.Location.X;
+            activeNote.OnHit += delegate(object sender, HitType hitType)
+            {
+                AddHitText(activeNote, hitType);
+            };
 
             _info.ActiveNotes.Add(
                 activeNote
             );
+        }
+
+        private void AddHitText(
+            ActiveNote note,
+            HitType hitType
+        )
+        {
+            HitText hitText = new HitText(
+                this,
+                hitType,
+                new Point(
+                    note.Image.Location.X,
+                    note.Image.Location.Y - 20
+                )
+            );
+            _info.HitTexts.Add(hitText);
         }
 
         public void Destroy()
