@@ -1,4 +1,6 @@
 ﻿using System;
+using DanceDanceRotationModule.Util;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace DanceDanceRotationModule.Model
@@ -143,6 +145,36 @@ namespace DanceDanceRotationModule.Model
                 default:
                     return 0;
             }
+        }
+
+        public static Texture2D NoteImage(NoteType noteType)
+        {
+            switch (noteType)
+            {
+                case NoteType.WeaponSwap:
+                case NoteType.Weapon1:
+                case NoteType.Weapon2:
+                case NoteType.Weapon3:
+                case NoteType.Weapon4:
+                case NoteType.Weapon5:
+                    return Resources.Instance.DdrNoteRedTexture;
+                    break;
+                case NoteType.HealingSkill:
+                case NoteType.UtilitySkill1:
+                case NoteType.UtilitySkill2:
+                case NoteType.UtilitySkill3:
+                case NoteType.EliteSkill:
+                    return Resources.Instance.DdrNotePurpleTexture;
+                case NoteType.ProfessionSkill1:
+                case NoteType.ProfessionSkill2:
+                case NoteType.ProfessionSkill3:
+                case NoteType.ProfessionSkill4:
+                case NoteType.ProfessionSkill5:
+                    return Resources.Instance.DdrNoteGreenTexture;
+                default:
+                    return Resources.Instance.DdrNoteRedTexture;
+            }
+
         }
     }
 }

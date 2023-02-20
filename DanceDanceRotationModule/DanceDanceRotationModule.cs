@@ -32,6 +32,10 @@ namespace DanceDanceRotationModule
 
         #endregion
 
+        // MARK: Settings
+
+        internal SettingEntry<int> PlaybackRate { get; private set; }
+
         // MARK: Hotkeys
 
         internal SettingEntry<KeyBinding> SwapWeapons { get; private set; }
@@ -66,6 +70,13 @@ namespace DanceDanceRotationModule
         // between updates to both Blish HUD and your module.
         protected override void DefineSettings(SettingCollection settings)
         {
+            PlaybackRate = settings.DefineSetting("PlaybackRate",
+                100,
+                () => "Playback Rate %",
+                () => "Speeds up or slows down the note speed based on this value. Min=10% Max=100%");
+            PlaybackRate.SetRange(10, 100);
+
+            SwapWeapons      = DefineHotkeySetting(settings, NoteType.WeaponSwap);
             Weapon1          = DefineHotkeySetting(settings, NoteType.Weapon1);
             Weapon2          = DefineHotkeySetting(settings, NoteType.Weapon2);
             Weapon3          = DefineHotkeySetting(settings, NoteType.Weapon3);
@@ -137,7 +148,7 @@ namespace DanceDanceRotationModule
                 Parent = GameService.Graphics.SpriteScreen,
                 Title = "Dance Dance Rotation",
                 Subtitle = "v0.0.1",
-                Emblem = Resources.Instance.MugTexture,
+                Emblem = Resources.Instance.DdrLogoEmblemTexture,
                 Location = new Point(300, 300),
                 CanResize = true,
                 CanCloseWithEscape = false,
@@ -160,7 +171,7 @@ namespace DanceDanceRotationModule
             // Add a mug corner icon in the top left next to the other icons in guild wars 2 (e.g. inventory icon, Mail icon)
             _cornerIcon = new CornerIcon()
             {
-                Icon             = Resources.Instance.MugTexture,
+                Icon             = Resources.Instance.DdrLogoEmblemTexture,
                 BasicTooltipText = $"Dance Dance Rotation",
                 Parent           = GameService.Graphics.SpriteScreen
             };

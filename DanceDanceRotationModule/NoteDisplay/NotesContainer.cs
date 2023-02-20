@@ -76,7 +76,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             public void Recalculate(int width, int height)
             {
                 VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
-                LaneSpacing = NoteHeight / 3;
+                LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
                 NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 6;
                 NoteWidth = NoteHeight;
 
@@ -151,11 +151,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                 this.Note = note;
 
                 var keyBinding = DanceDanceRotationModule.DanceDanceRotationModuleInstance.GetKeyBindingForNoteType(note.NoteType);
-                string text = keyBinding.Value.GetBindingDisplayText();
+                // string text = keyBinding.Value.GetBindingDisplayText();
+                string text = KeysExtensions.NotesString(keyBinding.Value);
                 int lane = NoteTypeExtensions.NoteLane(note.NoteType);
 
                 this.Image = new Image(
-                    Resources.Instance.MugTexture
+                    NoteTypeExtensions.NoteImage(note.NoteType)
                 )
                 {
                     Size = _windowInfo.GetNewNoteSize(),
@@ -165,21 +166,44 @@ namespace DanceDanceRotationModule.NoteDisplay
                 };
 
                 BitmapFont font;
-                if (Image.Height > 32)
+                if (text.Length < 3)
                 {
-                    font = GameService.Content.DefaultFont32;
-                }
-                else if (Image.Height > 18)
-                {
-                    font = GameService.Content.DefaultFont18;
-                }
-                else if (Image.Height > 14)
-                {
-                    font = GameService.Content.DefaultFont14;
+                    if (Image.Height > 34)
+                    {
+                        font = GameService.Content.DefaultFont32;
+                    }
+                    else if (Image.Height > 20)
+                    {
+                        font = GameService.Content.DefaultFont18;
+                    }
+                    else if (Image.Height > 16)
+                    {
+                        font = GameService.Content.DefaultFont14;
+                    }
+                    else
+                    {
+                        font = GameService.Content.DefaultFont12;
+                    }
                 }
                 else
                 {
-                    font = GameService.Content.DefaultFont12;
+                    // Longer strings need to just always use a smaller font
+                    if (Image.Height > 48)
+                    {
+                        font = GameService.Content.DefaultFont32;
+                    }
+                    else if (Image.Height > 32)
+                    {
+                        font = GameService.Content.DefaultFont18;
+                    }
+                    else if (Image.Height > 24)
+                    {
+                        font = GameService.Content.DefaultFont14;
+                    }
+                    else
+                    {
+                        font = GameService.Content.DefaultFont12;
+                    }
                 }
 
                 Label = new Label() // this label is used as heading
@@ -238,6 +262,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                 if (_isHit)
                 {
                     // Ignore
+                    return false;
+                }
+
+                if (XPosition > _windowInfo.HitRangeBoo.Max)
+                {
+                    // Ignore presses not even in consideration
                     return false;
                 }
 
@@ -388,34 +418,19 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         public NotesContainer()
         {
-            LoadDebugSequence();
+            // LoadDebugSequenceStanceChanges();
+            LoadDebugSequenceWeaver();
 
             _windowInfo.Recalculate(Width, Height);
 
-            // TODO: Better images
-            _perfectStartLine = new Image(Resources.Instance.MugTexture)
-            {
-                Width = 2,
-                Height = 1,
-                BackgroundColor = Color.White,
-                Location = new Point(0, 0),
-                Parent = this
-            };
-            _perfectEndLine = new Image(Resources.Instance.MugTexture)
-            {
-                Width = 2,
-                Height = 1,
-                BackgroundColor = Color.White,
-                Location = new Point(0, 0),
-                Parent = this
-            };
+            CreateTarget();
         }
 
         protected override void OnResized(ResizedEventArgs e)
         {
             base.OnResized(e);
             _windowInfo.Recalculate(e.CurrentSize.X, e.CurrentSize.Y);
-            UpdatePerfectLines();
+            UpdateTarget();
             if (_info.IsStarted)
             {
                 ToggleStart();
@@ -428,7 +443,8 @@ namespace DanceDanceRotationModule.NoteDisplay
             _currentSequence.AddRange(notes);
         }
 
-        private void LoadDebugSequence()
+        // TODO: Remove this
+        private void LoadDebugSequenceSimple()
         {
             List<NoteType> noteTypes = new List<NoteType>();
             for (int i = 0; i < 3; i++)
@@ -446,6 +462,74 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += 300)));
             }
+            SetNoteSequence(notes);
+        }
+
+        // TODO: Remove this
+        private void LoadDebugSequenceStanceChanges()
+        {
+            List<Note> notes = new List<Note>();
+            int time = 0;
+
+            void Add(NoteType noteType, int duration)
+            {
+                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += duration)));
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                Add(NoteType.ProfessionSkill1, 3000);
+                Add(NoteType.ProfessionSkill1, 3000);
+                Add(NoteType.ProfessionSkill3, 3000);
+                Add(NoteType.ProfessionSkill3, 3000);
+            }
+
+            SetNoteSequence(notes);
+        }
+
+        // TODO: Remove this
+        private void LoadDebugSequenceWeaver()
+        {
+            List<Note> notes = new List<Note>();
+            int time = 0;
+
+            void Add(NoteType noteType, int duration)
+            {
+                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += duration)));
+            }
+
+            Add(NoteType.UtilitySkill1, 1120);
+            Add(NoteType.Weapon3, 685);
+            for (int i = 0; i < 3; i++)
+            {
+                Add(NoteType.ProfessionSkill1, 450);
+                Add(NoteType.Weapon2, 722);
+                Add(NoteType.Weapon3, 800);
+                Add(NoteType.UtilitySkill3, 300);
+                Add(NoteType.UtilitySkill2, 1040);
+                Add(NoteType.ProfessionSkill1, 250);
+                Add(NoteType.Weapon1, 1200);
+                Add(NoteType.Weapon3, 435);
+                Add(NoteType.Weapon4, 480);
+                Add(NoteType.Weapon5, 561);
+                Add(NoteType.Weapon2, 561);
+                Add(NoteType.ProfessionSkill3, 180);
+                Add(NoteType.Weapon1, 441);
+                Add(NoteType.Weapon1, 436);
+                Add(NoteType.Weapon1, 763);
+                Add(NoteType.Weapon1, 441);
+                Add(NoteType.Weapon1, 436);
+                Add(NoteType.Weapon1, 763);
+                Add(NoteType.ProfessionSkill3, 180);
+                Add(NoteType.Weapon1, 441);
+                Add(NoteType.Weapon1, 436);
+                Add(NoteType.Weapon1, 763);
+                Add(NoteType.Weapon1, 441);
+                Add(NoteType.Weapon1, 436);
+                Add(NoteType.Weapon1, 763);
+                Add(NoteType.Weapon3, 433);
+            }
+
             SetNoteSequence(notes);
         }
 
@@ -483,6 +567,8 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
 
             TimeSpan timeInRotation = _lastGameTime - _info.StartTime;
+            double PlaybackRate = DanceDanceRotationModule.DanceDanceRotationModuleInstance.PlaybackRate.Value / 100.0;
+            timeInRotation = timeInRotation.Multiply(new decimal(PlaybackRate));
 
             // Check to add notes
             if (_info.SequenceIndex < _currentSequence.Count)
@@ -575,28 +661,119 @@ namespace DanceDanceRotationModule.NoteDisplay
             _info.HitTexts.Add(hitText);
         }
 
-        private void UpdatePerfectLines()
+        // MARK: Target
+
+        private void CreateTarget()
         {
-            var lineHeight = this.Height - (_windowInfo.VerticalPadding * 2);
+            float TargetOpacity = 0.5f;
+            _targetTop = new Image(Resources.Instance.DdrTargetTop)
+            {
+                Width = 64,
+                Height = 24,
+                Location = new Point(0, 0),
+                Opacity = TargetOpacity,
+                Parent = this
+            };
+            _targetBottom = new Image(Resources.Instance.DdrTargetBottom)
+            {
+                Width = 64,
+                Height = 24,
+                Location = new Point(0, 0),
+                Opacity = TargetOpacity,
+                Parent = this
+            };
+            _targetCircles = new List<Image>(6);
+            for (int i = 0; i < 6; i++)
+            {
+                _targetCircles.Add(
+                new Image(Resources.Instance.DdrTargetCircle)
+                    {
+                        Width = 64,
+                        Height = 64,
+                        Location = new Point(0, 0),
+                        Opacity = TargetOpacity,
+                        Parent = this
+                    }
+                );
+            }
+            _targetSpacers = new List<Image>(5);
+            for (int i = 0; i < 5; i++)
+            {
+                _targetSpacers.Add(
+                new Image(Resources.Instance.DdrTargetSpacer)
+                    {
+                        Width = 64,
+                        Height = 24,
+                        Location = new Point(0, 0),
+                        Opacity = TargetOpacity,
+                        Parent = this
+                    }
+                );
+            }
+        }
+
+        private void UpdateTarget()
+        {
             double perfectCenter = (_windowInfo.HitRangePerfect.Max + _windowInfo.HitRangePerfect.Min) / 2.0;
 
-            _perfectStartLine.Height = lineHeight;
-            _perfectStartLine.Location = new Point((int)(perfectCenter - (_windowInfo.NoteWidth / 2)), _windowInfo.VerticalPadding);
-            _perfectEndLine.Height = lineHeight;
-            _perfectEndLine.Location = new Point((int)(perfectCenter + (_windowInfo.NoteWidth / 2)), _windowInfo.VerticalPadding);
+            int targetWidth = _windowInfo.NoteWidth;
+
+            int xPos = (int)(perfectCenter - (_windowInfo.NoteWidth / 2.0));
+            int yPos = _windowInfo.VerticalPadding - _targetTop.Height;
+
+            int roundEdgesHeight = (int)Math.Min(
+                _windowInfo.VerticalPadding - 4,
+                targetWidth * 0.375
+            );
+
+            _targetTop.Height = roundEdgesHeight;
+            _targetTop.Width = targetWidth;
+            _targetTop.Location = new Point(xPos, yPos);
+            yPos += _targetTop.Height;
+
+            for (int index = 0; index < _targetCircles.Count; index++)
+            {
+                _targetCircles[index].Height = _windowInfo.NoteHeight;
+                _targetCircles[index].Width = targetWidth;
+                _targetCircles[index].Location = new Point(xPos, yPos);
+                yPos += _targetCircles[index].Height;
+
+                if (index < _targetSpacers.Count)
+                {
+                    // Add a little bit of overlap to prevent gaps
+                    _targetSpacers[index].Height = _windowInfo.LaneSpacing;
+                    _targetSpacers[index].Width = targetWidth;
+                    _targetSpacers[index].Location = new Point(xPos, yPos);
+                    yPos += _windowInfo.LaneSpacing;
+                }
+            }
+
+            _targetBottom.Height = roundEdgesHeight;
+            _targetBottom.Width = targetWidth;
+            _targetBottom.Location = new Point(xPos, yPos);
         }
 
         public void Destroy()
         {
-            _perfectStartLine.Dispose();
-            _perfectEndLine.Dispose();
+            _targetTop.Dispose();
+            _targetBottom.Dispose();
+            foreach (var targetCircle in _targetCircles)
+            {
+                targetCircle.Dispose();
+            }
+            foreach (var targetSpacer in _targetSpacers)
+            {
+                targetSpacer.Dispose();
+            }
             Dispose();
         }
 
         // MARK: Properties
 
-        private Image _perfectStartLine;
-        private Image _perfectEndLine;
+        private Image _targetTop;
+        private Image _targetBottom;
+        private List<Image> _targetCircles;
+        private List<Image> _targetSpacers;
     }
 
 
