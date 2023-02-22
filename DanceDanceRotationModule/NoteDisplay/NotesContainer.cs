@@ -421,6 +421,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             _windowInfo.Recalculate(Width, Height);
 
             CreateTarget();
+            UpdateTarget();
 
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, Song song)
@@ -429,11 +430,24 @@ namespace DanceDanceRotationModule.NoteDisplay
                 };
         }
 
+        public override void RecalculateLayout()
+        {
+            base.RecalculateLayout();
+
+            if (_targetCreated == false)
+            {
+                // RecalculateLayout can be evaluated before constructor is hit
+                // Just ignore it
+                return;
+            }
+
+            _windowInfo.Recalculate(Width, Height);
+            UpdateTarget();
+        }
+
         protected override void OnResized(ResizedEventArgs e)
         {
             base.OnResized(e);
-            _windowInfo.Recalculate(e.CurrentSize.X, e.CurrentSize.Y);
-            UpdateTarget();
             Reset();
         }
 
@@ -465,7 +479,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 _info.IsStarted = true;
                 _info.StartTime = _lastGameTime;
-                OnStartStop.Invoke(this, _info.IsStarted);
+                OnStartStop?.Invoke(this, _info.IsStarted);
             }
         }
 
@@ -475,7 +489,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 _info.IsStarted = false;
                 _info.Reset();
-                OnStartStop.Invoke(this, _info.IsStarted);
+                OnStartStop?.Invoke(this, _info.IsStarted);
             }
         }
 
@@ -637,6 +651,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                     }
                 );
             }
+
+            _targetCreated = true;
         }
 
         private void UpdateTarget()
@@ -697,6 +713,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         // MARK: Properties
 
+        private bool _targetCreated;
         private Image _targetTop;
         private Image _targetBottom;
         private List<Image> _targetCircles;

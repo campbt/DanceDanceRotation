@@ -43,7 +43,7 @@ namespace DanceDanceRotationModule.Storage
                 notes = song.Notes.Select( note =>
                     new SongJson.Note()
                     {
-                        time = note.TimeInRotation.Milliseconds,
+                        time = (int)note.TimeInRotation.TotalMilliseconds,
                         noteType = note.NoteType.ToString()
                     }
                 ).ToList()

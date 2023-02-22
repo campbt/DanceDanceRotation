@@ -27,22 +27,15 @@ namespace DanceDanceRotationModule.Storage
             Song song = _songs[songId];
             if (song != null)
             {
-                EventHandler<Song> onSelectedSongChanged = this.OnSelectedSongChanged;
-                if (onSelectedSongChanged != null)
-                {
-                    onSelectedSongChanged.Invoke(sender: this, song);
-                }
+                OnSelectedSongChanged?.Invoke(sender: this, song);
             }
         }
 
         public SongRepo AddSong(Song song)
         {
+            _songs.Remove(song.Id);
             _songs.Add(song.Id, song);
-            EventHandler onSongsChanged = this.OnSongsChanged;
-            if (onSongsChanged != null)
-            {
-                onSongsChanged.Invoke(sender: this, null);
-            }
+            OnSongsChanged?.Invoke(sender: this, null);
             return this;
         }
 
