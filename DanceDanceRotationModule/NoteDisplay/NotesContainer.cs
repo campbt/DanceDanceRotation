@@ -86,7 +86,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 NewNoteXPosition = width;
                 // How long a note moves before hitting the "perfect" position
                 double timeToReachEnd = 3.0;
-                int perfectPosition = (int)(0.2 * width);
+                int perfectPosition = (int)(0.14 * width);
                 NotePositionChangePerSecond = (NewNoteXPosition - perfectPosition) / timeToReachEnd;
 
                 // Define the ranges for the other's
@@ -418,12 +418,15 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         public NotesContainer()
         {
-            // LoadDebugSequenceStanceChanges();
-            LoadDebugSequenceWeaver();
-
             _windowInfo.Recalculate(Width, Height);
 
             CreateTarget();
+
+            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
+                delegate(object sender, Song song)
+                {
+                    SetNoteSequence(song.Notes);
+                };
         }
 
         protected override void OnResized(ResizedEventArgs e)
@@ -431,106 +434,14 @@ namespace DanceDanceRotationModule.NoteDisplay
             base.OnResized(e);
             _windowInfo.Recalculate(e.CurrentSize.X, e.CurrentSize.Y);
             UpdateTarget();
-            if (_info.IsStarted)
-            {
-                ToggleStart();
-            }
+            Reset();
         }
 
         public void SetNoteSequence(List<Note> notes)
         {
+            Reset();
             _currentSequence.Clear();
             _currentSequence.AddRange(notes);
-        }
-
-        // TODO: Remove this
-        private void LoadDebugSequenceSimple()
-        {
-            List<NoteType> noteTypes = new List<NoteType>();
-            for (int i = 0; i < 3; i++)
-            {
-                noteTypes.Add(NoteType.Weapon1);
-                noteTypes.Add(NoteType.Weapon2);
-                noteTypes.Add(NoteType.Weapon3);
-                noteTypes.Add(NoteType.Weapon4);
-                noteTypes.Add(NoteType.Weapon5);
-            }
-
-            List<Note> notes = new List<Note>();
-            int time = 0;
-            foreach (NoteType noteType in noteTypes)
-            {
-                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += 300)));
-            }
-            SetNoteSequence(notes);
-        }
-
-        // TODO: Remove this
-        private void LoadDebugSequenceStanceChanges()
-        {
-            List<Note> notes = new List<Note>();
-            int time = 0;
-
-            void Add(NoteType noteType, int duration)
-            {
-                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += duration)));
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                Add(NoteType.ProfessionSkill1, 3000);
-                Add(NoteType.ProfessionSkill1, 3000);
-                Add(NoteType.ProfessionSkill3, 3000);
-                Add(NoteType.ProfessionSkill3, 3000);
-            }
-
-            SetNoteSequence(notes);
-        }
-
-        // TODO: Remove this
-        private void LoadDebugSequenceWeaver()
-        {
-            List<Note> notes = new List<Note>();
-            int time = 0;
-
-            void Add(NoteType noteType, int duration)
-            {
-                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += duration)));
-            }
-
-            Add(NoteType.UtilitySkill1, 1120);
-            Add(NoteType.Weapon3, 685);
-            for (int i = 0; i < 3; i++)
-            {
-                Add(NoteType.ProfessionSkill1, 450);
-                Add(NoteType.Weapon2, 722);
-                Add(NoteType.Weapon3, 800);
-                Add(NoteType.UtilitySkill3, 300);
-                Add(NoteType.UtilitySkill2, 1040);
-                Add(NoteType.ProfessionSkill1, 250);
-                Add(NoteType.Weapon1, 1200);
-                Add(NoteType.Weapon3, 435);
-                Add(NoteType.Weapon4, 480);
-                Add(NoteType.Weapon5, 561);
-                Add(NoteType.Weapon2, 561);
-                Add(NoteType.ProfessionSkill3, 180);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.ProfessionSkill3, 180);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.Weapon3, 433);
-            }
-
-            SetNoteSequence(notes);
         }
 
         public void ToggleStart()
@@ -538,18 +449,34 @@ namespace DanceDanceRotationModule.NoteDisplay
             if (_info.IsStarted)
             {
                 ScreenNotification.ShowNotification("Stopped");
-                _info.IsStarted = false;
-                _info.Reset();
+                Reset();
             }
             else
             {
                 ScreenNotification.ShowNotification("Starting");
-                _info.Reset();
+                Reset();
+                Start();
+            }
+        }
+
+        public void Start()
+        {
+            if (_info.IsStarted == false)
+            {
                 _info.IsStarted = true;
                 _info.StartTime = _lastGameTime;
+                OnStartStop.Invoke(this, _info.IsStarted);
             }
+        }
 
-            OnStartStop.Invoke(this, _info.IsStarted);
+        public void Reset()
+        {
+            if (_info.IsStarted)
+            {
+                _info.IsStarted = false;
+                _info.Reset();
+                OnStartStop.Invoke(this, _info.IsStarted);
+            }
         }
 
         public bool IsStarted()

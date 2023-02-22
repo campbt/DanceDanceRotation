@@ -1,10 +1,14 @@
-﻿using Blish_HUD;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
 using Blish_HUD.Settings.UI.Views;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
+using DanceDanceRotationModule.Storage;
 using Microsoft.Xna.Framework;
+using Container = Blish_HUD.Controls.Container;
 
 namespace DanceDanceRotationModule
 {
@@ -19,16 +23,39 @@ namespace DanceDanceRotationModule
             rootPanel.CanScroll = false;
             rootPanel.Parent = buildPanel;
 
+            _topPanel = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                CanScroll = false,
+                Parent = rootPanel
+            };
+
             _startButton = new StandardButton() // this label is used as heading
             {
                 Text = "Start",
                 Left = 30,
-                Parent = rootPanel
+                Parent = _topPanel
             };
             _startButton.Click += delegate
             {
                 _notesContainer.ToggleStart();
             };
+
+            _activeSongName = new Label()
+            {
+                Text = "",
+                Width = 1000,
+                Font = GameService.Content.DefaultFont18,
+                Parent = _topPanel
+            };
+            // Make value equal to currently selected song
+            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
+                delegate(object sender, Song song)
+                {
+                    _activeSongName.Text = song.Name;
+                };
 
             _notesContainer= new NotesContainer()
             {
@@ -61,27 +88,9 @@ namespace DanceDanceRotationModule
             _notesContainer?.OnHotkeyPressed(noteType);
         }
 
-
-        // private ViewContainer GetStandardPanel(Panel rootPanel, string title)
-        // {
-        //   ViewContainer standardPanel = new ViewContainer();
-        //   standardPanel.WidthSizingMode = SizingMode.Fill;
-        //   standardPanel.HeightSizingMode = SizingMode.AutoSize;
-        //   standardPanel.Title = title;
-        //   standardPanel.ShowBorder = true;
-        //   standardPanel.Parent = (Container) rootPanel;
-        //   return standardPanel;
-        // }
-        //
-        // private void BuildOverlaySettings(Panel rootPanel)
-        // {
-        //   this.GetStandardPanel(rootPanel, Blish_HUD.Strings.GameServices.OverlayService.OverlaySettingsSection).Show((IView) new SettingsView(GameService.Overlay.OverlaySettings));
-        //   this.GetStandardPanel(rootPanel, Blish_HUD.Strings.GameServices.OverlayService.OverlayDynamicHUDSection).Show((IView) new SettingsView(GameService.Overlay.DynamicHUDSettings));
-        //   this.GetStandardPanel(rootPanel, Blish_HUD.Strings.GameServices.GraphicsService.GraphicsSettingsSection).Show((IView) new SettingsView(GameService.Graphics.GraphicsSettings));
-        //   this.GetStandardPanel(rootPanel, Blish_HUD.Strings.GameServices.DebugService.DebugSettingsSection).Show((IView) new SettingsView(GameService.Debug.DebugSettings));
-        // }
-
         private NotesContainer _notesContainer;
         private StandardButton _startButton;
+        private FlowPanel _topPanel;
+        private Label _activeSongName;
     }
 }

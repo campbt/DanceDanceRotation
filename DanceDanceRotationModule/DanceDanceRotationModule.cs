@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
+using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,8 +57,11 @@ namespace DanceDanceRotationModule
         internal SettingEntry<KeyBinding> ProfessionSkill4 { get; private set; }
         internal SettingEntry<KeyBinding> ProfessionSkill5 { get; private set; }
 
-        // // public static readonly KeyBinding CustomKeyBinding = GameService.Overlay.InteractKey.Value;
-        // internal readonly KeyBinding CustomKeyBinding = CustomKey.Value;
+        // MARK: Hidden Settings
+
+        // internal SettingEntry<SongRepo> SongRepo { get; private set; }
+        internal SettingEntry<List<Song>> SongList { get; private set; }
+        internal SettingEntry<Song.ID> SelectedSong { get; private set; }
 
         // Ideally you should keep the constructor as is.
         // Use <see cref="Initialize"/> to handle initializing the module.
@@ -92,6 +97,13 @@ namespace DanceDanceRotationModule
             ProfessionSkill3 = DefineHotkeySetting(settings, NoteType.ProfessionSkill3);
             ProfessionSkill4 = DefineHotkeySetting(settings, NoteType.ProfessionSkill4);
             ProfessionSkill5 = DefineHotkeySetting(settings, NoteType.ProfessionSkill5);
+
+            // MARK: Private settings (not visible to the user)
+
+            var hiddenSettings = settings.AddSubCollection("internal settings (not visible in UI)");
+            SongList = hiddenSettings.DefineSetting("SongList", new List<Song>());
+            SelectedSong = hiddenSettings.DefineSetting("SelectedSong", new Song.ID());
+
         }
 
         private SettingEntry<KeyBinding> DefineHotkeySetting(SettingCollection settings, NoteType noteType)
@@ -139,6 +151,14 @@ namespace DanceDanceRotationModule
             // Load content from the ref directory in the module.bhm automatically with the ContentsManager
             Resources.Instance.LoadResources(ContentsManager);
 
+            // Load songs from settings
+            SongRepo = new SongRepo();
+            SongRepo.LoadSongs(SongList.Value);
+            SongRepo.OnSongsChanged += delegate
+            {
+                SongList.Value = SongRepo.GetAllSongs();
+            };
+
             _mainWindow = new StandardWindow(
                 Resources.Instance.WindowBackgroundTexture,
                 new Rectangle(40, 26, 913, 691),
@@ -154,13 +174,32 @@ namespace DanceDanceRotationModule
                 CanCloseWithEscape = false,
                 SavesPosition = true,
                 SavesSize = true,
-                Id = $"{nameof(DanceDanceRotationModule)}_ID"
+                Id = "DDR_MainView_ID"
             };
 
             _mainView = new MainView();
 
             // show blish hud overlay settings content inside the window
             _mainWindow.Show(_mainView);
+
+            _songListWindow = new StandardWindow(
+                Resources.Instance.WindowBackgroundTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+            )
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Title = "Song List",
+                Subtitle = "Dance Dance Rotation",
+                Emblem = Resources.Instance.DdrLogoEmblemTexture,
+                Location = new Point(300, 300),
+                CanResize = true,
+                CanCloseWithEscape = true,
+                SavesPosition = true,
+                SavesSize = true,
+                Id = "DDR_SongList_ID"
+            };
+            _songListWindow.Show(new SongListContainer());
         }
 
         // Allows you to perform an action once your module has finished loading (once
@@ -179,7 +218,17 @@ namespace DanceDanceRotationModule
             _cornerIcon.Click += delegate
             {
                 _mainWindow.ToggleWindow();
+                _songListWindow.ToggleWindow();
             };
+
+            // Set up a listener for when the setting is changed.
+            // This ID is then looked up in the Repo and broadcast as a Song for everything else.
+            SelectedSong.SettingChanged +=
+                delegate(object sender, ValueChangedEventArgs<Song.ID> args)
+                {
+                    SongRepo.SetSelectedSong(args.NewValue);
+                };
+            SongRepo.SetSelectedSong(SelectedSong.Value);
 
             // Base handler must be called
             base.OnModuleLoaded(e);
@@ -217,6 +266,8 @@ namespace DanceDanceRotationModule
         private CornerIcon _cornerIcon;
         private StandardWindow _mainWindow;
         private MainView _mainView;
+        private StandardWindow _songListWindow;
 
+        public SongRepo SongRepo { get; set; }
     }
 }
