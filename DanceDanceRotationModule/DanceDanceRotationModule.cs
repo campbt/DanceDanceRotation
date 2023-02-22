@@ -141,8 +141,8 @@ namespace DanceDanceRotationModule
             // Get your manifest registered directories with the DirectoriesManager
             foreach (string directoryName in this.DirectoriesManager.RegisteredDirectories)
             {
-                string fullDirectoryPath = DirectoriesManager.GetFullDirectoryPath(directoryName);
-                var allFiles = Directory.EnumerateFiles(fullDirectoryPath, "*", SearchOption.AllDirectories).ToList();
+                // string fullDirectoryPath = DirectoriesManager.GetFullDirectoryPath(directoryName);
+                // var allFiles = Directory.EnumerateFiles(fullDirectoryPath, "*", SearchOption.AllDirectories).ToList();
 
                 // example of how to log something in the blishhud.XXX-XXX.log file in %userprofile%\Documents\Guild Wars 2\addons\blishhud\logs
                 // Logger.Info($"'{directoryName}' can be found at '{fullDirectoryPath}' and has {allFiles.Count} total files within it.");
@@ -169,18 +169,12 @@ namespace DanceDanceRotationModule
                 Title = "Dance Dance Rotation",
                 Subtitle = "v0.0.1",
                 Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                Location = new Point(300, 300),
                 CanResize = true,
                 CanCloseWithEscape = false,
                 SavesPosition = true,
                 SavesSize = true,
                 Id = "DDR_MainView_ID"
             };
-
-            _mainView = new MainView();
-
-            // show blish hud overlay settings content inside the window
-            _mainWindow.Show(_mainView);
 
             _songListWindow = new StandardWindow(
                 Resources.Instance.WindowBackgroundTexture,
@@ -192,14 +186,12 @@ namespace DanceDanceRotationModule
                 Title = "Song List",
                 Subtitle = "Dance Dance Rotation",
                 Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                Location = new Point(300, 300),
                 CanResize = true,
                 CanCloseWithEscape = true,
                 SavesPosition = true,
                 SavesSize = true,
                 Id = "DDR_SongList_ID"
             };
-            _songListWindow.Show(new SongListContainer());
         }
 
         // Allows you to perform an action once your module has finished loading (once
@@ -214,6 +206,11 @@ namespace DanceDanceRotationModule
                 BasicTooltipText = $"Dance Dance Rotation",
                 Parent           = GameService.Graphics.SpriteScreen
             };
+
+            // Load these on OnModuleLoaded, otherwise SavesPosition seems to fail
+            _mainView = new MainView();
+            _mainWindow.Show(_mainView);
+            _songListWindow.Show(new SongListContainer());
 
             _cornerIcon.Click += delegate
             {
