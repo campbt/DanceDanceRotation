@@ -13,10 +13,10 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace DanceDanceRotationModule.Storage
 {
-    public class SongListContainer : View
+    public class SongListView : View
     {
-        private static readonly Logger Logger = Logger.GetLogger<SongListContainer>();
-        public SongListContainer()
+        private static readonly Logger Logger = Logger.GetLogger<SongListView>();
+        public SongListView()
         {
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.SettingChanged += delegate
             {
@@ -30,12 +30,14 @@ namespace DanceDanceRotationModule.Storage
 
         protected override void Build(Container buildPanel)
         {
-            FlowPanel rootPanel = new FlowPanel();
-            rootPanel.WidthSizingMode = SizingMode.Fill;
-            rootPanel.HeightSizingMode = SizingMode.Fill;
-            rootPanel.FlowDirection = ControlFlowDirection.SingleTopToBottom;
-            rootPanel.CanScroll = false;
-            rootPanel.Parent = buildPanel;
+            FlowPanel rootPanel = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.Fill,
+                FlowDirection = ControlFlowDirection.SingleTopToBottom,
+                CanScroll = false,
+                Parent = buildPanel
+            };
 
             // Panel topPanel = new Panel()
             // {

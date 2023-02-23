@@ -210,7 +210,7 @@ namespace DanceDanceRotationModule
             // Load these on OnModuleLoaded, otherwise SavesPosition seems to fail
             _mainView = new MainView();
             _mainWindow.Show(_mainView);
-            _songListWindow.Show(new SongListContainer());
+            _songListWindow.Show(new SongListView());
 
             _cornerIcon.Click += delegate
             {
