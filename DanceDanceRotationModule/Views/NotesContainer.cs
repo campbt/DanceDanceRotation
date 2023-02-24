@@ -406,6 +406,7 @@ namespace DanceDanceRotationModule.NoteDisplay
         // MARK: Properties
 
         private List<Note> _currentSequence = new List<Note>();
+        private SongData _songData;
         private TimeSpan _lastGameTime;
         private CurrentSequenceInfo _info = new CurrentSequenceInfo();
         private WindowInfo _windowInfo = new WindowInfo();
@@ -427,7 +428,10 @@ namespace DanceDanceRotationModule.NoteDisplay
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    SetNoteSequence(songInfo.Song.Notes);
+                    SetNoteSequence(
+                        songInfo.Song.Notes,
+                        songInfo.Data
+                    );
                 };
         }
 
@@ -452,11 +456,15 @@ namespace DanceDanceRotationModule.NoteDisplay
             Reset();
         }
 
-        public void SetNoteSequence(List<Note> notes)
+        public void SetNoteSequence(
+            List<Note> notes,
+            SongData songData
+        )
         {
             Reset();
             _currentSequence.Clear();
             _currentSequence.AddRange(notes);
+            _songData = songData;
         }
 
         public void ToggleStart()
@@ -572,6 +580,9 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void AddNote(Note note)
         {
+            // Special: Remap utility ability notes based on settings
+            note.NoteType = _songData.RemapNoteType(note.NoteType);
+
             var activeNote = new ActiveNote(
                 _windowInfo,
                 note,
