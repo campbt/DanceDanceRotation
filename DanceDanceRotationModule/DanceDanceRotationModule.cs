@@ -14,6 +14,7 @@ using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
+using DanceDanceRotationModule.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -34,11 +35,11 @@ namespace DanceDanceRotationModule
 
         #endregion
 
-        // MARK: Settings
+        // MARK: Settings - General
 
         internal SettingEntry<int> PlaybackRate { get; private set; }
 
-        // MARK: Hotkeys
+        // MARK: Settings - Hotkeys
 
         internal SettingEntry<KeyBinding> SwapWeapons { get; private set; }
         internal SettingEntry<KeyBinding> Weapon1 { get; private set; }
@@ -61,6 +62,7 @@ namespace DanceDanceRotationModule
 
         // internal SettingEntry<SongRepo> SongRepo { get; private set; }
         internal SettingEntry<List<Song>> SongList { get; private set; }
+        internal SettingEntry<List<SongData>> SongDatas { get; private set; }
         internal SettingEntry<Song.ID> SelectedSong { get; private set; }
 
         // Ideally you should keep the constructor as is.
@@ -75,35 +77,47 @@ namespace DanceDanceRotationModule
         // between updates to both Blish HUD and your module.
         protected override void DefineSettings(SettingCollection settings)
         {
-            PlaybackRate = settings.DefineSetting("PlaybackRate",
+            var generalSettings = settings.AddSubCollection(
+                collectionKey: "general_settings",
+                renderInUi: true,
+                displayNameFunc: () => "General",
+                lazyLoaded: false
+            );
+            PlaybackRate = generalSettings.DefineSetting("PlaybackRate",
                 100,
                 () => "Playback Rate %",
                 () => "Speeds up or slows down the note speed based on this value. Min=10% Max=100%");
             PlaybackRate.SetRange(10, 100);
 
-            SwapWeapons      = DefineHotkeySetting(settings, NoteType.WeaponSwap);
-            Weapon1          = DefineHotkeySetting(settings, NoteType.Weapon1);
-            Weapon2          = DefineHotkeySetting(settings, NoteType.Weapon2);
-            Weapon3          = DefineHotkeySetting(settings, NoteType.Weapon3);
-            Weapon4          = DefineHotkeySetting(settings, NoteType.Weapon4);
-            Weapon5          = DefineHotkeySetting(settings, NoteType.Weapon5);
-            HealingSkill     = DefineHotkeySetting(settings, NoteType.HealingSkill);
-            UtilitySkill1    = DefineHotkeySetting(settings, NoteType.UtilitySkill1);
-            UtilitySkill2    = DefineHotkeySetting(settings, NoteType.UtilitySkill2 );
-            UtilitySkill3    = DefineHotkeySetting(settings, NoteType.UtilitySkill3);
-            EliteSkill       = DefineHotkeySetting(settings, NoteType.EliteSkill );
-            ProfessionSkill1 = DefineHotkeySetting(settings, NoteType.ProfessionSkill1);
-            ProfessionSkill2 = DefineHotkeySetting(settings, NoteType.ProfessionSkill2);
-            ProfessionSkill3 = DefineHotkeySetting(settings, NoteType.ProfessionSkill3);
-            ProfessionSkill4 = DefineHotkeySetting(settings, NoteType.ProfessionSkill4);
-            ProfessionSkill5 = DefineHotkeySetting(settings, NoteType.ProfessionSkill5);
+            var hotkeySettings = settings.AddSubCollection(
+                collectionKey: "hotkey_settings",
+                renderInUi: true,
+                displayNameFunc: () => "Hotkeys",
+                lazyLoaded: false
+            );
+            SwapWeapons      = DefineHotkeySetting(hotkeySettings, NoteType.WeaponSwap);
+            Weapon1          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon1);
+            Weapon2          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon2);
+            Weapon3          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon3);
+            Weapon4          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon4);
+            Weapon5          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon5);
+            HealingSkill     = DefineHotkeySetting(hotkeySettings, NoteType.HealingSkill);
+            UtilitySkill1    = DefineHotkeySetting(hotkeySettings, NoteType.UtilitySkill1);
+            UtilitySkill2    = DefineHotkeySetting(hotkeySettings, NoteType.UtilitySkill2 );
+            UtilitySkill3    = DefineHotkeySetting(hotkeySettings, NoteType.UtilitySkill3);
+            EliteSkill       = DefineHotkeySetting(hotkeySettings, NoteType.EliteSkill );
+            ProfessionSkill1 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill1);
+            ProfessionSkill2 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill2);
+            ProfessionSkill3 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill3);
+            ProfessionSkill4 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill4);
+            ProfessionSkill5 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill5);
 
             // MARK: Private settings (not visible to the user)
 
-            var hiddenSettings = settings.AddSubCollection("internal settings (not visible in UI)");
+            var hiddenSettings = settings.AddSubCollection("hidden_settings");
             SongList = hiddenSettings.DefineSetting("SongList", new List<Song>());
+            SongDatas = hiddenSettings.DefineSetting("SavedSongSettings", new List<SongData>());
             SelectedSong = hiddenSettings.DefineSetting("SelectedSong", new Song.ID());
-
         }
 
         private SettingEntry<KeyBinding> DefineHotkeySetting(SettingCollection settings, NoteType noteType)
@@ -153,11 +167,7 @@ namespace DanceDanceRotationModule
 
             // Load songs from settings
             SongRepo = new SongRepo();
-            SongRepo.LoadSongs(SongList.Value);
-            SongRepo.OnSongsChanged += delegate
-            {
-                SongList.Value = SongRepo.GetAllSongs();
-            };
+            SongRepo.Load();
 
             _mainWindow = new StandardWindow(
                 Resources.Instance.WindowBackgroundTexture,
@@ -192,6 +202,23 @@ namespace DanceDanceRotationModule
                 SavesSize = true,
                 Id = "DDR_SongList_ID"
             };
+
+            _songInfoWindow = new StandardWindow(
+                Resources.Instance.WindowBackgroundTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+            )
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Title = "Song Info",
+                Subtitle = "Dance Dance Rotation",
+                Emblem = Resources.Instance.DdrLogoEmblemTexture,
+                CanResize = true,
+                CanCloseWithEscape = true,
+                SavesPosition = true,
+                SavesSize = true,
+                Id = "DDR_SongInfo_ID"
+            };
         }
 
         // Allows you to perform an action once your module has finished loading (once
@@ -211,11 +238,13 @@ namespace DanceDanceRotationModule
             _mainView = new MainView();
             _mainWindow.Show(_mainView);
             _songListWindow.Show(new SongListView());
+            _songInfoWindow.Show(new SongInfoView());
 
             _cornerIcon.Click += delegate
             {
                 _mainWindow.ToggleWindow();
                 _songListWindow.ToggleWindow();
+                _songInfoWindow.ToggleWindow();
             };
 
             // Set up a listener for when the setting is changed.
@@ -250,7 +279,8 @@ namespace DanceDanceRotationModule
 
             _mainWindow?.Dispose();
             _cornerIcon?.Dispose();
-            // _notesContainer?.Destroy();
+            _songListWindow?.Dispose();
+            _songInfoWindow?.Dispose();
 
             // All static members must be manually unset
             // Static members are not automatically cleared and will keep a reference to your,
@@ -264,6 +294,7 @@ namespace DanceDanceRotationModule
         private StandardWindow _mainWindow;
         private MainView _mainView;
         private StandardWindow _songListWindow;
+        private StandardWindow _songInfoWindow;
 
         public SongRepo SongRepo { get; set; }
     }

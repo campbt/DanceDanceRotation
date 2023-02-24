@@ -6,6 +6,7 @@ using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Input;
 using DanceDanceRotationModule.Model;
+using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
@@ -424,9 +425,9 @@ namespace DanceDanceRotationModule.NoteDisplay
             UpdateTarget();
 
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
-                delegate(object sender, Song song)
+                delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    SetNoteSequence(song.Notes);
+                    SetNoteSequence(songInfo.Song.Notes);
                 };
         }
 

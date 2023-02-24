@@ -52,9 +52,9 @@ namespace DanceDanceRotationModule
             };
             // Make value equal to currently selected song
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
-                delegate(object sender, Song song)
+                delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    _activeSongName.Text = song.Name;
+                    _activeSongName.Text = "  " + songInfo.Song.Name;
                 };
 
             _notesContainer= new NotesContainer()
