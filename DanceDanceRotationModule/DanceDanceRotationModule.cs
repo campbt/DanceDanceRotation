@@ -38,6 +38,7 @@ namespace DanceDanceRotationModule
         // MARK: Settings - General
 
         internal SettingEntry<int> PlaybackRate { get; private set; }
+        internal SettingEntry<float> BackgroundOpacity { get; private set; }
 
         // MARK: Settings - Hotkeys
 
@@ -88,6 +89,12 @@ namespace DanceDanceRotationModule
                 () => "Playback Rate %",
                 () => "Speeds up or slows down the note speed based on this value. Min=10% Max=100%");
             PlaybackRate.SetRange(10, 100);
+
+            BackgroundOpacity = generalSettings.DefineSetting("BackgroundOpacity",
+                1.0f,
+                () => "Background Transparency",
+                () => "Sets the transparency of the notes background. Min=0% Max=100%");
+            BackgroundOpacity.SetRange(0.0f, 1.0f);
 
             var hotkeySettings = settings.AddSubCollection(
                 collectionKey: "hotkey_settings",
@@ -169,8 +176,9 @@ namespace DanceDanceRotationModule
             SongRepo = new SongRepo();
             SongRepo.Load();
 
-            _mainWindow = new StandardWindow(
-                Resources.Instance.WindowBackgroundTexture,
+            // GraphicsDevice graphicsDevice = GameService.Graphics.LendGraphicsDeviceContext().GraphicsDevice;
+            _mainWindow = new DdrNotesWindow(
+                Resources.Instance.WindowBackgroundEmptyTexture,
                 new Rectangle(40, 26, 913, 691),
                 new Rectangle(40, 26, 913, 691)
             )
@@ -291,7 +299,7 @@ namespace DanceDanceRotationModule
 
         internal static DanceDanceRotationModule DanceDanceRotationModuleInstance;
         private CornerIcon _cornerIcon;
-        private StandardWindow _mainWindow;
+        private DdrNotesWindow _mainWindow;
         private MainView _mainView;
         private StandardWindow _songListWindow;
         private StandardWindow _songInfoWindow;

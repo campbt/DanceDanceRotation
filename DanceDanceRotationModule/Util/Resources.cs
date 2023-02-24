@@ -14,7 +14,9 @@ namespace DanceDanceRotationModule.Util
         public void LoadResources(ContentsManager contentsManager)
         {
             MugTexture = contentsManager.GetTexture("mug.png");
+            WindowBackgroundEmptyTexture = contentsManager.GetTexture("windowBgEmpty.png");
             WindowBackgroundTexture = contentsManager.GetTexture("windowBg.png");
+            WindowBackground2Texture = contentsManager.GetTexture("windowBg2.png");
             DdrLogoTexture = contentsManager.GetTexture("ddr_logo.png");
             DdrLogoEmblemTexture = contentsManager.GetTexture("ddr_logo_emblem.png");
             DdrNoteGreenTexture = contentsManager.GetTexture("ddr_note_green.png");
@@ -25,11 +27,15 @@ namespace DanceDanceRotationModule.Util
             DdrTargetCircle = contentsManager.GetTexture("ddr_target_circle.png");
             DdrTargetSpacer = contentsManager.GetTexture("ddr_target_spacer.png");
             DdrTargetTop = contentsManager.GetTexture("ddr_target_top.png");
+            NotesControlsBg = contentsManager.GetTexture("notesControlsBg.png");
+            NotesBg = contentsManager.GetTexture("notesBg.png");
         }
 
         public void Unload()
         {
+            WindowBackgroundEmptyTexture?.Dispose();
             WindowBackgroundTexture?.Dispose();
+            WindowBackground2Texture?.Dispose();
             MugTexture?.Dispose();
             DdrLogoTexture?.Dispose();
             DdrLogoEmblemTexture?.Dispose();
@@ -41,10 +47,14 @@ namespace DanceDanceRotationModule.Util
             DdrTargetCircle?.Dispose();
             DdrTargetSpacer?.Dispose();
             DdrTargetTop?.Dispose();
+            NotesControlsBg?.Dispose();
+            NotesBg?.Dispose();
         }
 
         public Texture2D MugTexture { get; private set; }
+        public Texture2D WindowBackgroundEmptyTexture { get; private set; }
         public Texture2D WindowBackgroundTexture { get; private set; }
+        public Texture2D WindowBackground2Texture { get; private set; }
         public Texture2D DdrLogoTexture { get; private set; }
         public Texture2D DdrLogoEmblemTexture { get; private set; }
         public Texture2D DdrNotePurpleTexture { get; private set; }
@@ -55,5 +65,7 @@ namespace DanceDanceRotationModule.Util
         public Texture2D DdrTargetCircle { get; private set; }
         public Texture2D DdrTargetSpacer { get; private set; }
         public Texture2D DdrTargetTop { get; private set; }
+        public Texture2D NotesControlsBg { get; private set; }
+        public Texture2D NotesBg { get; private set; }
     }
 }
