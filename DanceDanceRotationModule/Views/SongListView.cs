@@ -174,7 +174,7 @@ namespace DanceDanceRotationModule.Storage
         private Checkbox Checkbox { get; }
         private Label NameLabel { get; }
         private Label DescriptionLabel { get; }
-        private StandardButton CopyButton { get; }
+        // private StandardButton CopyButton { get; }
 
         public SongListRow(Song song, Song.ID checkedID)
         {
@@ -215,19 +215,19 @@ namespace DanceDanceRotationModule.Storage
                 ),
                 Parent = this
             };
-            CopyButton = new StandardButton()
-            {
-                Text = "Copy",
-                Parent = this,
-                Location = new Point(200, 0)
-            };
-            CopyButton.Click += delegate
-            {
-                ScreenNotification.ShowNotification("Copied Song to Clipboard");
-                ClipboardUtil.WindowsClipboardService.SetTextAsync(
-                    SongTranslator.ToJson(song)
-                );
-            };
+            // CopyButton = new StandardButton()
+            // {
+            //     Text = "Copy",
+            //     Parent = this,
+            //     Location = new Point(200, 0)
+            // };
+            // CopyButton.Click += delegate
+            // {
+            //     ScreenNotification.ShowNotification("Copied Song to Clipboard");
+            //     ClipboardUtil.WindowsClipboardService.SetTextAsync(
+            //         SongTranslator.ToJson(song)
+            //     );
+            // };
 
             Height = 16 + NameLabel.Height + DescriptionLabel.Height;
         }
@@ -243,12 +243,12 @@ namespace DanceDanceRotationModule.Storage
             // var centerY = actualHeight - (Checkbox.Height / 2);
             var centerY = actualHeight / 2;
 
-            CopyButton.Location = new Point(
-                // Width - copyButton.Width,
-                Width - CopyButton.Width,
-                centerY - (CopyButton.Height / 2)
-                // NameLabel.Top + ((songDescription.Bottom - songName.Top) / 2) - (Checkbox.Height / 2)
-            );
+            // CopyButton.Location = new Point(
+            //     // Width - copyButton.Width,
+            //     Width - CopyButton.Width,
+            //     centerY - (CopyButton.Height / 2)
+            //     // NameLabel.Top + ((songDescription.Bottom - songName.Top) / 2) - (Checkbox.Height / 2)
+            // );
 
             // Center Checkbox
             Checkbox.Location = new Point(
@@ -262,7 +262,8 @@ namespace DanceDanceRotationModule.Storage
                 Checkbox.Width + 20,
                 8
             );
-            NameLabel.Width = Width - CopyButton.Width - 8 - NameLabel.Left;
+            // NameLabel.Width = Width - CopyButton.Width - 8 - NameLabel.Left;
+            NameLabel.Width = Width - 8 - NameLabel.Left;
             DescriptionLabel.Location = new Point(
                 Checkbox.Width + 20,
                 8 + NameLabel.Height

@@ -1,17 +1,21 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
+using Blish_HUD.Input;
 using Blish_HUD.Settings.UI.Views;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input.Touch;
 using Color = Microsoft.Xna.Framework.Color;
 using Container = Blish_HUD.Controls.Container;
+using Image = Blish_HUD.Controls.Image;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace DanceDanceRotationModule
@@ -76,7 +80,7 @@ namespace DanceDanceRotationModule
                 OuterControlPadding = new Vector2(10, 10),
                 AutoSizePadding = new Point(10, 10),
                 // ControlPadding is padding in between the elements
-                ControlPadding = new Vector2(20, 20),
+                ControlPadding = new Vector2(4, 0),
                 CanScroll = false,
                 Parent = flowPanel
             };
@@ -85,6 +89,8 @@ namespace DanceDanceRotationModule
                 topPanelBackground.Location = _topPanel.Location;
                 topPanelBackground.Height = _topPanel.Height;
             };
+
+            // MARK: Start/Reset Button
 
             _startButton = new StandardButton() // this label is used as heading
             {
@@ -97,18 +103,58 @@ namespace DanceDanceRotationModule
                 _notesContainer.ToggleStart();
             };
 
-            _activeSongName = new Label()
+            const float unhoveredOpacity = 0.8f;
+
+            // MARK: Song List Button
+
+            var songListButton = new Image(
+                Resources.Instance.SongListIcon
+            )
+            {
+                Opacity = unhoveredOpacity,
+                Parent = _topPanel
+            };
+            songListButton.MouseEntered += delegate
+            {
+                songListButton.Opacity = 1.0f;
+            };
+            songListButton.MouseLeft += delegate
+            {
+                songListButton.Opacity = unhoveredOpacity;
+            };
+            songListButton.Click += delegate
+            {
+                DanceDanceRotationModule.DanceDanceRotationModuleInstance.ToggleSongList();
+            };
+
+            // MARK: Song Title
+
+            var activeSongName = new Label()
             {
                 Text = "",
                 Width = 1000,
+                AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont18,
+                Opacity = unhoveredOpacity,
                 Parent = _topPanel
+            };
+            activeSongName.MouseEntered += delegate
+            {
+                activeSongName.Opacity = 1.0f;
+            };
+            activeSongName.MouseLeft += delegate
+            {
+                activeSongName.Opacity = unhoveredOpacity;
+            };
+            activeSongName.Click += delegate
+            {
+                DanceDanceRotationModule.DanceDanceRotationModuleInstance.ToggleSongInfo();
             };
             // Make value equal to currently selected song
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    _activeSongName.Text = songInfo.Song.Name;
+                    activeSongName.Text = songInfo.Song.Name;
                 };
 
             _notesContainer= new NotesContainer()
@@ -145,6 +191,5 @@ namespace DanceDanceRotationModule
         private NotesContainer _notesContainer;
         private StandardButton _startButton;
         private FlowPanel _topPanel;
-        private Label _activeSongName;
     }
 }

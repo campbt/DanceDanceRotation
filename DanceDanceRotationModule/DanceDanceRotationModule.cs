@@ -244,15 +244,14 @@ namespace DanceDanceRotationModule
 
             // Load these on OnModuleLoaded, otherwise SavesPosition seems to fail
             _mainView = new MainView();
+            _songListView = new SongListView();
+            _songInfoView = new SongInfoView();
+
             _mainWindow.Show(_mainView);
-            _songListWindow.Show(new SongListView());
-            _songInfoWindow.Show(new SongInfoView());
 
             _cornerIcon.Click += delegate
             {
                 _mainWindow.ToggleWindow();
-                _songListWindow.ToggleWindow();
-                _songInfoWindow.ToggleWindow();
             };
 
             // Set up a listener for when the setting is changed.
@@ -296,13 +295,41 @@ namespace DanceDanceRotationModule
             DanceDanceRotationModuleInstance = null;
         }
 
+        public void ToggleSongList()
+        {
+            if (_songListWindow.Visible)
+            {
+                _songListWindow.Hide();
+            }
+            else
+            {
+                _songListWindow.Show(_songListView);
+            }
+        }
+
+        public void ToggleSongInfo()
+        {
+            if (_songInfoWindow.Visible)
+            {
+                _songInfoWindow.Hide();
+            }
+            else
+            {
+                _songInfoWindow.Show(_songInfoView);
+            }
+        }
 
         internal static DanceDanceRotationModule DanceDanceRotationModuleInstance;
         private CornerIcon _cornerIcon;
+
+        // Windows
         private DdrNotesWindow _mainWindow;
-        private MainView _mainView;
         private StandardWindow _songListWindow;
         private StandardWindow _songInfoWindow;
+        // Views
+        private MainView _mainView;
+        private SongListView _songListView;
+        private SongInfoView _songInfoView;
 
         public SongRepo SongRepo { get; set; }
     }
