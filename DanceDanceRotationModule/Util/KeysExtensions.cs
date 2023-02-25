@@ -297,31 +297,31 @@ namespace DanceDanceRotationModule.Util
                 case Keys.LaunchApplication2:
                     return "LaunchApplication2";
                 case Keys.OemSemicolon:
-                    return "OemSemicolon";
+                    return ";";
                 case Keys.OemPlus:
-                    return "OemPlus";
+                    return "+";
                 case Keys.OemComma:
-                    return "OemComma";
+                    return ",";
                 case Keys.OemMinus:
-                    return "OemMinus";
+                    return "-";
                 case Keys.OemPeriod:
-                    return "OemPeriod";
+                    return ".";
                 case Keys.OemQuestion:
-                    return "OemQuestion";
+                    return "?";
                 case Keys.OemTilde:
-                    return "OemTilde";
+                    return "~";
                 case Keys.OemOpenBrackets:
-                    return "OemOpenBrackets";
+                    return "{";
                 case Keys.OemPipe:
-                    return "OemPipe";
+                    return "|";
                 case Keys.OemCloseBrackets:
-                    return "OemCloseBrackets";
+                    return "}";
                 case Keys.OemQuotes:
-                    return "OemQuotes";
+                    return "\"";
                 case Keys.Oem8:
                     return "Oem8";
                 case Keys.OemBackslash:
-                    return "OemBackslash";
+                    return "\\";
                 case Keys.ProcessKey:
                     return "ProcessKey";
                 case Keys.Attn:

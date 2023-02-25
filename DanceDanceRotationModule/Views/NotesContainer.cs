@@ -66,6 +66,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             internal int NewNoteXPosition { get; private set; }
             /** Where a note should be at when it is "perfect" */
 
+            internal int HitPerfect { get; private set; }
             internal Range<double> HitRangePerfect { get; private set; }
             internal Range<double> HitRangeGreat { get; private set; }
             internal Range<double> HitRangeGood { get; private set; }
@@ -91,6 +92,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 NotePositionChangePerSecond = (NewNoteXPosition - perfectPosition) / timeToReachEnd;
 
                 // Define the ranges for the other's
+                HitPerfect = perfectPosition;
                 HitRangePerfect = ConstructHitRange(perfectPosition, NotePositionChangePerSecond, 33);
                 HitRangeGreat = ConstructHitRange(perfectPosition, NotePositionChangePerSecond, 92);
                 HitRangeGood = ConstructHitRange(perfectPosition, NotePositionChangePerSecond, 142);
@@ -237,7 +239,17 @@ namespace DanceDanceRotationModule.NoteDisplay
             public void Update(GameTime gameTime, double moveAmount)
             {
                 XPosition -= moveAmount;
-                if (XPosition <= _windowInfo.DestroyNotePosition)
+                if (
+                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.AutoHitWeapon1.Value &&
+                    Note.NoteType == NoteType.Weapon1 &&
+                    XPosition <= _windowInfo.HitPerfect
+                )
+                {
+                    // Special Case: If AutoHitWeapon1 is enabled, remove the note in perfect
+                    //               No hit text needs to be made
+                    ShouldRemove = true;
+                }
+                else if (XPosition <= _windowInfo.DestroyNotePosition)
                 {
                     ShouldRemove = true;
                 }
@@ -251,11 +263,12 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                     // Move it
                     Image.Location = new Point(
-                        (int)(XPosition),
+                        // Center Image over X position
+                        (int)(XPosition) - (Image.Width / 2),
                         Image.Location.Y
                     );
                     Label.Location = new Point(
-                        (int)(XPosition) + ((Image.Width - Label.Width) / 2),
+                        Image.Location.X + ((Image.Width - Label.Width) / 2),
                         Label.Location.Y
                     );
                 }
@@ -267,6 +280,15 @@ namespace DanceDanceRotationModule.NoteDisplay
                 if (_isHit)
                 {
                     // Ignore
+                    return false;
+                }
+
+                if (
+                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.AutoHitWeapon1.Value &&
+                    Note.NoteType == NoteType.Weapon1
+                )
+                {
+                    // Ignore presses on the Weapon1 skills if auto hit weapon 1 is active
                     return false;
                 }
 
@@ -319,14 +341,10 @@ namespace DanceDanceRotationModule.NoteDisplay
                 if (_isHit)
                     return;
 
-                EventHandler<HitType> onHit = this.OnHit;
-                if (onHit != null)
-                {
-                    onHit.Invoke(this, hitType);
-                }
-
                 _isHit = true;
                 Label.Visible = false;
+
+                OnHit?.Invoke(this, hitType);
             }
         }
 
