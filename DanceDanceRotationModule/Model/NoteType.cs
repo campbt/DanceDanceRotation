@@ -27,6 +27,9 @@ namespace DanceDanceRotationModule.Model
         ProfessionSkill3,
         ProfessionSkill4,
         ProfessionSkill5,
+        // Unknown is just used as a placeholder for development.
+        // It will display a note on the 6th track that always fails
+        Unknown
     }
 
     public static class NoteTypeExtensions
@@ -70,6 +73,8 @@ namespace DanceDanceRotationModule.Model
                     return Keys.F4;
                 case NoteType.ProfessionSkill5:
                     return Keys.F4;
+                case NoteType.Unknown:
+                    return Keys.None;
                 default:
                     return Keys.None;
             }
@@ -113,6 +118,8 @@ namespace DanceDanceRotationModule.Model
                     return "Profession Skill 4";
                 case NoteType.ProfessionSkill5:
                     return "Profession Skill 5";
+                case NoteType.Unknown:
+                    return "Unknown";
                 default:
                     return "";
             }
@@ -147,6 +154,7 @@ namespace DanceDanceRotationModule.Model
                     return 4;
                 case NoteType.Dodge:
                 case NoteType.WeaponSwap:
+                case NoteType.Unknown:
                     return 5;
                 default:
                     return 0;
@@ -157,7 +165,6 @@ namespace DanceDanceRotationModule.Model
         {
             switch (noteType)
             {
-                case NoteType.Dodge:
                 case NoteType.WeaponSwap:
                 case NoteType.Weapon1:
                 case NoteType.Weapon2:
@@ -165,6 +172,7 @@ namespace DanceDanceRotationModule.Model
                 case NoteType.Weapon4:
                 case NoteType.Weapon5:
                     return Resources.Instance.DdrNoteRedTexture;
+                case NoteType.Dodge:
                 case NoteType.HealingSkill:
                 case NoteType.UtilitySkill1:
                 case NoteType.UtilitySkill2:
@@ -176,6 +184,7 @@ namespace DanceDanceRotationModule.Model
                 case NoteType.ProfessionSkill3:
                 case NoteType.ProfessionSkill4:
                 case NoteType.ProfessionSkill5:
+                case NoteType.Unknown:
                     return Resources.Instance.DdrNoteGreenTexture;
                 default:
                     return Resources.Instance.DdrNoteRedTexture;

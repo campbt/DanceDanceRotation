@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Blish_HUD;
 using DanceDanceRotationModule.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,6 +12,7 @@ namespace DanceDanceRotationModule.Storage
 {
     public class SongTranslator
     {
+        private static readonly Logger Logger = Logger.GetLogger<SongTranslator>();
 
         /**
          * Raw data representation of the JSON sent to the module
@@ -24,7 +26,7 @@ namespace DanceDanceRotationModule.Storage
 
             public struct Note
             {
-                public int time { get; set; }
+                public double time { get; set; }
                 // public int duration { get; set; }
                 public string noteType { get; set; }
                 // public string abilityId { get; set; }
@@ -66,12 +68,13 @@ namespace DanceDanceRotationModule.Storage
                 {
                     if (NoteType.TryParse(noteJson.noteType, out NoteType noteType) == false)
                     {
-                        throw new InvalidDataException("Unknown Note Type: " + noteJson.noteType);
+                        Logger.Warn("Unknown Note Type: '" + noteJson.noteType + "'");
+                        noteType = NoteType.Unknown;
                     }
 
                     return new Note()
                     {
-                        TimeInRotation = TimeSpan.FromMilliseconds(noteJson.time),
+                        TimeInRotation = TimeSpan.FromMilliseconds(Math.Round(noteJson.time)),
                         NoteType = noteType,
                     };
                 }).ToList()

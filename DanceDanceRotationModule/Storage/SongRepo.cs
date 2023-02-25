@@ -66,6 +66,10 @@ namespace DanceDanceRotationModule.Storage
             _songs[song.Id] = song;
             Save();
             OnSongsChanged?.Invoke(sender: this, null);
+            if (_selectedSongId.Equals(song.Id))
+            {
+                InvokeSelectedSongInfo();
+            }
         }
 
         /**

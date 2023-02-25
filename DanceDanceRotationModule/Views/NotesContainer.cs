@@ -152,8 +152,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                 this.Note = note;
 
                 var keyBinding = DanceDanceRotationModule.DanceDanceRotationModuleInstance.GetKeyBindingForNoteType(note.NoteType);
+                string text =
+                    (keyBinding != null)
+                        ? KeysExtensions.NotesString(keyBinding.Value)
+                        : "?";
+
                 // string text = keyBinding.Value.GetBindingDisplayText();
-                string text = KeysExtensions.NotesString(keyBinding.Value);
                 int lane = NoteTypeExtensions.NoteLane(note.NoteType);
 
                 this.Image = new Image(
