@@ -27,9 +27,9 @@ namespace DanceDanceRotationModule.Storage
             public struct Note
             {
                 public double time { get; set; }
-                // public int duration { get; set; }
+                public double duration { get; set; }
                 public string noteType { get; set; }
-                // public string abilityId { get; set; }
+                public string abilityId { get; set; }
             }
         }
 
@@ -46,7 +46,9 @@ namespace DanceDanceRotationModule.Storage
                     new SongJson.Note()
                     {
                         time = (int)note.TimeInRotation.TotalMilliseconds,
-                        noteType = note.NoteType.ToString()
+                        noteType = note.NoteType.ToString(),
+                        duration = (int)note.Duration.TotalMilliseconds,
+                        abilityId = note.AbilityId.Raw
                     }
                 ).ToList()
             };
@@ -76,6 +78,8 @@ namespace DanceDanceRotationModule.Storage
                     {
                         TimeInRotation = TimeSpan.FromMilliseconds(Math.Round(noteJson.time)),
                         NoteType = noteType,
+                        Duration = TimeSpan.FromMilliseconds(Math.Round(noteJson.duration)),
+                        AbilityId = new AbilityId(noteJson.abilityId)
                     };
                 }).ToList()
             };

@@ -11,12 +11,21 @@ namespace DanceDanceRotationModule.Model
     {
          public NoteType NoteType { get; set; }
          public TimeSpan TimeInRotation { get; set; }
+         public TimeSpan Duration { get; set; }
+         /** @Nullable*/ public AbilityId AbilityId { get; set; }
 
-        public Note(NoteType noteType, TimeSpan timeInRotation)
-        {
-            NoteType = noteType;
-            TimeInRotation = timeInRotation;
-        }
+         public Note(
+             NoteType noteType,
+             TimeSpan timeInRotation,
+             TimeSpan duration,
+             AbilityId abilityId
+         )
+         {
+             NoteType = noteType;
+             TimeInRotation = timeInRotation;
+             Duration = duration;
+             AbilityId = abilityId;
+         }
     }
 
 }

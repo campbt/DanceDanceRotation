@@ -348,6 +348,8 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
         }
 
+        // MARK: HitText
+
         /** Labels like "Perfect" that appear when a note is indicated. */
         internal class HitText
         {
@@ -425,6 +427,34 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
         }
 
+        // MARK: AbilityIcon
+
+        private List<Image> _abilityIcons = new List<Image>();
+        internal class AbilityIcon
+        {
+            internal Image Image { get; set; }
+            internal double XPosition { get; set; }
+            internal bool ShouldRemove { get; private set; }
+
+            public AbilityIcon(
+                WindowInfo windowInfo,
+                AbilityId abilityId,
+                Point Location,
+                BlishContainer parent
+            )
+            {
+                this.Image = new Image(
+                    Resources.Instance.GetAbilityIcon(abilityId)
+                )
+                {
+                    Size = windowInfo.GetNewNoteSize(),
+                    Location = Location,
+                    Opacity = 0.0f,
+                    Parent = parent
+                };
+            }
+        }
+
         // MARK: Properties
 
         private List<Note> _currentSequence = new List<Note>();
@@ -455,6 +485,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                         songInfo.Data
                     );
                 };
+
+            AbilityIconSetup();
         }
 
         public override void RecalculateLayout()
@@ -470,6 +502,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             _windowInfo.Recalculate(Width, Height);
             UpdateTarget();
+            RecalculateLayoutAbilityIcons();
         }
 
         protected override void OnResized(ResizedEventArgs e)
@@ -577,6 +610,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                     _info.HitTexts.RemoveAt(index);
                 }
             }
+
+            UpdateAbilityIcons();
         }
 
         /**
@@ -728,6 +763,64 @@ namespace DanceDanceRotationModule.NoteDisplay
             _targetBottom.Height = roundEdgesHeight;
             _targetBottom.Width = targetWidth;
             _targetBottom.Location = new Point(xPos, yPos);
+        }
+
+        // MARK: Ability Icon Stuff
+
+        private void AbilityIconSetup()
+        {
+            _abilityIcons = new List<Image>();
+            for (int i = 0; i < 3; i++)
+            {
+                _abilityIcons.Add(
+                    new Image(
+                        Resources.Instance.UnknownAbilityIcon
+                    )
+                    {
+                        Size = _windowInfo.GetNewNoteSize(),
+                        Location = new Point(0, 0),
+                        Opacity = 0.0f,
+                        Parent = this
+                    }
+                );
+            }
+        }
+        private void RecalculateLayoutAbilityIcons()
+        {
+            // Update AbilityIcons
+            var size = _windowInfo.NoteWidth;
+            var xPos = _windowInfo.HitPerfect - (size/2);
+            var yPos = Height - size;
+            for (int index = 0; index < _abilityIcons.Count; index++)
+            {
+                Image abilityIconImage = _abilityIcons[index];
+                abilityIconImage.Size = new Point(size, size);
+                abilityIconImage.Location = new Point(
+                    xPos,
+                    yPos
+                );
+                xPos += size;
+            }
+        }
+
+        private void UpdateAbilityIcons()
+        {
+            // TODO Make a lot better
+            for (int index = 0, size = _abilityIcons.Count; index < size; index++)
+            {
+                Image abilityIcon = _abilityIcons[index];
+                if (index < _info.ActiveNotes.Count)
+                {
+                    var ActiveNote = _info.ActiveNotes[index];
+                    abilityIcon.Texture = Resources.Instance.GetAbilityIcon(ActiveNote.Note.AbilityId);
+                    abilityIcon.Opacity = 0.7f;
+                }
+                else
+                {
+                    abilityIcon.Opacity = 0.0f;
+                }
+
+            }
         }
 
         public void Destroy()

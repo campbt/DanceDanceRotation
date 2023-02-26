@@ -215,7 +215,12 @@ namespace DanceDanceRotationModule.Storage
 
             void Add(NoteType noteType, int duration)
             {
-                notes.Add(new Note(noteType, TimeSpan.FromMilliseconds(time += duration)));
+                notes.Add(new Note(
+                    noteType,
+                    TimeSpan.FromMilliseconds(time += duration),
+                    TimeSpan.FromMilliseconds(0),
+                    new AbilityId()
+                ));
             }
 
             Add(NoteType.UtilitySkill1, 1120);
