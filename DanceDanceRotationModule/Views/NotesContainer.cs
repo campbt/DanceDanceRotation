@@ -97,7 +97,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
                     LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
-                if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconQueue.Value)
+                if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowNextAbilities.Value)
                 {
                     // Show ability icons section as an extra "lane"
                     NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 7;
@@ -258,6 +258,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                     AutoSizeHeight = true,
                     AutoSizeWidth = true,
                     Parent = parent
+                };
+                // "ShowHotkeys" preference
+                // Just setting opacity to 0 so all the calculations that need the label position work. Lazy.
+                if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowHotkeys.Value == false)
+                {
+                    Label.Opacity = 0.0f;
                 };
                 // Must set this AFTER creation, so the auto width/height is used
                 Label.Location = new Point(
@@ -548,7 +554,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                         songInfo.Data
                     );
                 };
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconQueue.SettingChanged +=
+            DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowNextAbilities.SettingChanged +=
                 delegate
                 {
                     Reset();
@@ -856,7 +862,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void AddInitialAbilityIcons()
         {
-            if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconQueue.Value)
+            if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowNextAbilities.Value)
             {
                 for (int index = 0, size = Math.Min(3, _currentSequence.Count); index < size; index++)
                 {

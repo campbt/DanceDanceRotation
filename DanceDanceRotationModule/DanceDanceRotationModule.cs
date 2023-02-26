@@ -41,7 +41,8 @@ namespace DanceDanceRotationModule
         internal SettingEntry<float> BackgroundOpacity { get; private set; }
         internal SettingEntry<bool> AutoHitWeapon1 { get; private set; }
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
-        internal SettingEntry<bool> ShowAbilityIconQueue { get; private set; }
+        internal SettingEntry<bool> ShowHotkeys { get; private set; }
+        internal SettingEntry<bool> ShowNextAbilities { get; private set; }
 
         // MARK: Settings - Hotkeys
 
@@ -109,9 +110,14 @@ namespace DanceDanceRotationModule
                 () => "Show ability icon as note",
                 () => "If enabled, notes will use the actual ability icon instead of the generic.");
 
-            ShowAbilityIconQueue = generalSettings.DefineSetting("ShowAbilityIconQueue",
+            ShowHotkeys = generalSettings.DefineSetting("ShowHotkeys",
+                true,
+                () => "Show ability hotkeys",
+                () => "If enabled, notes will have the hotkeys displayed on top of them.");
+
+            ShowNextAbilities = generalSettings.DefineSetting("ShowNextAbilities",
                 false,
-                () => "Show ability icon queue",
+                () => "Show next abilities",
                 () => "If enabled, the next few ability icons will be shown.");
 
             var hotkeySettings = settings.AddSubCollection(
