@@ -113,6 +113,7 @@ namespace DanceDanceRotationModule.Storage
                 _songs.Remove(songId);
                 _songDatas.Remove(songId);
                 Save();
+                OnSongsChanged?.Invoke(sender: this, null);
                 if (_selectedSongId.Equals(songId))
                 {
                     InvokeSelectedSongInfo();
@@ -186,81 +187,6 @@ namespace DanceDanceRotationModule.Storage
                     Data = songData
                 }
             );
-        }
-
-        // MARK: "Reset" TODO: Delete all this
-
-        public SongRepo Reset()
-        {
-            _songs.Clear();
-            foreach (var song in GetInitialSongList())
-            {
-                AddSong(song);
-            }
-            return this;
-        }
-
-        private static List<Song> GetInitialSongList()
-        {
-            List<Song> songs = new List<Song>();
-            songs.Add(CreateWeaverSong());
-
-            return songs;
-        }
-
-        private static Song CreateWeaverSong()
-        {
-            List<Note> notes = new List<Note>();
-            int time = 0;
-
-            void Add(NoteType noteType, int duration)
-            {
-                notes.Add(new Note(
-                    noteType,
-                    TimeSpan.FromMilliseconds(time += duration),
-                    TimeSpan.FromMilliseconds(0),
-                    new AbilityId()
-                ));
-            }
-
-            Add(NoteType.UtilitySkill1, 1120);
-            Add(NoteType.Weapon3, 685);
-            for (int i = 0; i < 3; i++)
-            {
-                Add(NoteType.ProfessionSkill1, 450);
-                Add(NoteType.Weapon2, 722);
-                Add(NoteType.Weapon3, 800);
-                Add(NoteType.UtilitySkill3, 300);
-                Add(NoteType.UtilitySkill2, 1040);
-                Add(NoteType.ProfessionSkill1, 250);
-                Add(NoteType.Weapon1, 1200);
-                Add(NoteType.Weapon3, 435);
-                Add(NoteType.Weapon4, 480);
-                Add(NoteType.Weapon5, 561);
-                Add(NoteType.Weapon2, 561);
-                Add(NoteType.ProfessionSkill3, 180);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.ProfessionSkill3, 180);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.Weapon1, 441);
-                Add(NoteType.Weapon1, 436);
-                Add(NoteType.Weapon1, 763);
-                Add(NoteType.Weapon3, 433);
-            }
-
-            return new Song()
-            {
-                Id = new Song.ID("powerweaver"),
-                Description = "Very basic Power Weaver rotation.",
-                Notes = notes
-            };
         }
     }
 }

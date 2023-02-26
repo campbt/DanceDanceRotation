@@ -218,7 +218,7 @@ namespace DanceDanceRotationModule
                 Id = "DDR_MainView_ID"
             };
 
-            _songListWindow = new StandardWindow(
+            _songListWindow = new SongListWindow(
                 Resources.Instance.WindowBackgroundTexture,
                 new Rectangle(40, 26, 913, 691),
                 new Rectangle(40, 26, 913, 691)
@@ -348,7 +348,7 @@ namespace DanceDanceRotationModule
 
         // Windows
         private DdrNotesWindow _mainWindow;
-        private StandardWindow _songListWindow;
+        private SongListWindow _songListWindow;
         private StandardWindow _songInfoWindow;
         // Views
         private MainView _mainView;

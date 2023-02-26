@@ -3,16 +3,48 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Blish_HUD;
+using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
+using Blish_HUD.Modules;
 using Blish_HUD.Settings.UI.Views;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
+using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace DanceDanceRotationModule.Storage
 {
+
+    public class SongListWindow : StandardWindow
+    {
+        public SongListWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
+        {
+
+        }
+
+        public SongListWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
+        {
+        }
+
+        public SongListWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion, Point windowSize) : base(background, windowRegion, contentRegion, windowSize)
+        {
+        }
+
+        public SongListWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion, Point windowSize) : base(background, windowRegion, contentRegion, windowSize)
+        {
+        }
+
+        protected override Point HandleWindowResize(Point newSize) =>
+          new Point(
+            MathHelper.Clamp(newSize.X, 500, 500),
+            MathHelper.Clamp(newSize.Y, 280, 800)
+          );
+
+    }
+
     public class SongListView : View
     {
         private static readonly Logger Logger = Logger.GetLogger<SongListView>();
@@ -39,12 +71,6 @@ namespace DanceDanceRotationModule.Storage
                 Parent = buildPanel
             };
 
-            // Panel topPanel = new Panel()
-            // {
-            //     Height = 30,
-            //     WidthSizingMode = SizingMode.Fill,
-            //     Parent = rootPanel
-            // };
             FlowPanel topPanel = new FlowPanel()
             {
                 // Height = 30,
@@ -80,21 +106,15 @@ namespace DanceDanceRotationModule.Storage
                     ScreenNotification.ShowNotification("Failed to decode song.");
                 }
             };
-
-            StandardButton resetButton = new StandardButton()
+            StandardButton findSongsButton = new StandardButton()
             {
-                Text = "Reset",
+                Text = "Find Songs",
                 Parent = topPanel
             };
-            resetButton.Click += delegate
+            findSongsButton.Click += delegate
             {
-                ScreenNotification.ShowNotification("Resetting Songs");
-                DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.Reset();
+                UrlHelper.OpenUrl("http://45.37.87.70:8080/songs/view#");
             };
-            // resetButton.Location = new Point(
-            //     topPanel.Width - resetButton.Width - 8,
-            //     resetButton.Top
-            // );
 
             _songsListPanel = new FlowPanel()
             {
@@ -174,7 +194,7 @@ namespace DanceDanceRotationModule.Storage
         private Checkbox Checkbox { get; }
         private Label NameLabel { get; }
         private Label DescriptionLabel { get; }
-        // private StandardButton CopyButton { get; }
+        private Image DeleteButton { get; }
 
         public SongListRow(Song song, Song.ID checkedID)
         {
@@ -215,19 +235,19 @@ namespace DanceDanceRotationModule.Storage
                 ),
                 Parent = this
             };
-            // CopyButton = new StandardButton()
-            // {
-            //     Text = "Copy",
-            //     Parent = this,
-            //     Location = new Point(200, 0)
-            // };
-            // CopyButton.Click += delegate
-            // {
-            //     ScreenNotification.ShowNotification("Copied Song to Clipboard");
-            //     ClipboardUtil.WindowsClipboardService.SetTextAsync(
-            //         SongTranslator.ToJson(song)
-            //     );
-            // };
+
+            DeleteButton = new Image(
+                Resources.Instance.DeleteIcon
+            )
+            {
+                Size = ControlExtensions.ImageButtonSmallSize,
+                Parent = this
+            };
+            ControlExtensions.ConvertToButton(DeleteButton);
+            DeleteButton.Click += delegate
+            {
+                DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.DeleteSong(song.Id);
+            };
 
             Height = 16 + NameLabel.Height + DescriptionLabel.Height;
         }
@@ -240,15 +260,13 @@ namespace DanceDanceRotationModule.Storage
                 return;
 
             var actualHeight = 16 + NameLabel.Height + DescriptionLabel.Height;
-            // var centerY = actualHeight - (Checkbox.Height / 2);
             var centerY = actualHeight / 2;
 
-            // CopyButton.Location = new Point(
-            //     // Width - copyButton.Width,
-            //     Width - CopyButton.Width,
-            //     centerY - (CopyButton.Height / 2)
-            //     // NameLabel.Top + ((songDescription.Bottom - songName.Top) / 2) - (Checkbox.Height / 2)
-            // );
+            // Delete Button
+            DeleteButton.Location = new Point(
+                Width - DeleteButton.Width - 8,
+                centerY - (DeleteButton.Height / 2)
+            );
 
             // Center Checkbox
             Checkbox.Location = new Point(

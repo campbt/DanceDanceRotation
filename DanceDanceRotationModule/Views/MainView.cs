@@ -103,25 +103,15 @@ namespace DanceDanceRotationModule
                 _notesContainer.ToggleStart();
             };
 
-            const float unhoveredOpacity = 0.8f;
-
             // MARK: Song List Button
 
             var songListButton = new Image(
                 Resources.Instance.SongListIcon
             )
             {
-                Opacity = unhoveredOpacity,
                 Parent = _topPanel
             };
-            songListButton.MouseEntered += delegate
-            {
-                songListButton.Opacity = 1.0f;
-            };
-            songListButton.MouseLeft += delegate
-            {
-                songListButton.Opacity = unhoveredOpacity;
-            };
+            ControlExtensions.ConvertToButton(songListButton);
             songListButton.Click += delegate
             {
                 DanceDanceRotationModule.DanceDanceRotationModuleInstance.ToggleSongList();
@@ -135,17 +125,9 @@ namespace DanceDanceRotationModule
                 Width = 1000,
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont18,
-                Opacity = unhoveredOpacity,
                 Parent = _topPanel
             };
-            activeSongName.MouseEntered += delegate
-            {
-                activeSongName.Opacity = 1.0f;
-            };
-            activeSongName.MouseLeft += delegate
-            {
-                activeSongName.Opacity = unhoveredOpacity;
-            };
+            ControlExtensions.ConvertToButton(activeSongName);
             activeSongName.Click += delegate
             {
                 DanceDanceRotationModule.DanceDanceRotationModuleInstance.ToggleSongInfo();

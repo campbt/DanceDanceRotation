@@ -41,6 +41,7 @@ namespace DanceDanceRotationModule.Util
             WindowBackgroundEmptyTexture = contentsManager.GetTexture("windowBgEmpty.png");
             WindowBackgroundTexture = contentsManager.GetTexture("windowBg.png");
             WindowBackground2Texture = contentsManager.GetTexture("windowBg2.png");
+            DeleteIcon = contentsManager.GetTexture("deleteIcon.png");
             DdrLogoTexture = contentsManager.GetTexture("ddr_logo.png");
             DdrLogoEmblemTexture = contentsManager.GetTexture("ddr_logo_emblem.png");
             DdrNoteGreenTexture = contentsManager.GetTexture("ddr_note_green.png");
@@ -106,6 +107,7 @@ namespace DanceDanceRotationModule.Util
             WindowBackgroundTexture?.Dispose();
             WindowBackground2Texture?.Dispose();
             MugTexture?.Dispose();
+            DeleteIcon?.Dispose();
             DdrLogoTexture?.Dispose();
             DdrLogoEmblemTexture?.Dispose();
             DdrNoteGreenTexture?.Dispose();
@@ -130,6 +132,7 @@ namespace DanceDanceRotationModule.Util
         public Texture2D WindowBackgroundEmptyTexture { get; private set; }
         public Texture2D WindowBackgroundTexture { get; private set; }
         public Texture2D WindowBackground2Texture { get; private set; }
+        public Texture2D DeleteIcon { get; private set; }
         public Texture2D DdrLogoTexture { get; private set; }
         public Texture2D DdrLogoEmblemTexture { get; private set; }
         public Texture2D DdrNotePurpleTexture { get; private set; }
