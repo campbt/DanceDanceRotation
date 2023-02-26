@@ -66,7 +66,7 @@ namespace DanceDanceRotationModule.Storage
                     string clipboardContents = ClipboardUtil.WindowsClipboardService.GetTextAsync().Result;
                     Logger.Info("Attempting to decode into a song:\n" + clipboardContents);
                     Song song = SongTranslator.FromJson(clipboardContents);
-                    Logger.Info("Decode Was Successful:\n" + song);
+                    Logger.Info("Decode Was Successful: " + song.Name);
                     DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.AddSong(song);
                     ScreenNotification.ShowNotification("Added Song Successfully");
                 }

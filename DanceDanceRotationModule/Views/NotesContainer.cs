@@ -29,12 +29,15 @@ namespace DanceDanceRotationModule.NoteDisplay
             internal int SequenceIndex { get; set; }
             internal List<ActiveNote> ActiveNotes = new List<ActiveNote>();
             internal List<HitText> HitTexts = new List<HitText>();
+            internal int AbilityIconIndex { get; set; }
+            internal List<AbilityIcon> AbilityIcons = new List<AbilityIcon>();
 
             public void Reset()
             {
                 IsStarted = false;
                 SequenceIndex = 0;
                 StartTime = TimeSpan.Zero;
+                AbilityIconIndex = 0;
 
                 foreach (ActiveNote activeNote in ActiveNotes)
                 {
@@ -47,6 +50,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                     hitText.Dispose();
                 }
                 HitTexts.Clear();
+
+                foreach (AbilityIcon abilityIcon in AbilityIcons)
+                {
+                    abilityIcon.Dispose();
+                }
+                AbilityIcons.Clear();
             }
         }
 
@@ -56,6 +65,8 @@ namespace DanceDanceRotationModule.NoteDisplay
          */
         internal class WindowInfo
         {
+            internal const double TimeToReachEnd = 3.0;
+
             internal int NoteWidth { get; private set; }
             internal int NoteHeight { get; private set; }
             internal int LaneSpacing { get; private set; }
@@ -65,6 +76,10 @@ namespace DanceDanceRotationModule.NoteDisplay
             /** Where to spawn new notes */
             internal int NewNoteXPosition { get; private set; }
             /** Where a note should be at when it is "perfect" */
+
+            internal int AbilityIconsHeight { get; private set; }
+            internal int AbilityIconsLocationY { get; private set; }
+            internal int TargetLocationY { get; private set; }
 
             internal int HitPerfect { get; private set; }
             internal Range<double> HitRangePerfect { get; private set; }
@@ -77,19 +92,33 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             public void Recalculate(int width, int height)
             {
+                // How long a note moves before hitting the "perfect" position
+                int perfectPosition = (int)(0.14 * width);
+
                 VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
-                LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
-                NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 6;
+                    LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
+                if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconQueue.Value)
+                {
+                    // Show ability icons section as an extra "lane"
+                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 7;
+                    AbilityIconsLocationY = 0;
+                    AbilityIconsHeight = NoteHeight;
+                }
+                else
+                {
+                    // Hide ability icons section
+                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 6;
+                    AbilityIconsLocationY = 0;
+                    AbilityIconsHeight = 0;
+                }
                 NoteWidth = NoteHeight;
+                TargetLocationY = VerticalPadding + AbilityIconsHeight;
 
                 DestroyNotePosition = 0;
 
                 // New notes spawn right at the edge of the window
                 NewNoteXPosition = width;
-                // How long a note moves before hitting the "perfect" position
-                double timeToReachEnd = 3.0;
-                int perfectPosition = (int)(0.14 * width);
-                NotePositionChangePerSecond = (NewNoteXPosition - perfectPosition) / timeToReachEnd;
+                NotePositionChangePerSecond = (NewNoteXPosition - perfectPosition) / TimeToReachEnd;
 
                 // Define the ranges for the other's
                 HitPerfect = perfectPosition;
@@ -114,7 +143,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
             public Point GetNewNoteLocation(int lane)
             {
-                var yPos = VerticalPadding + (lane * (NoteHeight + LaneSpacing));
+                var yPos = VerticalPadding + AbilityIconsHeight + (lane * (NoteHeight + LaneSpacing));
                 return new Point(NewNoteXPosition, yPos);
             }
         }
@@ -162,8 +191,14 @@ namespace DanceDanceRotationModule.NoteDisplay
                 // string text = keyBinding.Value.GetBindingDisplayText();
                 int lane = NoteTypeExtensions.NoteLane(note.NoteType);
 
+                // Respect "ShowAbilityIconsForNotes" preference
+                var noteBackground =
+                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconsForNotes.Value
+                        ? Resources.Instance.GetAbilityIcon(note.AbilityId)
+                        : NoteTypeExtensions.NoteImage(note.NoteType);
+
                 this.Image = new Image(
-                    NoteTypeExtensions.NoteImage(note.NoteType)
+                    noteBackground
                 )
                 {
                     Size = _windowInfo.GetNewNoteSize(),
@@ -429,29 +464,56 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         // MARK: AbilityIcon
 
-        private List<Image> _abilityIcons = new List<Image>();
         internal class AbilityIcon
         {
+            internal Note Note { get; set; }
             internal Image Image { get; set; }
             internal double XPosition { get; set; }
-            internal bool ShouldRemove { get; private set; }
+            internal bool IsDisappearing { get; private set; }
+            internal bool ShouldDispose { get; private set; }
+
+            private WindowInfo _windowInfo;
 
             public AbilityIcon(
                 WindowInfo windowInfo,
-                AbilityId abilityId,
-                Point Location,
+                Note note,
                 BlishContainer parent
             )
             {
+                _windowInfo = windowInfo;
+                Note = note;
                 this.Image = new Image(
-                    Resources.Instance.GetAbilityIcon(abilityId)
+                    Resources.Instance.GetAbilityIcon(note.AbilityId)
                 )
                 {
                     Size = windowInfo.GetNewNoteSize(),
-                    Location = Location,
-                    Opacity = 0.0f,
+                    // Location doesn't really matter
+                    Location = windowInfo.GetNewNoteLocation(6),
+                    Opacity = 0.7f,
                     Parent = parent
                 };
+
+                ShouldDispose = false;
+            }
+
+            void SetTargetPosition(int xPos)
+            {
+                // TODO: Animate to here
+                Image.Location = new Point(xPos, Image.Location.Y);
+            }
+
+            public void Update(GameTime gameTime, TimeSpan timeInRotation)
+            {
+                // TODO: Animation here
+                if (timeInRotation.TotalMilliseconds > Note.TimeInRotation.TotalMilliseconds + (WindowInfo.TimeToReachEnd*1000))
+                {
+                    ShouldDispose = true;
+                }
+            }
+
+            public void Dispose()
+            {
+                Image.Dispose();
             }
         }
 
@@ -477,6 +539,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             CreateTarget();
             UpdateTarget();
 
+            // Listen for selected song changes to update the notes
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
@@ -485,8 +548,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                         songInfo.Data
                     );
                 };
-
-            AbilityIconSetup();
+            DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconQueue.SettingChanged +=
+                delegate
+                {
+                    Reset();
+                    RecalculateLayout();
+                };
         }
 
         public override void RecalculateLayout()
@@ -544,6 +611,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 _info.IsStarted = true;
                 _info.StartTime = _lastGameTime;
                 OnStartStop?.Invoke(this, _info.IsStarted);
+                AddInitialAbilityIcons();
             }
         }
 
@@ -611,7 +679,26 @@ namespace DanceDanceRotationModule.NoteDisplay
                 }
             }
 
-            UpdateAbilityIcons();
+            // if (_info.AbilityIcons.Count == 0)
+            // {
+            //     AddInitialAbilityIcons();
+            // }
+            for (int index = _info.AbilityIcons.Count - 1; index >= 0; index--)
+            {
+                AbilityIcon abilityIcon = _info.AbilityIcons[index];
+                abilityIcon.Update(gameTime, timeInRotation);
+                if (abilityIcon.ShouldDispose)
+                {
+                    abilityIcon.Dispose();
+                    _info.AbilityIcons.RemoveAt(index);
+                    if (_info.AbilityIconIndex < _currentSequence.Count)
+                    {
+                        AddAbilityIcon(_currentSequence[_info.AbilityIconIndex]);
+                        _info.AbilityIconIndex += 1;
+                        RecalculateLayoutAbilityIcons();
+                    }
+                }
+            }
         }
 
         /**
@@ -731,7 +818,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             int targetWidth = _windowInfo.NoteWidth;
 
             int xPos = (int)(perfectCenter - (_windowInfo.NoteWidth / 2.0));
-            int yPos = _windowInfo.VerticalPadding - _targetTop.Height;
+            int yPos = _windowInfo.TargetLocationY - _targetTop.Height;
 
             int roundEdgesHeight = (int)Math.Min(
                 _windowInfo.VerticalPadding - 4,
@@ -767,59 +854,45 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         // MARK: Ability Icon Stuff
 
-        private void AbilityIconSetup()
+        private void AddInitialAbilityIcons()
         {
-            _abilityIcons = new List<Image>();
-            for (int i = 0; i < 3; i++)
+            if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowAbilityIconQueue.Value)
             {
-                _abilityIcons.Add(
-                    new Image(
-                        Resources.Instance.UnknownAbilityIcon
-                    )
-                    {
-                        Size = _windowInfo.GetNewNoteSize(),
-                        Location = new Point(0, 0),
-                        Opacity = 0.0f,
-                        Parent = this
-                    }
-                );
+                for (int index = 0, size = Math.Min(3, _currentSequence.Count); index < size; index++)
+                {
+                    AddAbilityIcon(_currentSequence[index]);
+                    _info.AbilityIconIndex += 1;
+                }
+                RecalculateLayoutAbilityIcons();
             }
+        }
+
+        private void AddAbilityIcon(Note note)
+        {
+            var icon = new AbilityIcon(
+                _windowInfo,
+                note,
+                this
+            );
+            _info.AbilityIcons.Add(
+                icon
+            );
         }
         private void RecalculateLayoutAbilityIcons()
         {
             // Update AbilityIcons
             var size = _windowInfo.NoteWidth;
             var xPos = _windowInfo.HitPerfect - (size/2);
-            var yPos = Height - size;
-            for (int index = 0; index < _abilityIcons.Count; index++)
+            var yPos = _windowInfo.AbilityIconsLocationY;
+            for (int index = 0; index < _info.AbilityIcons.Count; index++)
             {
-                Image abilityIconImage = _abilityIcons[index];
-                abilityIconImage.Size = new Point(size, size);
-                abilityIconImage.Location = new Point(
+                AbilityIcon abilityIconImage = _info.AbilityIcons[index];
+                abilityIconImage.Image.Size = new Point(size, size);
+                abilityIconImage.Image.Location = new Point(
                     xPos,
                     yPos
                 );
                 xPos += size;
-            }
-        }
-
-        private void UpdateAbilityIcons()
-        {
-            // TODO Make a lot better
-            for (int index = 0, size = _abilityIcons.Count; index < size; index++)
-            {
-                Image abilityIcon = _abilityIcons[index];
-                if (index < _info.ActiveNotes.Count)
-                {
-                    var ActiveNote = _info.ActiveNotes[index];
-                    abilityIcon.Texture = Resources.Instance.GetAbilityIcon(ActiveNote.Note.AbilityId);
-                    abilityIcon.Opacity = 0.7f;
-                }
-                else
-                {
-                    abilityIcon.Opacity = 0.0f;
-                }
-
             }
         }
 

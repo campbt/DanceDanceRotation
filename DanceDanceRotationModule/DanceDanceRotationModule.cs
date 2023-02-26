@@ -40,6 +40,8 @@ namespace DanceDanceRotationModule
         internal SettingEntry<int> PlaybackRate { get; private set; }
         internal SettingEntry<float> BackgroundOpacity { get; private set; }
         internal SettingEntry<bool> AutoHitWeapon1 { get; private set; }
+        internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
+        internal SettingEntry<bool> ShowAbilityIconQueue { get; private set; }
 
         // MARK: Settings - Hotkeys
 
@@ -101,6 +103,16 @@ namespace DanceDanceRotationModule
                 false,
                 () => "Auto Hit Weapon 1",
                 () => "If enabled, Weapon1 skills will automatically clear, instead of requiring hotkey presses, since they are probably on auto-cast.");
+
+            ShowAbilityIconsForNotes = generalSettings.DefineSetting("ShowAbilityIconsForNotes",
+                false,
+                () => "Show ability icon as note",
+                () => "If enabled, notes will use the actual ability icon instead of the generic.");
+
+            ShowAbilityIconQueue = generalSettings.DefineSetting("ShowAbilityIconQueue",
+                false,
+                () => "Show ability icon queue",
+                () => "If enabled, the next few ability icons will be shown.");
 
             var hotkeySettings = settings.AddSubCollection(
                 collectionKey: "hotkey_settings",
