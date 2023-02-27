@@ -41,7 +41,13 @@ namespace DanceDanceRotationModule.Util
             WindowBackgroundEmptyTexture = contentsManager.GetTexture("windowBgEmpty.png");
             WindowBackgroundTexture = contentsManager.GetTexture("windowBg.png");
             WindowBackground2Texture = contentsManager.GetTexture("windowBg2.png");
-            DeleteIcon = contentsManager.GetTexture("deleteIcon.png");
+            ButtonCopy = contentsManager.GetTexture("buttons/copyIcon.png");
+            ButtonDelete = contentsManager.GetTexture("buttons/deleteIcon.png");
+            ButtonDownload = contentsManager.GetTexture("buttons/downloadIcon.png");
+            ButtonList = contentsManager.GetTexture("buttons/menuIcon.png");
+            ButtonPause = contentsManager.GetTexture("buttons/pauseIcon.png");
+            ButtonPlay = contentsManager.GetTexture("buttons/playIcon.png");
+            ButtonStop = contentsManager.GetTexture("buttons/stopIcon.png");
             DdrLogoTexture = contentsManager.GetTexture("ddr_logo.png");
             DdrLogoEmblemTexture = contentsManager.GetTexture("ddr_logo_emblem.png");
             DdrNoteGreenTexture = contentsManager.GetTexture("ddr_note_green.png");
@@ -107,7 +113,13 @@ namespace DanceDanceRotationModule.Util
             WindowBackgroundTexture?.Dispose();
             WindowBackground2Texture?.Dispose();
             MugTexture?.Dispose();
-            DeleteIcon?.Dispose();
+            ButtonCopy?.Dispose();
+            ButtonDelete?.Dispose();
+            ButtonDownload?.Dispose();
+            ButtonList?.Dispose();
+            ButtonPause?.Dispose();
+            ButtonPlay?.Dispose();
+            ButtonStop?.Dispose();
             DdrLogoTexture?.Dispose();
             DdrLogoEmblemTexture?.Dispose();
             DdrNoteGreenTexture?.Dispose();
@@ -132,7 +144,7 @@ namespace DanceDanceRotationModule.Util
         public Texture2D WindowBackgroundEmptyTexture { get; private set; }
         public Texture2D WindowBackgroundTexture { get; private set; }
         public Texture2D WindowBackground2Texture { get; private set; }
-        public Texture2D DeleteIcon { get; private set; }
+        // DDR Icons in the notes container
         public Texture2D DdrLogoTexture { get; private set; }
         public Texture2D DdrLogoEmblemTexture { get; private set; }
         public Texture2D DdrNotePurpleTexture { get; private set; }
@@ -143,6 +155,14 @@ namespace DanceDanceRotationModule.Util
         public Texture2D DdrTargetCircle { get; private set; }
         public Texture2D DdrTargetSpacer { get; private set; }
         public Texture2D DdrTargetTop { get; private set; }
+        // Buttons in the app
+        public Texture2D ButtonCopy { get; private set; }
+        public Texture2D ButtonDelete { get; private set; }
+        public Texture2D ButtonDownload { get; private set; }
+        public Texture2D ButtonList { get; private set; }
+        public Texture2D ButtonPause { get; private set; }
+        public Texture2D ButtonPlay { get; private set; }
+        public Texture2D ButtonStop { get; private set; }
         public Texture2D NotesControlsBg { get; private set; }
         public Texture2D NotesBg { get; private set; }
         public Texture2D SongListIcon { get; private set; }

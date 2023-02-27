@@ -237,7 +237,7 @@ namespace DanceDanceRotationModule.Storage
             };
 
             DeleteButton = new Image(
-                Resources.Instance.DeleteIcon
+                Resources.Instance.ButtonDelete
             )
             {
                 Size = ControlExtensions.ImageButtonSmallSize,

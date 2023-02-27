@@ -25,7 +25,9 @@ namespace DanceDanceRotationModule.NoteDisplay
         internal class CurrentSequenceInfo
         {
             internal bool IsStarted { get; set; }
+            internal bool IsPaused { get; set; }
             internal TimeSpan StartTime { get; set; }
+            internal TimeSpan PausedTime { get; set; }
             internal int SequenceIndex { get; set; }
             internal List<ActiveNote> ActiveNotes = new List<ActiveNote>();
             internal List<HitText> HitTexts = new List<HitText>();
@@ -619,6 +621,20 @@ namespace DanceDanceRotationModule.NoteDisplay
                 OnStartStop?.Invoke(this, _info.IsStarted);
                 AddInitialAbilityIcons();
             }
+            else
+            {
+                _info.IsPaused = false;
+                _info.StartTime += _lastGameTime - _info.PausedTime;
+            }
+        }
+
+        public void Pause()
+        {
+            if (_info.IsStarted && _info.IsPaused == false)
+            {
+                _info.IsPaused = true;
+                _info.PausedTime = _lastGameTime;
+            }
         }
 
         public void Reset()
@@ -626,6 +642,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             if (_info.IsStarted)
             {
                 _info.IsStarted = false;
+                _info.IsPaused = false;
                 _info.Reset();
                 OnStartStop?.Invoke(this, _info.IsStarted);
             }
@@ -636,11 +653,16 @@ namespace DanceDanceRotationModule.NoteDisplay
             return _info.IsStarted;
         }
 
+        public bool IsPaused()
+        {
+            return _info.IsStarted && _info.IsPaused;
+        }
+
         public void Update(GameTime gameTime)
         {
             _lastGameTime = gameTime.TotalGameTime;
 
-            if (_info.IsStarted == false)
+            if (_info.IsStarted == false || _info.IsPaused)
             {
                 return;
             }

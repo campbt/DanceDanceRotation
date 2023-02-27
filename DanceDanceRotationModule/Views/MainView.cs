@@ -13,6 +13,7 @@ using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using SharpDX.Direct3D11;
 using Color = Microsoft.Xna.Framework.Color;
 using Container = Blish_HUD.Controls.Container;
 using Image = Blish_HUD.Controls.Image;
@@ -90,25 +91,52 @@ namespace DanceDanceRotationModule
                 topPanelBackground.Height = _topPanel.Height;
             };
 
-            // MARK: Start/Reset Button
+            // MARK: Stop Button
 
-            _startButton = new StandardButton() // this label is used as heading
+            var stopButton = new Image(
+                Resources.Instance.ButtonStop
+            )
             {
-                Text = "Start",
-                Left = 30,
+                Size = ControlExtensions.ImageButtonSmallSize,
                 Parent = _topPanel
             };
-            _startButton.Click += delegate
+            ControlExtensions.ConvertToButton(stopButton);
+            stopButton.Click += delegate
             {
-                _notesContainer.ToggleStart();
+                _notesContainer.Reset();
+            };
+
+            // MARK: Play/Pause Button
+
+            var playPauseButton = new Image(
+                Resources.Instance.ButtonPlay
+            )
+            {
+                Size = ControlExtensions.ImageButtonSmallSize,
+                Parent = _topPanel
+            };
+            ControlExtensions.ConvertToButton(playPauseButton);
+            playPauseButton.Click += delegate
+            {
+                if (_notesContainer.IsStarted() == false || _notesContainer.IsPaused())
+                {
+                    _notesContainer.Start();
+                    playPauseButton.Texture = Resources.Instance.ButtonPause;
+                }
+                else
+                {
+                    _notesContainer.Pause();
+                    playPauseButton.Texture = Resources.Instance.ButtonPlay;
+                }
             };
 
             // MARK: Song List Button
 
             var songListButton = new Image(
-                Resources.Instance.SongListIcon
+                Resources.Instance.ButtonList
             )
             {
+                Size = ControlExtensions.ImageButtonSmallSize,
                 Parent = _topPanel
             };
             ControlExtensions.ConvertToButton(songListButton);
@@ -147,17 +175,15 @@ namespace DanceDanceRotationModule
                 AutoSizePadding = new Point(12, 12),
                 Parent = flowPanel
             };
-            _notesContainer.OnStartStop += delegate
-            {
-                if (_notesContainer.IsStarted())
+
+            _notesContainer.OnStartStop +=
+                delegate(object sender, bool isStarted)
                 {
-                    _startButton.Text = "Reset";
-                }
-                else
-                {
-                    _startButton.Text = "Start";
-                }
-            };
+                    if (isStarted == false)
+                    {
+                        playPauseButton.Texture = Resources.Instance.ButtonPlay;
+                    }
+                };
         }
 
         public void Update(GameTime gameTime)
@@ -171,7 +197,6 @@ namespace DanceDanceRotationModule
         }
 
         private NotesContainer _notesContainer;
-        private StandardButton _startButton;
         private FlowPanel _topPanel;
     }
 }
