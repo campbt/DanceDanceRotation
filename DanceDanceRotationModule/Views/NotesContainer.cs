@@ -608,11 +608,11 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 ScreenNotification.ShowNotification("Starting");
                 Reset();
-                Start();
+                Play();
             }
         }
 
-        public void Start()
+        public void Play()
         {
             if (_info.IsStarted == false)
             {

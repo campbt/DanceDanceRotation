@@ -63,6 +63,13 @@ namespace DanceDanceRotationModule
         internal SettingEntry<KeyBinding> ProfessionSkill4 { get; private set; }
         internal SettingEntry<KeyBinding> ProfessionSkill5 { get; private set; }
 
+        // MARK: Control Hotkeys
+
+        internal SettingEntry<KeyBinding> ToggleHotkey { get; private set; }
+        internal SettingEntry<KeyBinding> PlayHotkey { get; private set; }
+        internal SettingEntry<KeyBinding> PauseHotkey { get; private set; }
+        internal SettingEntry<KeyBinding> StopHotkey { get; private set; }
+
         // MARK: Hidden Settings
 
         // internal SettingEntry<SongRepo> SongRepo { get; private set; }
@@ -120,28 +127,75 @@ namespace DanceDanceRotationModule
                 () => "Show next abilities",
                 () => "If enabled, the next few ability icons will be shown.");
 
-            var hotkeySettings = settings.AddSubCollection(
+            // MARK: Ability Hotkeys
+
+            var abilityHotkeysSettings = settings.AddSubCollection(
                 collectionKey: "hotkey_settings",
                 renderInUi: true,
-                displayNameFunc: () => "Hotkeys",
+                displayNameFunc: () => "Ability Hotkeys",
                 lazyLoaded: false
             );
-            SwapWeapons      = DefineHotkeySetting(hotkeySettings, NoteType.WeaponSwap);
-            Weapon1          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon1);
-            Weapon2          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon2);
-            Weapon3          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon3);
-            Weapon4          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon4);
-            Weapon5          = DefineHotkeySetting(hotkeySettings, NoteType.Weapon5);
-            HealingSkill     = DefineHotkeySetting(hotkeySettings, NoteType.HealingSkill);
-            UtilitySkill1    = DefineHotkeySetting(hotkeySettings, NoteType.UtilitySkill1);
-            UtilitySkill2    = DefineHotkeySetting(hotkeySettings, NoteType.UtilitySkill2 );
-            UtilitySkill3    = DefineHotkeySetting(hotkeySettings, NoteType.UtilitySkill3);
-            EliteSkill       = DefineHotkeySetting(hotkeySettings, NoteType.EliteSkill );
-            ProfessionSkill1 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill1);
-            ProfessionSkill2 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill2);
-            ProfessionSkill3 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill3);
-            ProfessionSkill4 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill4);
-            ProfessionSkill5 = DefineHotkeySetting(hotkeySettings, NoteType.ProfessionSkill5);
+            SwapWeapons      = DefineHotkeySetting(abilityHotkeysSettings, NoteType.WeaponSwap);
+            Weapon1          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon1);
+            Weapon2          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon2);
+            Weapon3          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon3);
+            Weapon4          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon4);
+            Weapon5          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon5);
+            HealingSkill     = DefineHotkeySetting(abilityHotkeysSettings, NoteType.HealingSkill);
+            UtilitySkill1    = DefineHotkeySetting(abilityHotkeysSettings, NoteType.UtilitySkill1);
+            UtilitySkill2    = DefineHotkeySetting(abilityHotkeysSettings, NoteType.UtilitySkill2 );
+            UtilitySkill3    = DefineHotkeySetting(abilityHotkeysSettings, NoteType.UtilitySkill3);
+            EliteSkill       = DefineHotkeySetting(abilityHotkeysSettings, NoteType.EliteSkill );
+            ProfessionSkill1 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill1);
+            ProfessionSkill2 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill2);
+            ProfessionSkill3 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill3);
+            ProfessionSkill4 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill4);
+            ProfessionSkill5 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill5);
+
+            // MARK: DDR Control Hotkeys
+
+            var controlHotkeySettings = settings.AddSubCollection(
+                collectionKey: "control_hotkey_settings",
+                renderInUi: true,
+                displayNameFunc: () => "Control Hotkeys",
+                lazyLoaded: false
+            );
+            ToggleHotkey = controlHotkeySettings.DefineSetting("ToggleHotkey",
+                new KeyBinding(Keys.None),
+                () => "Toggle Play/Stop",
+                () => "Will start or stop the DDR rotation when pressed based on if it is currently playing.");
+            ToggleHotkey.Value.Enabled = true;
+            ToggleHotkey.Value.Activated += delegate
+            {
+                _mainView.GetNotesContainer()?.ToggleStart();
+            };
+            PlayHotkey = controlHotkeySettings.DefineSetting("PlayHotkey",
+                new KeyBinding(Keys.None),
+                () => "Play",
+                () => "Will start the DDR rotation when pressed, if not already playing.");
+            PlayHotkey.Value.Enabled = true;
+            PlayHotkey.Value.Activated += delegate
+            {
+                _mainView.GetNotesContainer()?.Play();
+            };
+            PauseHotkey = controlHotkeySettings.DefineSetting("PauseHotkey",
+                new KeyBinding(Keys.None),
+                () => "Pause",
+                () => "Will pause the DDR rotation when pressed, if playing.");
+            PauseHotkey.Value.Enabled = true;
+            PauseHotkey.Value.Activated += delegate
+            {
+                _mainView.GetNotesContainer()?.Pause();
+            };
+            StopHotkey = controlHotkeySettings.DefineSetting("StopHotkey",
+                new KeyBinding(Keys.None),
+                () => "Stop",
+                () => "Will stop the DDR rotation when pressed, if playing.");
+            StopHotkey.Value.Enabled = true;
+            StopHotkey.Value.Activated += delegate
+            {
+                _mainView.GetNotesContainer()?.Reset();
+            };
 
             // MARK: Private settings (not visible to the user)
 
@@ -160,7 +214,7 @@ namespace DanceDanceRotationModule
             retval.Value.Enabled = true;
             retval.Value.Activated += delegate
             {
-                _mainView.OnHotkeyPressed(noteType);
+                _mainView.GetNotesContainer()?.OnHotkeyPressed(noteType);
             };
             return retval;
         }

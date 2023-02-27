@@ -120,7 +120,7 @@ namespace DanceDanceRotationModule
             {
                 if (_notesContainer.IsStarted() == false || _notesContainer.IsPaused())
                 {
-                    _notesContainer.Start();
+                    _notesContainer.Play();
                     playPauseButton.Texture = Resources.Instance.ButtonPause;
                 }
                 else
@@ -191,9 +191,9 @@ namespace DanceDanceRotationModule
             _notesContainer?.Update(gameTime);
         }
 
-        public void OnHotkeyPressed(NoteType noteType)
+        public NotesContainer GetNotesContainer()
         {
-            _notesContainer?.OnHotkeyPressed(noteType);
+            return _notesContainer;
         }
 
         private NotesContainer _notesContainer;
