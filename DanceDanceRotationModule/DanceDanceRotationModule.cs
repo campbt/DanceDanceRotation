@@ -46,7 +46,9 @@ namespace DanceDanceRotationModule
 
         // MARK: Settings - Hotkeys
 
+        internal SettingCollection AbilityHotkeysSettings { get; private set; }
         internal SettingEntry<KeyBinding> SwapWeapons { get; private set; }
+        internal SettingEntry<KeyBinding> Dodge { get; private set; }
         internal SettingEntry<KeyBinding> Weapon1 { get; private set; }
         internal SettingEntry<KeyBinding> Weapon2 { get; private set; }
         internal SettingEntry<KeyBinding> Weapon3 { get; private set; }
@@ -129,28 +131,29 @@ namespace DanceDanceRotationModule
 
             // MARK: Ability Hotkeys
 
-            var abilityHotkeysSettings = settings.AddSubCollection(
+            AbilityHotkeysSettings = settings.AddSubCollection(
                 collectionKey: "hotkey_settings",
                 renderInUi: true,
                 displayNameFunc: () => "Ability Hotkeys",
                 lazyLoaded: false
             );
-            SwapWeapons      = DefineHotkeySetting(abilityHotkeysSettings, NoteType.WeaponSwap);
-            Weapon1          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon1);
-            Weapon2          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon2);
-            Weapon3          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon3);
-            Weapon4          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon4);
-            Weapon5          = DefineHotkeySetting(abilityHotkeysSettings, NoteType.Weapon5);
-            HealingSkill     = DefineHotkeySetting(abilityHotkeysSettings, NoteType.HealingSkill);
-            UtilitySkill1    = DefineHotkeySetting(abilityHotkeysSettings, NoteType.UtilitySkill1);
-            UtilitySkill2    = DefineHotkeySetting(abilityHotkeysSettings, NoteType.UtilitySkill2 );
-            UtilitySkill3    = DefineHotkeySetting(abilityHotkeysSettings, NoteType.UtilitySkill3);
-            EliteSkill       = DefineHotkeySetting(abilityHotkeysSettings, NoteType.EliteSkill );
-            ProfessionSkill1 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill1);
-            ProfessionSkill2 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill2);
-            ProfessionSkill3 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill3);
-            ProfessionSkill4 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill4);
-            ProfessionSkill5 = DefineHotkeySetting(abilityHotkeysSettings, NoteType.ProfessionSkill5);
+            SwapWeapons      = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.WeaponSwap);
+            Dodge            = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Dodge);
+            Weapon1          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon1);
+            Weapon2          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon2);
+            Weapon3          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon3);
+            Weapon4          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon4);
+            Weapon5          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon5);
+            HealingSkill     = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.HealingSkill);
+            UtilitySkill1    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill1);
+            UtilitySkill2    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill2 );
+            UtilitySkill3    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill3);
+            EliteSkill       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.EliteSkill );
+            ProfessionSkill1 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill1);
+            ProfessionSkill2 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill2);
+            ProfessionSkill3 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill3);
+            ProfessionSkill4 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill4);
+            ProfessionSkill5 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill5);
 
             // MARK: DDR Control Hotkeys
 
@@ -222,7 +225,7 @@ namespace DanceDanceRotationModule
         public SettingEntry<KeyBinding> GetKeyBindingForNoteType(NoteType noteType)
         {
             SettingEntry<KeyBinding> retval = new SettingEntry<KeyBinding>();
-            SettingsManager.ModuleSettings.TryGetSetting<KeyBinding>(noteType.ToString(), out retval);
+            AbilityHotkeysSettings.TryGetSetting<KeyBinding>(noteType.ToString(), out retval);
             return retval;
         }
 

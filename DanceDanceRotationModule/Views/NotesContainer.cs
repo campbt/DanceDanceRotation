@@ -185,7 +185,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 this.Note = note;
 
                 var keyBinding = DanceDanceRotationModule.DanceDanceRotationModuleInstance.GetKeyBindingForNoteType(note.NoteType);
-                string text =
+                string hotkeyText =
                     (keyBinding != null)
                         ? KeysExtensions.NotesString(keyBinding.Value)
                         : "?";
@@ -210,7 +210,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 };
 
                 BitmapFont font;
-                if (text.Length < 3)
+                if (hotkeyText.Length < 3)
                 {
                     if (Image.Height > 34)
                     {
@@ -252,7 +252,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 Label = new Label() // this label is used as heading
                 {
-                    Text = text,
+                    Text = hotkeyText,
                     TextColor = Color.White,
                     Font = font,
                     StrokeText = true,
