@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Text;
 using Blish_HUD;
 using Blish_HUD.Modules.Managers;
@@ -33,8 +34,16 @@ namespace DanceDanceRotationModule.Util
             );
             foreach (KeyValuePair<string, string> entry in rawJson)
             {
-                var abilityId = new AbilityId(entry.Key);
-                AbilityToIconNames[abilityId] = entry.Value;
+                try
+                {
+                    var raw = int.Parse(entry.Key);
+                    var abilityId = new AbilityId(raw);
+                    AbilityToIconNames[abilityId] = entry.Value;
+                }
+                catch
+                {
+                    Logger.Warn("Failed to decode an entry in the abilityIdsToImageId.json: " + entry);
+                }
             }
 
             MugTexture = contentsManager.GetTexture("mug.png");
@@ -45,8 +54,10 @@ namespace DanceDanceRotationModule.Util
             ButtonDelete = contentsManager.GetTexture("buttons/deleteIcon.png");
             ButtonDownload = contentsManager.GetTexture("buttons/downloadIcon.png");
             ButtonList = contentsManager.GetTexture("buttons/menuIcon.png");
+            ButtonOpenUrl = contentsManager.GetTexture("buttons/openLinkIcon.png");
             ButtonPause = contentsManager.GetTexture("buttons/pauseIcon.png");
             ButtonPlay = contentsManager.GetTexture("buttons/playIcon.png");
+            ButtonReload = contentsManager.GetTexture("buttons/reloadIcon.png");
             ButtonStop = contentsManager.GetTexture("buttons/stopIcon.png");
             DdrLogoTexture = contentsManager.GetTexture("ddr_logo.png");
             DdrLogoEmblemTexture = contentsManager.GetTexture("ddr_logo_emblem.png");
@@ -117,8 +128,10 @@ namespace DanceDanceRotationModule.Util
             ButtonDelete?.Dispose();
             ButtonDownload?.Dispose();
             ButtonList?.Dispose();
+            ButtonOpenUrl?.Dispose();
             ButtonPause?.Dispose();
             ButtonPlay?.Dispose();
+            ButtonReload?.Dispose();
             ButtonStop?.Dispose();
             DdrLogoTexture?.Dispose();
             DdrLogoEmblemTexture?.Dispose();
@@ -160,8 +173,10 @@ namespace DanceDanceRotationModule.Util
         public Texture2D ButtonDelete { get; private set; }
         public Texture2D ButtonDownload { get; private set; }
         public Texture2D ButtonList { get; private set; }
+        public Texture2D ButtonOpenUrl { get; private set; }
         public Texture2D ButtonPause { get; private set; }
         public Texture2D ButtonPlay { get; private set; }
+        public Texture2D ButtonReload { get; private set; }
         public Texture2D ButtonStop { get; private set; }
         public Texture2D NotesControlsBg { get; private set; }
         public Texture2D NotesBg { get; private set; }

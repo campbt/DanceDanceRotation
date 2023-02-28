@@ -164,7 +164,14 @@ namespace DanceDanceRotationModule
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    activeSongName.Text = songInfo.Song.Name;
+                    if (songInfo.Song != null)
+                    {
+                        activeSongName.Text = songInfo.Song.Name;
+                    }
+                    else
+                    {
+                        activeSongName.Text = "--";
+                    }
                 };
 
             _notesContainer= new NotesContainer()

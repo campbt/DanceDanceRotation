@@ -551,10 +551,13 @@ namespace DanceDanceRotationModule.NoteDisplay
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    SetNoteSequence(
-                        songInfo.Song.Notes,
-                        songInfo.Data
-                    );
+                    if (songInfo.Song != null)
+                    {
+                        SetNoteSequence(
+                            songInfo.Song.Notes,
+                            songInfo.Data
+                        );
+                    }
                 };
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowNextAbilities.SettingChanged +=
                 delegate

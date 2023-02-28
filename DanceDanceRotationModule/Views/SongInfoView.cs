@@ -11,7 +11,9 @@ using Blish_HUD.Settings.UI.Views;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Storage;
+using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 
 namespace DanceDanceRotationModule.Views
@@ -20,6 +22,9 @@ namespace DanceDanceRotationModule.Views
     {
         private static readonly Logger Logger = Logger.GetLogger<SongInfoView>();
 
+        private static readonly Point UtilityIconSize = new Point(72, 72);
+        private static readonly Point UtilityRemapIconSize = new Point(48, 48);
+
         // Data
         private Song _song;
         private SongData _songData;
@@ -27,8 +32,13 @@ namespace DanceDanceRotationModule.Views
         // Views
         private Label _nameLabel;
         private Label _descriptionLabel;
-        private StandardButton _copyButton;
-        private Label _remapLabel;
+        private TextBox _buildUrlTextBox;
+        private Image _openBuildUrlBuildTemplateButton;
+        private TextBox _buildTemplateTextBox;
+        private Image _copyBuildTemplateButton;
+        private Image _remapUtilityImage1;
+        private Image _remapUtilityImage2;
+        private Image _remapUtilityImage3;
 
         public SongInfoView()
         {
@@ -45,49 +55,229 @@ namespace DanceDanceRotationModule.Views
                 Parent = buildPanel
             };
 
+            FlowPanel infoPanel = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleTopToBottom,
+                // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
+                OuterControlPadding = new Vector2(10, 10),
+                AutoSizePadding = new Point(10, 10),
+                // ControlPadding is padding in between the elements
+                ControlPadding = new Vector2(0, 8),
+                CanScroll = true,
+                Parent = rootPanel
+            };
+
             _nameLabel = new Label()
             {
                 Text = "--",
+                AutoSizeWidth = true,
+                AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont18,
-                Parent = rootPanel
+                Parent = infoPanel
             };
             _descriptionLabel = new Label()
             {
                 Text = "--",
                 AutoSizeWidth = true,
+                AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont14,
                 TextColor = Color.LightGray,
-                Parent = rootPanel
+                Parent = infoPanel
             };
-            _copyButton = new StandardButton()
+
+            // Spacer
+
+            new Label()
             {
-                Text = "Copy",
-                Parent = rootPanel
+                Text = "",
+                Height = 4,
+                Parent = infoPanel
             };
-            _copyButton.Click += delegate
+
+            // MARK: Build Template
+
+            new Label()
+            {
+                Text = "Build URL",
+                AutoSizeWidth = true,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont12,
+                TextColor = Color.LightGray,
+                Parent = infoPanel
+            };
+            FlowPanel buildUrlPanel = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                ControlPadding = new Vector2(8, 0),
+                CanScroll = false,
+                Parent = infoPanel
+            };
+            _buildUrlTextBox = new TextBox()
+            {
+                Text = "https://snowcrows.com/en/builds/elementalist/weaver/condition-weaver",
+                Enabled = false,
+                Font = GameService.Content.DefaultFont12,
+                Parent = buildUrlPanel
+            };
+            _buildUrlTextBox.TextChanged += delegate
+            {
+                // Prevent typing
+                _buildTemplateTextBox.Text = "https://snowcrows.com/en/builds/elementalist/weaver/condition-weaver";
+            };
+            _openBuildUrlBuildTemplateButton = new Image(
+                Resources.Instance.ButtonOpenUrl
+            )
+            {
+                Size = ControlExtensions.ImageButtonSmallSize,
+                Parent = buildUrlPanel
+            };
+            ControlExtensions.ConvertToButton(_openBuildUrlBuildTemplateButton);
+            _openBuildUrlBuildTemplateButton.Click += delegate
             {
                 if (_song != null)
                 {
-                    ScreenNotification.ShowNotification("Copied Song JSON to Clipboard");
+                    UrlHelper.OpenUrl(_song.BuildUrl);
+                }
+            };
+
+            // MARK: Build Template
+
+            new Label()
+            {
+                Text = "Build Template",
+                AutoSizeWidth = true,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont12,
+                TextColor = Color.LightGray,
+                Parent = infoPanel
+            };
+            FlowPanel buildLink = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                ControlPadding = new Vector2(8, 0),
+                CanScroll = false,
+                Parent = infoPanel
+            };
+            _buildTemplateTextBox = new TextBox()
+            {
+                Text = "[&DQYfFRomOBV0AAAAcwAAAMsAAAA1FwAAEhcAAAAAAAAAAAAAAAAAAAAAAAA=]",
+                Enabled = false,
+                Font = GameService.Content.DefaultFont12,
+                Parent = buildLink
+            };
+            _buildTemplateTextBox.TextChanged += delegate
+            {
+                // Prevent typing
+                _buildTemplateTextBox.Text = "[&DQYfFRomOBV0AAAAcwAAAMsAAAA1FwAAEhcAAAAAAAAAAAAAAAAAAAAAAAA=]";
+            };
+            _copyBuildTemplateButton = new Image(
+                Resources.Instance.ButtonCopy
+            )
+            {
+                Size = ControlExtensions.ImageButtonSmallSize,
+                Parent = buildLink
+            };
+            ControlExtensions.ConvertToButton(_copyBuildTemplateButton);
+            _copyBuildTemplateButton.Click += delegate
+            {
+                if (_song != null)
+                {
+                    ScreenNotification.ShowNotification("Copied Build to Clipboard");
                     ClipboardUtil.WindowsClipboardService.SetTextAsync(
-                        SongTranslator.ToJson(_song)
+                        _song.BuildTemplateCode
                     );
                 }
             };
+
+            // _copyButton.Click += delegate
+            // {
+            //     if (_song != null)
+            //     {
+            //         ScreenNotification.ShowNotification("Copied Song JSON to Clipboard");
+            //         ClipboardUtil.WindowsClipboardService.SetTextAsync(
+            //             SongTranslator.ToJson(_song)
+            //         );
+            //     }
+            // };
 
             FlowPanel utilityRemap = new FlowPanel()
             {
                 HeightSizingMode = SizingMode.AutoSize,
                 WidthSizingMode = SizingMode.Fill,
+                // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
+                OuterControlPadding = new Vector2(10, 10),
+                AutoSizePadding = new Point(10, 10),
+                ControlPadding = new Vector2(0, 10),
                 Title = "Remap Utility Skills",
                 Parent = rootPanel
             };
-            StandardButton RotateUtilitiesButton = new StandardButton()
+            new Label()
             {
-                Text = "Rotate",
-                Parent = rootPanel
+                Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template",
+                Width = 280,
+                AutoSizeHeight = true,
+                WrapText = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Parent = utilityRemap
             };
-            RotateUtilitiesButton.Click += delegate
+
+            FlowPanel remapIcons = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                CanScroll = false,
+                Parent = utilityRemap
+            };
+            _remapUtilityImage1 = new Image(
+                Resources.Instance.UnknownAbilityIcon
+            )
+            {
+                Size = new Point(72, 72),
+                BasicTooltipText = "This should match in-game utility slot 1",
+                Parent = remapIcons
+            };
+            _remapUtilityImage2 = new Image(
+                Resources.Instance.UnknownAbilityIcon
+            )
+            {
+                Size = UtilityIconSize,
+                BasicTooltipText = "This should match in-game utility slot 2",
+                Parent = remapIcons
+            };
+            _remapUtilityImage3 = new Image(
+                Resources.Instance.UnknownAbilityIcon
+            )
+            {
+                Size = UtilityIconSize,
+                BasicTooltipText = "This should match in-game utility slot 3",
+                Parent = remapIcons
+            };
+            var rotateRemapButtonPanel = new Panel()
+            {
+                Size = UtilityIconSize,
+                Parent = remapIcons
+            };
+            var rotateRemapButtons = new Image(
+                Resources.Instance.ButtonReload
+            )
+            {
+                Size = UtilityRemapIconSize,
+                Location = new Point(
+                    (UtilityIconSize.X - UtilityRemapIconSize.X) / 2,
+                    (UtilityIconSize.Y - UtilityRemapIconSize.Y) / 2
+                ),
+                BasicTooltipText = "Change the remapping ordering.",
+                Parent = rotateRemapButtonPanel
+            };
+            rotateRemapButtons.Click += delegate
             {
                 if (_song == null)
                     return;
@@ -155,13 +345,8 @@ namespace DanceDanceRotationModule.Views
                         }
                     );
             };
-            _remapLabel = new Label()
-            {
-                Text = "",
-                AutoSizeWidth = true,
-                Font = GameService.Content.DefaultFont14,
-                Parent = utilityRemap
-            };
+
+            // MARK: View Created. Set up subscriptions
 
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
@@ -179,19 +364,46 @@ namespace DanceDanceRotationModule.Views
             {
                 _nameLabel.Text = "--";
                 _descriptionLabel.Text = "--";
-                _remapLabel.Text = "--";
+                _buildUrlTextBox.Text = "--";
+                _buildTemplateTextBox.Text = "--";
+                _remapUtilityImage1.Texture = Resources.Instance.UnknownAbilityIcon;
+                _remapUtilityImage2.Texture = Resources.Instance.UnknownAbilityIcon;
+                _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
                 return;
             }
 
             _nameLabel.Text = _song.Name;
             _descriptionLabel.Text = _song.Description;
+            _buildUrlTextBox.Text = _song.BuildUrl;
+            _buildTemplateTextBox.Text = _song.BuildTemplateCode;
 
-            _remapLabel.Text = String.Format(
-                "1-2-3 => {0}-{1}-{2}",
-                UtilitySkillDescription(_songData.Utility1Mapping),
-                UtilitySkillDescription(_songData.Utility2Mapping),
-                UtilitySkillDescription(_songData.Utility3Mapping)
-            );
+            _remapUtilityImage1.Texture = GetRemappedAbilityTexture(_song, _songData.Utility1Mapping);
+            _remapUtilityImage2.Texture = GetRemappedAbilityTexture(_song, _songData.Utility2Mapping);
+            _remapUtilityImage3.Texture = GetRemappedAbilityTexture(_song, _songData.Utility3Mapping);
+        }
+
+        private Texture2D GetRemappedAbilityTexture(
+            Song song,
+            SongData.UtilitySkillMapping skillMapping
+        )
+        {
+            AbilityId abilityId;
+            switch (skillMapping)
+            {
+                case SongData.UtilitySkillMapping.One:
+                    abilityId = song.Utility1;
+                    break;
+                case SongData.UtilitySkillMapping.Two:
+                    abilityId = song.Utility2;
+                    break;
+                case SongData.UtilitySkillMapping.Three:
+                    abilityId = song.Utility3;
+                    break;
+                default:
+                    return Resources.Instance.UnknownAbilityIcon;
+            }
+
+            return Resources.Instance.GetAbilityIcon(abilityId);
         }
 
         private String UtilitySkillDescription(SongData.UtilitySkillMapping mapping)

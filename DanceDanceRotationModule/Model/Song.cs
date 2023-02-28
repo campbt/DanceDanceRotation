@@ -33,8 +33,26 @@ namespace DanceDanceRotationModule.Model
             }
         }
 
+        /** User defined name of the song. Used for uniquely identifying a song. */
         public ID Id { get; set; }
+
+        /** User defined description of the song */
         public string Description { get; set; }
+
+        /** Ex: https://snowcrows.com/en/builds/elementalist/weaver/condition-weaver */
+        public string BuildUrl { get; set; }
+
+        /** Ex: [&DQYfFRomOBV0AAAAcwAAAMsAAAA1FwAAEhcAAAAAAAAAAAAAAAAAAAAAAAA=] */
+        public string BuildTemplateCode { get; set; }
+
+        /** The Ability in the first Utility slot. */
+        public AbilityId Utility1 { get; set; }
+        /** The Ability in the second Utility slot. */
+        public AbilityId Utility2 { get; set; }
+        /** The Ability in the third Utility slot. */
+        public AbilityId Utility3 { get; set; }
+
+        /** The notes of the song, sorted by time in rotation. */
         public List<Note> Notes { get; set; }
 
         public string Name

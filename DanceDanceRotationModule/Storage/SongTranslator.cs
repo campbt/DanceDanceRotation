@@ -23,36 +23,37 @@ namespace DanceDanceRotationModule.Storage
             public string name { get; set; }
             public string description { get; set; }
             public List<Note> notes { get; set; }
+            public string logUrl { get; set; }
+            public string buildUrl { get; set; }
+            public string buildChatCode { get; set; }
+            public BuildTemplate decodedBuildTemplate { get; set; }
+
+            public struct BuildTemplate
+            {
+                public int profession { get; set; }
+                public Skills skills { get; set; }
+
+                public struct Skills
+                {
+                    public UtilitySkills terrestrial { get; set; }
+                    public UtilitySkills aquatic { get; set; }
+
+                    public struct UtilitySkills
+                    {
+                        public int heal { get; set; }
+                        public List<int> utilities { get; set; }
+                        public int elite { get; set; }
+                    }
+                }
+            }
 
             public struct Note
             {
                 public double time { get; set; }
                 public double duration { get; set; }
                 public string noteType { get; set; }
-                public string abilityId { get; set; }
+                public int abilityId { get; set; }
             }
-        }
-
-        /**
-         * Converts a Song to JSON and returns it as a string
-         */
-        public static string ToJson(Song song)
-        {
-            SongJson songJson = new SongJson()
-            {
-                name = song.Name,
-                description = song.Description,
-                notes = song.Notes.Select( note =>
-                    new SongJson.Note()
-                    {
-                        time = (int)note.TimeInRotation.TotalMilliseconds,
-                        noteType = note.NoteType.ToString(),
-                        duration = (int)note.Duration.TotalMilliseconds,
-                        abilityId = note.AbilityId.Raw
-                    }
-                ).ToList()
-            };
-            return JsonConvert.SerializeObject(songJson);
         }
 
         /**
@@ -62,10 +63,26 @@ namespace DanceDanceRotationModule.Storage
         public static Song FromJson(string json)
         {
             SongJson songJson = JsonConvert.DeserializeObject<SongJson>(json);
+
+            List<int> utilities = songJson.decodedBuildTemplate.skills.terrestrial.utilities;
+            if (utilities == null)
+            {
+                utilities = new List<int>(3);
+            }
+            while (utilities.Count < 3)
+            {
+                utilities.Add(0);
+            }
+
             return new Song()
             {
                 Id = new Song.ID(songJson.name),
                 Description = songJson.description,
+                BuildUrl = songJson.buildUrl,
+                BuildTemplateCode = songJson.buildChatCode,
+                Utility1 = new AbilityId(utilities[0]),
+                Utility2 = new AbilityId(utilities[1]),
+                Utility3 = new AbilityId(utilities[2]),
                 Notes = songJson.notes.Select(noteJson =>
                 {
                     if (NoteType.TryParse(noteJson.noteType, out NoteType noteType) == false)

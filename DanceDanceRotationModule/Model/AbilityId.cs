@@ -7,12 +7,12 @@ namespace DanceDanceRotationModule.Model
      */
     public struct AbilityId : IEquatable<AbilityId>
     {
-        public AbilityId(string raw)
+        public AbilityId(int raw)
         {
             Raw = raw;
         }
 
-        public string Raw { get; set; }
+        public int Raw { get; set; }
 
         public bool Equals(AbilityId other)
         {
