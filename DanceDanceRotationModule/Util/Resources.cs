@@ -71,6 +71,7 @@ namespace DanceDanceRotationModule.Util
             DdrTargetTop = contentsManager.GetTexture("ddr_target_top.png");
             NotesControlsBg = contentsManager.GetTexture("notesControlsBg.png");
             NotesBg = contentsManager.GetTexture("notesBg.png");
+            SongInfoBackground = contentsManager.GetTexture("songInfoBg.png");
             SongListIcon = contentsManager.GetTexture("songListIcon.png");
             UnknownAbilityIcon = contentsManager.GetTexture("unknownAbilityIcon.png");
         }
@@ -145,6 +146,7 @@ namespace DanceDanceRotationModule.Util
             DdrTargetTop?.Dispose();
             NotesControlsBg?.Dispose();
             NotesBg?.Dispose();
+            SongInfoBackground?.Dispose();
             SongListIcon?.Dispose();
             UnknownAbilityIcon?.Dispose();
         }
@@ -180,6 +182,7 @@ namespace DanceDanceRotationModule.Util
         public Texture2D ButtonStop { get; private set; }
         public Texture2D NotesControlsBg { get; private set; }
         public Texture2D NotesBg { get; private set; }
+        public Texture2D SongInfoBackground { get; private set; }
         public Texture2D SongListIcon { get; private set; }
         public Texture2D UnknownAbilityIcon { get; private set; }
     }

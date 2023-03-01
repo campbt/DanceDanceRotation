@@ -39,6 +39,10 @@ namespace DanceDanceRotationModule.Views
         private Image _remapUtilityImage1;
         private Image _remapUtilityImage2;
         private Image _remapUtilityImage3;
+        private Label _playbackRateLabel;
+        private TrackBar _playbackRateTrackbar;
+        private Label _startAtLabel;
+        private TrackBar _startAtTrackbar;
 
         public SongInfoView()
         {
@@ -195,16 +199,7 @@ namespace DanceDanceRotationModule.Views
                 }
             };
 
-            // _copyButton.Click += delegate
-            // {
-            //     if (_song != null)
-            //     {
-            //         ScreenNotification.ShowNotification("Copied Song JSON to Clipboard");
-            //         ClipboardUtil.WindowsClipboardService.SetTextAsync(
-            //             SongTranslator.ToJson(_song)
-            //         );
-            //     }
-            // };
+            // MARK: Utility Skills Remap
 
             FlowPanel utilityRemap = new FlowPanel()
             {
@@ -346,6 +341,142 @@ namespace DanceDanceRotationModule.Views
                     );
             };
 
+            // Spacer
+
+            new Label()
+            {
+                Text = "",
+                Height = 4,
+                Parent = infoPanel
+            };
+
+            // MARK: Practice Settings
+
+            FlowPanel practiceSettingsSection = new FlowPanel()
+            {
+                HeightSizingMode = SizingMode.AutoSize,
+                WidthSizingMode = SizingMode.Fill,
+                // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
+                OuterControlPadding = new Vector2(10, 10),
+                AutoSizePadding = new Point(10, 10),
+                ControlPadding = new Vector2(0, 10),
+                Title = "Practice Settings",
+                Parent = rootPanel
+            };
+
+            // Playback Rate
+
+            FlowPanel playbackRateSection = new FlowPanel()
+            {
+                HeightSizingMode = SizingMode.AutoSize,
+                WidthSizingMode = SizingMode.Fill,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                Parent = practiceSettingsSection
+            };
+            new Label()
+            {
+                Text = "Playback Rate",
+                BasicTooltipText = "Slows down the note speed.",
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Parent = playbackRateSection
+            };
+            _playbackRateLabel = new Label()
+            {
+                Text = "100%",
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont18,
+                TextColor = Color.White,
+                Parent = playbackRateSection
+            };
+            _playbackRateTrackbar = new TrackBar()
+            {
+                Enabled = true,
+                MinValue = 10,
+                MaxValue = 100,
+                Value = 100,
+                SmallStep = false,
+                Parent = practiceSettingsSection
+            };
+            _playbackRateTrackbar.ValueChanged +=
+                delegate(object sender, ValueEventArgs<float> args)
+                {
+                    if (_song != null)
+                    {
+                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                            .UpdateData(
+                                _song.Id,
+                                songData =>
+                                {
+                                    songData.PlaybackRate = args.Value / 100.0f;
+                                    return songData;
+                                }
+                            );
+                    }
+                    _playbackRateLabel.Text = $"{args.Value}%";
+                };
+
+            // Start At
+
+            FlowPanel startAtSection = new FlowPanel()
+            {
+                HeightSizingMode = SizingMode.AutoSize,
+                WidthSizingMode = SizingMode.Fill,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                Parent = practiceSettingsSection
+            };
+            new Label()
+            {
+                Text = "Start At",
+                BasicTooltipText = "Sets what time the notes start",
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Parent = startAtSection
+            };
+            _startAtLabel = new Label()
+            {
+                Text = "0:00",
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont18,
+                TextColor = Color.White,
+                Parent = startAtSection
+            };
+            _startAtTrackbar = new TrackBar()
+            {
+                Enabled = true,
+                MinValue = 0,
+                MaxValue = 100,
+                SmallStep = false,
+                Value = 0,
+                Parent = practiceSettingsSection
+            };
+            _startAtTrackbar.ValueChanged +=
+                delegate(object sender, ValueEventArgs<float> args)
+                {
+                    if (_song != null)
+                    {
+                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                            .UpdateData(
+                                _song.Id,
+                                songData =>
+                                {
+                                    songData.StartAtSecond = (int)args.Value;
+                                    return songData;
+                                }
+                            );
+                    }
+
+                    int minutes = (int)args.Value / 60;
+                    int seconds = (int)args.Value % 60;
+                    _startAtLabel.Text = $"{minutes} : {seconds:00}";
+                };
+
             // MARK: View Created. Set up subscriptions
 
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
@@ -369,6 +500,8 @@ namespace DanceDanceRotationModule.Views
                 _remapUtilityImage1.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage2.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
+                _playbackRateTrackbar.Value = 100;
+                _startAtTrackbar.Value = 0;
                 return;
             }
 
@@ -380,6 +513,11 @@ namespace DanceDanceRotationModule.Views
             _remapUtilityImage1.Texture = GetRemappedAbilityTexture(_song, _songData.Utility1Mapping);
             _remapUtilityImage2.Texture = GetRemappedAbilityTexture(_song, _songData.Utility2Mapping);
             _remapUtilityImage3.Texture = GetRemappedAbilityTexture(_song, _songData.Utility3Mapping);
+
+            _playbackRateTrackbar.Value = (int)Math.Round(_songData.PlaybackRate * 100);
+            _startAtTrackbar.Value = _songData.StartAtSecond;
+            _startAtTrackbar.MaxValue =
+                (int)_song.Notes.LastOrDefault().TimeInRotation.TotalSeconds;
         }
 
         private Texture2D GetRemappedAbilityTexture(

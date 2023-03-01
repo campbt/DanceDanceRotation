@@ -19,6 +19,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 {
     public class NotesContainer : Blish_HUD.Controls.Container
     {
+        private static readonly Logger Logger = Logger.GetLogger<NotesContainer>();
 
         // MARK: Inner Types
 
@@ -617,15 +618,47 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         public void Play()
         {
+            if (_currentSequence.Count == 0)
+            {
+                Logger.Warn("Play pressed, but no song loaded.");
+            }
+
             if (_info.IsStarted == false)
             {
+                // Start from stopped
                 _info.IsStarted = true;
                 _info.StartTime = _lastGameTime;
+
+                if (_songData.StartAtSecond > 0)
+                {
+                    TimeSpan startTime = TimeSpan.FromSeconds(_songData.StartAtSecond);
+
+                    // Adjust the current index up so the first notes don't spawn in a clump
+                    foreach (Note note in _currentSequence)
+                    {
+                        if (note.TimeInRotation < startTime)
+                        {
+                            _info.SequenceIndex += 1;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    // Set StartTime back in time to begin later in the song. This must be adjusted by the rate to be accurate
+                    startTime = startTime.Divide(
+                        new decimal(_songData.PlaybackRate)
+                    );
+                    _info.StartTime -= startTime;
+                }
+
                 OnStartStop?.Invoke(this, _info.IsStarted);
                 AddInitialAbilityIcons();
             }
             else
             {
+                // Resume from paused
                 _info.IsPaused = false;
                 _info.StartTime += _lastGameTime - _info.PausedTime;
             }
@@ -671,7 +704,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
 
             TimeSpan timeInRotation = _lastGameTime - _info.StartTime;
-            double PlaybackRate = DanceDanceRotationModule.DanceDanceRotationModuleInstance.PlaybackRate.Value / 100.0;
+            double PlaybackRate = _songData.PlaybackRate;
             timeInRotation = timeInRotation.Multiply(new decimal(PlaybackRate));
 
             // Check to add notes

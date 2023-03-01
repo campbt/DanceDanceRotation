@@ -18,19 +18,22 @@ namespace DanceDanceRotationModule.Model
         public UtilitySkillMapping Utility1Mapping { get; set; }
         public UtilitySkillMapping Utility2Mapping { get; set; }
         public UtilitySkillMapping Utility3Mapping { get; set; }
+        /* Should adjust the speed of the notes based this rate. 1.0 == normal speed. 0.5 is slower. */
+        public float PlaybackRate { get; set; }
+        /* Should start with notes at this second. */
+        public int StartAtSecond { get; set; }
 
 
         public SongData(
-            Song.ID id,
-            UtilitySkillMapping utility1Mapping,
-            UtilitySkillMapping utility2Mapping,
-            UtilitySkillMapping utility3Mapping
+            Song.ID id
         )
         {
             Id = id;
-            Utility1Mapping = utility1Mapping;
-            Utility2Mapping = utility2Mapping;
-            Utility3Mapping = utility3Mapping;
+            Utility1Mapping = UtilitySkillMapping.One;
+            Utility2Mapping = UtilitySkillMapping.Two;
+            Utility3Mapping = UtilitySkillMapping.Three;
+            PlaybackRate = 100;
+            StartAtSecond = 0;
         }
 
         /**
@@ -74,10 +77,7 @@ namespace DanceDanceRotationModule.Model
         )
         {
             return new SongData(
-                id,
-                UtilitySkillMapping.One,
-                UtilitySkillMapping.Two,
-                UtilitySkillMapping.Three
+                id
             );
         }
     }

@@ -37,7 +37,6 @@ namespace DanceDanceRotationModule
 
         // MARK: Settings - General
 
-        internal SettingEntry<int> PlaybackRate { get; private set; }
         internal SettingEntry<float> BackgroundOpacity { get; private set; }
         internal SettingEntry<bool> AutoHitWeapon1 { get; private set; }
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
@@ -97,11 +96,6 @@ namespace DanceDanceRotationModule
                 displayNameFunc: () => "General",
                 lazyLoaded: false
             );
-            PlaybackRate = generalSettings.DefineSetting("PlaybackRate",
-                100,
-                () => "Playback Rate %",
-                () => "Speeds up or slows down the note speed based on this value. Min=10% Max=100%");
-            PlaybackRate.SetRange(10, 100);
 
             BackgroundOpacity = generalSettings.DefineSetting("BackgroundOpacity",
                 1.0f,
@@ -293,19 +287,17 @@ namespace DanceDanceRotationModule
             };
 
             _songInfoWindow = new StandardWindow(
-                Resources.Instance.WindowBackgroundTexture,
-                new Rectangle(40, 26, 913, 691),
-                new Rectangle(40, 26, 913, 691)
+                Resources.Instance.SongInfoBackground,
+                new Rectangle(40, 26, 333, 676),
+                new Rectangle(40, 26, 333, 676)
             )
             {
                 Parent = GameService.Graphics.SpriteScreen,
                 Title = "Song Info",
-                Subtitle = "Dance Dance Rotation",
                 Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                CanResize = true,
+                CanResize = false,
                 CanCloseWithEscape = true,
                 SavesPosition = true,
-                SavesSize = true,
                 Id = "DDR_SongInfo_ID"
             };
         }
