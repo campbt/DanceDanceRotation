@@ -510,9 +510,9 @@ namespace DanceDanceRotationModule.Views
             _buildUrlTextBox.Text = _song.BuildUrl;
             _buildTemplateTextBox.Text = _song.BuildTemplateCode;
 
-            _remapUtilityImage1.Texture = GetRemappedAbilityTexture(_song, _songData.Utility1Mapping);
-            _remapUtilityImage2.Texture = GetRemappedAbilityTexture(_song, _songData.Utility2Mapping);
-            _remapUtilityImage3.Texture = GetRemappedAbilityTexture(_song, _songData.Utility3Mapping);
+            GetRemappedAbilityTexture(_song.Utility1, _songData.Utility1Mapping);
+            GetRemappedAbilityTexture(_song.Utility2, _songData.Utility2Mapping);
+            GetRemappedAbilityTexture(_song.Utility3, _songData.Utility3Mapping);
 
             _playbackRateTrackbar.Value = (int)Math.Round(_songData.PlaybackRate * 100);
             _startAtTrackbar.Value = _songData.StartAtSecond;
@@ -520,7 +520,33 @@ namespace DanceDanceRotationModule.Views
                 (int)_song.Notes.LastOrDefault().TimeInRotation.TotalSeconds;
         }
 
-        private Texture2D GetRemappedAbilityTexture(
+        private void GetRemappedAbilityTexture(
+            AbilityId abilityId,
+            SongData.UtilitySkillMapping skillMapping
+        )
+        {
+            Image image;
+            switch (skillMapping)
+            {
+                case SongData.UtilitySkillMapping.One:
+                    image = _remapUtilityImage1;
+                    break;
+                case SongData.UtilitySkillMapping.Two:
+                    image = _remapUtilityImage2;
+                    break;
+                case SongData.UtilitySkillMapping.Three:
+                    image = _remapUtilityImage3;
+                    break;
+                default:
+                    return;
+            }
+            image.Texture = Resources.Instance.GetAbilityIcon(abilityId);
+        }
+
+        /**
+         * A remapping is going to take
+         */
+        private Texture2D GetRemappedAbilityTexture2(
             Song song,
             SongData.UtilitySkillMapping skillMapping
         )
