@@ -98,7 +98,7 @@ namespace DanceDanceRotationModule.Storage
                     InvokeSelectedSongInfo();
                 }
 
-                var fullFilePath = Path.Combine(SongsDir, $"{song.Name}.json");
+                var fullFilePath = GetSongPath(song);
                 Logger.Info("Attempting to save song file " + fullFilePath);
 
                 // Disable watcher, or it can infinite loop
@@ -162,9 +162,16 @@ namespace DanceDanceRotationModule.Storage
         {
             if (_songs.ContainsKey(songId))
             {
+                Logger.Info("Removing song: " + songId.Name);
+                Song song = _songs[songId];
                 _songs.Remove(songId);
                 _songDatas.Remove(songId);
-                Save();
+
+                // Attempt to delete file with this song's name
+                var fullFilePath = GetSongPath(song);
+                Logger.Info("Attempting to delete song file " + fullFilePath);
+                File.Delete(fullFilePath);
+
                 OnSongsChanged?.Invoke(sender: this, null);
                 if (_selectedSongId.Equals(songId))
                 {
@@ -334,6 +341,11 @@ namespace DanceDanceRotationModule.Storage
                     Data = songData
                 }
             );
+        }
+
+        private string GetSongPath(Song song)
+        {
+            return Path.Combine(SongsDir, $"{song.Name}.json");
         }
     }
 }
