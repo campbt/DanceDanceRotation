@@ -533,6 +533,7 @@ namespace DanceDanceRotationModule.NoteDisplay
         private TimeSpan _lastGameTime;
         private CurrentSequenceInfo _info = new CurrentSequenceInfo();
         private WindowInfo _windowInfo = new WindowInfo();
+        private Label _timeLabel;
 
         // MARK: Events
 
@@ -547,6 +548,18 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             CreateTarget();
             UpdateTarget();
+
+            _timeLabel = new Label()
+            {
+                Text = "",
+                Visible = false,
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Location = new Point(10, 10),
+                Parent = this
+            };
 
             // Listen for selected song changes to update the notes
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
@@ -623,6 +636,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                 Logger.Warn("Play pressed, but no song loaded.");
             }
 
+            _timeLabel.Visible = false;
+
             if (_info.IsStarted == false)
             {
                 // Start from stopped
@@ -670,6 +685,10 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 _info.IsPaused = true;
                 _info.PausedTime = _lastGameTime;
+
+                TimeSpan totalInGameTime = (_info.PausedTime - _info.StartTime);
+                _timeLabel.Text = $"{totalInGameTime.Minutes} : {totalInGameTime.Seconds:00}";
+                _timeLabel.Visible = true;
             }
         }
 
@@ -680,6 +699,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 _info.IsStarted = false;
                 _info.IsPaused = false;
                 _info.Reset();
+                _timeLabel.Visible = false;
                 OnStartStop?.Invoke(this, _info.IsStarted);
             }
         }

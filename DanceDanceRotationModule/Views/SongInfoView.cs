@@ -440,7 +440,7 @@ namespace DanceDanceRotationModule.Views
             };
             _startAtLabel = new Label()
             {
-                Text = "0:00",
+                Text = "0 : 00",
                 Width = 100,
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont18,
@@ -474,7 +474,7 @@ namespace DanceDanceRotationModule.Views
 
                     int minutes = (int)args.Value / 60;
                     int seconds = (int)args.Value % 60;
-                    _startAtLabel.Text = $"{minutes} : {seconds:00}";
+                    _startAtLabel.Text = $"{minutes} : {seconds:00}";
                 };
 
             // MARK: View Created. Set up subscriptions
