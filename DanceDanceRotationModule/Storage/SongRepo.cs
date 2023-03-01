@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Blish_HUD;
+using Blish_HUD.Controls;
 using DanceDanceRotationModule.Model;
 using MonoGame.Extended.Collections;
+using Newtonsoft.Json;
+using SharpDX.Direct2D1;
 using SharpDX.X3DAudio;
 
 namespace DanceDanceRotationModule.Storage
@@ -20,6 +24,11 @@ namespace DanceDanceRotationModule.Storage
      */
     public class SongRepo
     {
+        private static readonly Logger Logger = Logger.GetLogger<SongRepo>();
+
+        private const string SONGS_FOLDER_NAME = "songs";
+        public static string SongsDir => DanceDanceRotationModule.DanceDanceRotationModuleInstance.DirectoriesManager.GetFullDirectoryPath(SONGS_FOLDER_NAME);
+
         private Song.ID _selectedSongId;
         private Dictionary<Song.ID, Song> _songs;
         private Dictionary<Song.ID, SongData> _songDatas;
@@ -61,15 +70,43 @@ namespace DanceDanceRotationModule.Storage
 
         // MARK: Mutation
 
-        public void AddSong(Song song)
+        public void AddSong(string json)
         {
-            _songs[song.Id] = song;
-            Save();
-            OnSongsChanged?.Invoke(sender: this, null);
-            if (_selectedSongId.Equals(song.Id))
+            Logger.Info("Attempting to decode into a song:\n" + json);
+            try
             {
-                InvokeSelectedSongInfo();
+                Song song = SongTranslator.FromJson(json);
+
+                Logger.Info(
+                    _songs.ContainsKey(song.Id)
+                    ? "Successfully replaced song: " + song.Name
+                    : "Successfully added song: " + song.Name
+                );
+
+                _songs[song.Id] = song;
+                OnSongsChanged?.Invoke(sender: this, null);
+                // If the added song has the same ID of the selected song, it overwrites it, and all screens should update
+                if (_selectedSongId.Equals(song.Id))
+                {
+                    InvokeSelectedSongInfo();
+                }
+
+                var fullFilePath = Path.Combine(SongsDir, $"{song.Name}.json");
+                Logger.Info("Attempting to save song file " + fullFilePath);
+                File.WriteAllText(fullFilePath, json);
+                Logger.Info("Successfull saved song file " + fullFilePath);
+                ScreenNotification.ShowNotification("Added Song Successfully");
             }
+            catch (Exception exception)
+            {
+                Logger.Warn(
+                    "Failed to decode clipboard contents into a song:\n" +
+                    exception.Message + "\n" +
+                    exception
+                );
+                ScreenNotification.ShowNotification("Failed to decode song.");
+            }
+
         }
 
         /**
@@ -125,12 +162,34 @@ namespace DanceDanceRotationModule.Storage
 
         public void Load()
         {
+            // Load all .json files in songs directory
+            List<Song> loadedSongs = new List<Song>();
+            Logger.Info("Loading song .json files in " + SongsDir);
+            foreach (string fileName in Directory.GetFiles(SongsDir, "*.json"))
+            {
+                using (StreamReader r = new StreamReader(fileName))
+                {
+                    try
+                    {
+                        string json = r.ReadToEnd();
+                        Song song = SongTranslator.FromJson(json);
+                        loadedSongs.Add(song);
+                        Logger.Trace("Successfully loaded song file: " + fileName);
+                    }
+                    catch (Exception exception)
+                    {
+                        Logger.Warn(exception, "Failed to load song file: " + fileName);
+                    }
+                }
+                // Do something with the file content
+            }
+            Logger.Info($"Successfully loaded {loadedSongs.Count} songs.");
+
             // TODO: Move these settings into this repo?
             _selectedSongId = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.Value;
-            var songs = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongList.Value;
             var songDatas = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value;
 
-            foreach (var song in songs)
+            foreach (var song in loadedSongs)
             {
                 _songs[song.Id] = song;
             }
@@ -152,7 +211,6 @@ namespace DanceDanceRotationModule.Storage
         private void Save()
         {
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.Value = _selectedSongId;
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongList.Value = _songs.Values.ToList();
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value = _songDatas.Values.ToList();
         }
 

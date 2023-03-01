@@ -86,25 +86,9 @@ namespace DanceDanceRotationModule.Storage
             };
             addSongButton.Click += delegate
             {
-                try
-                {
-                    Logger.Info("Attempting to read in clipboard contents");
-                    string clipboardContents = ClipboardUtil.WindowsClipboardService.GetTextAsync().Result;
-                    Logger.Info("Attempting to decode into a song:\n" + clipboardContents);
-                    Song song = SongTranslator.FromJson(clipboardContents);
-                    Logger.Info("Decode Was Successful: " + song.Name);
-                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.AddSong(song);
-                    ScreenNotification.ShowNotification("Added Song Successfully");
-                }
-                catch (Exception e)
-                {
-                    Logger.Warn(
-                        "Failed to decode clipboard contents into a song:\n" +
-                        e.Message + "\n" +
-                        e
-                    );
-                    ScreenNotification.ShowNotification("Failed to decode song.");
-                }
+                Logger.Info("Attempting to read in clipboard contents");
+                string clipboardContents = ClipboardUtil.WindowsClipboardService.GetTextAsync().Result;
+                DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.AddSong(clipboardContents);
             };
             StandardButton findSongsButton = new StandardButton()
             {

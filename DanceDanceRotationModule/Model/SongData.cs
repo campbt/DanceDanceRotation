@@ -32,7 +32,7 @@ namespace DanceDanceRotationModule.Model
             Utility1Mapping = UtilitySkillMapping.One;
             Utility2Mapping = UtilitySkillMapping.Two;
             Utility3Mapping = UtilitySkillMapping.Three;
-            PlaybackRate = 100;
+            PlaybackRate = 1.0f;
             StartAtSecond = 0;
         }
 

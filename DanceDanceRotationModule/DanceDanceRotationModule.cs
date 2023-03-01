@@ -73,8 +73,6 @@ namespace DanceDanceRotationModule
 
         // MARK: Hidden Settings
 
-        // internal SettingEntry<SongRepo> SongRepo { get; private set; }
-        internal SettingEntry<List<Song>> SongList { get; private set; }
         internal SettingEntry<List<SongData>> SongDatas { get; private set; }
         internal SettingEntry<Song.ID> SelectedSong { get; private set; }
 
@@ -197,7 +195,6 @@ namespace DanceDanceRotationModule
             // MARK: Private settings (not visible to the user)
 
             var hiddenSettings = settings.AddSubCollection("hidden_settings");
-            SongList = hiddenSettings.DefineSetting("SongList", new List<Song>());
             SongDatas = hiddenSettings.DefineSetting("SavedSongSettings", new List<SongData>());
             SelectedSong = hiddenSettings.DefineSetting("SelectedSong", new Song.ID());
         }
