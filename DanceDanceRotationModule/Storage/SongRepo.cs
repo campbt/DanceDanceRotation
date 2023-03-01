@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
 using DanceDanceRotationModule.Model;
+using DanceDanceRotationModule.Util;
 using MonoGame.Extended.Collections;
 using Newtonsoft.Json;
 using SharpDX.Direct2D1;
 using SharpDX.X3DAudio;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace DanceDanceRotationModule.Storage
 {
@@ -97,10 +100,14 @@ namespace DanceDanceRotationModule.Storage
 
                 var fullFilePath = Path.Combine(SongsDir, $"{song.Name}.json");
                 Logger.Info("Attempting to save song file " + fullFilePath);
+
                 // Disable watcher, or it can infinite loop
                 _fileSystemWatcher.EnableRaisingEvents = false;
-                File.WriteAllText(fullFilePath, json);
-                Logger.Info("Successfull saved song file " + fullFilePath);
+
+                string prettyJson = JsonHelper.FormatJson(json);
+                File.WriteAllText(fullFilePath, prettyJson);
+                Logger.Info("Successfully saved pretty song file " + fullFilePath);
+
                 ScreenNotification.ShowNotification("Added Song Successfully");
             }
             catch (Exception exception)
