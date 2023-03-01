@@ -246,7 +246,8 @@ namespace DanceDanceRotationModule
 
             // Load songs from settings
             SongRepo = new SongRepo();
-            SongRepo.Load();
+            SongRepo.StartDirectoryWatcher();
+            await SongRepo.Load();
 
             // GraphicsDevice graphicsDevice = GameService.Graphics.LendGraphicsDeviceContext().GraphicsDevice;
             _mainWindow = new DdrNotesWindow(
@@ -358,6 +359,7 @@ namespace DanceDanceRotationModule
             _cornerIcon?.Dispose();
             _songListWindow?.Dispose();
             _songInfoWindow?.Dispose();
+            SongRepo?.Dispose();
 
             // All static members must be manually unset
             // Static members are not automatically cleared and will keep a reference to your,

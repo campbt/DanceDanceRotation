@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
 using DanceDanceRotationModule.Model;
@@ -32,6 +33,8 @@ namespace DanceDanceRotationModule.Storage
         private Song.ID _selectedSongId;
         private Dictionary<Song.ID, Song> _songs;
         private Dictionary<Song.ID, SongData> _songDatas;
+
+        public FileSystemWatcher _fileSystemWatcher;
 
         public event EventHandler OnSongsChanged;
 
@@ -73,6 +76,7 @@ namespace DanceDanceRotationModule.Storage
         public void AddSong(string json)
         {
             Logger.Info("Attempting to decode into a song:\n" + json);
+
             try
             {
                 Song song = SongTranslator.FromJson(json);
@@ -93,6 +97,8 @@ namespace DanceDanceRotationModule.Storage
 
                 var fullFilePath = Path.Combine(SongsDir, $"{song.Name}.json");
                 Logger.Info("Attempting to save song file " + fullFilePath);
+                // Disable watcher, or it can infinite loop
+                _fileSystemWatcher.EnableRaisingEvents = false;
                 File.WriteAllText(fullFilePath, json);
                 Logger.Info("Successfull saved song file " + fullFilePath);
                 ScreenNotification.ShowNotification("Added Song Successfully");
@@ -107,6 +113,8 @@ namespace DanceDanceRotationModule.Storage
                 ScreenNotification.ShowNotification("Failed to decode song.");
             }
 
+            // Re-enable watching
+            _fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         /**
@@ -160,8 +168,25 @@ namespace DanceDanceRotationModule.Storage
 
         // MARK: Save/Load
 
-        public void Load()
+        public Task Load()
         {
+            // Load all .json files in songs directory
+            LoadSongFiles();
+
+            _selectedSongId = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.Value;
+            var songDatas = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value;
+
+            foreach (var songData in songDatas)
+            {
+                _songDatas[songData.Id] = songData;
+            }
+            InvokeSelectedSongInfo();
+            return Task.CompletedTask;
+        }
+
+        private void LoadSongFiles()
+        {
+
             // Load all .json files in songs directory
             List<Song> loadedSongs = new List<Song>();
             Logger.Info("Loading song .json files in " + SongsDir);
@@ -185,24 +210,12 @@ namespace DanceDanceRotationModule.Storage
             }
             Logger.Info($"Successfully loaded {loadedSongs.Count} songs.");
 
-            // TODO: Move these settings into this repo?
-            _selectedSongId = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.Value;
-            var songDatas = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value;
-
+            _songs.Clear();
             foreach (var song in loadedSongs)
             {
                 _songs[song.Id] = song;
             }
-            foreach (var songData in songDatas)
-            {
-                _songDatas[songData.Id] = songData;
-            }
-            EventHandler onSongsChanged = this.OnSongsChanged;
-            if (onSongsChanged != null)
-            {
-                onSongsChanged.Invoke(sender: this, null);
-            }
-            InvokeSelectedSongInfo();
+            OnSongsChanged?.Invoke(sender: this, null);
         }
 
         /**
@@ -214,6 +227,64 @@ namespace DanceDanceRotationModule.Storage
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value = _songDatas.Values.ToList();
         }
 
+        public void StartDirectoryWatcher()
+        {
+            _fileSystemWatcher = new FileSystemWatcher();
+            _fileSystemWatcher.Path = SongsDir;
+
+            // Only care about Write changes for Changed. FileName is used to observe Created/Deleted
+            _fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
+            // Only care about song json files
+            _fileSystemWatcher.Filter = "*.json";
+
+            _fileSystemWatcher.Changed += OnSongChanged;
+            _fileSystemWatcher.Created += OnSongChanged;
+            _fileSystemWatcher.Deleted += OnSongChanged;
+
+            // Begin watching.
+            _fileSystemWatcher.EnableRaisingEvents = true;
+        }
+
+        // Event handler
+        private static void OnSongChanged(object source, FileSystemEventArgs @event)
+        {
+            Logger.Info("Song File Event: " + @event.FullPath + " " + @event.ChangeType);
+            switch (@event.ChangeType)
+            {
+                case WatcherChangeTypes.Created:
+                case WatcherChangeTypes.Changed:
+                    string json = "";
+                    try
+                    {
+                        using (StreamReader r = new StreamReader(@event.FullPath))
+                        {
+                            json = r.ReadToEnd();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e, "Failed to load newly created or changed file!");
+                    }
+
+                    if (json.Length > 0)
+                    {
+                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.AddSong(json);
+                    }
+                    break;
+                case WatcherChangeTypes.Renamed:
+                    // This doesn't matter
+                    break;
+                case WatcherChangeTypes.All:
+                case WatcherChangeTypes.Deleted:
+                default:
+                    // No easy way to know which song was
+                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.LoadSongFiles();
+                    break;
+            }
+        }
+
+        // MARK: Get Data
+
         public List<Song> GetAllSongs()
         {
             return _songs.Values.ToList();
@@ -222,6 +293,17 @@ namespace DanceDanceRotationModule.Storage
         public Song GetSong(Song.ID songId)
         {
             return _songs[songId];
+        }
+
+        // MARK: Dispose
+
+        public void Dispose()
+        {
+            _fileSystemWatcher.EnableRaisingEvents = false;
+            _fileSystemWatcher.Dispose();
+
+            _songs.Clear();
+            _songDatas.Clear();
         }
 
         // MARK: Utility
