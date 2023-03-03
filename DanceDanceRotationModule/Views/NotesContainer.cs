@@ -165,6 +165,10 @@ namespace DanceDanceRotationModule.NoteDisplay
          */
         internal class ActiveNote
         {
+            private const float FadeInTime = 0.7f;
+            private const float HitAnimationTime = 0.2f;
+            private const int HitAnimationScaleDivisor = 4;
+
             private WindowInfo _windowInfo;
             internal Note Note { get; set; }
             internal Image Image { get; set; }
@@ -175,6 +179,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             internal double XPosition { get; set; }
 
             private bool _isHit = false;
+            private bool _allowMovement = true;
 
             internal bool ShouldRemove { get; private set; }
 
@@ -267,7 +272,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowHotkeys.Value == false)
                 {
                     Label.Opacity = 0.0f;
-                };
+                }
                 // Must set this AFTER creation, so the auto width/height is used
                 Label.Location = new Point(
                     (int)(XPosition) + ((Image.Width - Label.Width) / 2),
@@ -278,12 +283,25 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 _isHit = false;
                 this.ShouldRemove = false;
+
+                // Fade Note in:
+                Image.Opacity = 0.0f;
+                Label.Opacity = 0.0f;
+                Animation.Tweener.Tween(Image, new
+                {
+                    Opacity = 1.0f
+                }, FadeInTime);
+                Animation.Tweener.Tween(Label, new
+                {
+                    Opacity = 1.0f
+                }, FadeInTime);
             }
 
             public void Update(GameTime gameTime, double moveAmount)
             {
                 XPosition -= moveAmount;
                 if (
+                    _isHit == false &&
                     DanceDanceRotationModule.DanceDanceRotationModuleInstance.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1 &&
                     XPosition <= _windowInfo.HitPerfect
@@ -291,7 +309,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                 {
                     // Special Case: If AutoHitWeapon1 is enabled, remove the note in perfect
                     //               No hit text needs to be made
-                    ShouldRemove = true;
+                    _isHit = true;
+                    PlayHitAnimation();
                 }
                 else if (XPosition <= _windowInfo.DestroyNotePosition)
                 {
@@ -302,19 +321,22 @@ namespace DanceDanceRotationModule.NoteDisplay
                     if (_isHit == false && XPosition <= _windowInfo.HitRangeBoo.Min)
                     {
                         setHit(HitType.Miss);
-                        Image.BackgroundColor = Color.Red;
+                        PlayMissAnimation();
                     }
 
-                    // Move it
-                    Image.Location = new Point(
-                        // Center Image over X position
-                        (int)(XPosition) - (Image.Width / 2),
-                        Image.Location.Y
-                    );
-                    Label.Location = new Point(
-                        Image.Location.X + ((Image.Width - Label.Width) / 2),
-                        Label.Location.Y
-                    );
+                    if (_allowMovement)
+                    {
+                        // Move it
+                        Image.Location = new Point(
+                            // Center Image over X position
+                            (int)(XPosition) - (Image.Width / 2),
+                            Image.Location.Y
+                        );
+                        Label.Location = new Point(
+                            Image.Location.X + ((Image.Width - Label.Width) / 2),
+                            Label.Location.Y
+                        );
+                    }
                 }
             }
 
@@ -369,8 +391,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                     ScreenNotification.ShowNotification("Miss");
                 }
 
-                ShouldRemove = true;
                 setHit(hitType);
+                PlayHitAnimation();
                 return true;
             }
 
@@ -386,10 +408,56 @@ namespace DanceDanceRotationModule.NoteDisplay
                     return;
 
                 _isHit = true;
-                Label.Visible = false;
 
                 OnHit?.Invoke(this, hitType);
             }
+
+            private void PlayHitAnimation()
+            {
+                _allowMovement = false;
+
+                var startSize = Image.Size;
+                var startPosition = Image.Location;
+                Animation.Tweener
+                    .Tween(
+                        Image,
+                        new {
+                            Size = new Point(
+                                startSize.X / HitAnimationScaleDivisor,
+                                startSize.Y / HitAnimationScaleDivisor
+                            ),
+                            Location = new Point(
+                                startPosition.X + (Image.Width / HitAnimationScaleDivisor),
+                                startPosition.Y + (Image.Height / HitAnimationScaleDivisor)
+                            ),
+                            Opacity = 0.0f,
+                        },
+                        HitAnimationTime
+                    )
+                    .OnComplete(() =>
+                    {
+                        ShouldRemove = true;
+                    });
+                Animation.Tweener.Tween(Label, new
+                {
+                    Opacity = 0.0f
+                }, 0.1f);
+            }
+
+            private void PlayMissAnimation()
+            {
+                Image.BackgroundColor = Color.Red;
+                // Fade out note. Note, it will keep moving
+                Animation.Tweener.Tween(Image, new
+                {
+                    Opacity = 0.0f
+                }, 0.4f);
+                Animation.Tweener.Tween(Label, new
+                {
+                    Opacity = 0.0f
+                }, 0.1f);
+            }
+
         }
 
         // MARK: HitText

@@ -208,7 +208,7 @@ namespace DanceDanceRotationModule
             retval.Value.Enabled = true;
             retval.Value.Activated += delegate
             {
-                _mainView.GetNotesContainer()?.OnHotkeyPressed(noteType);
+                _mainView?.GetNotesContainer()?.OnHotkeyPressed(noteType);
             };
             return retval;
         }
