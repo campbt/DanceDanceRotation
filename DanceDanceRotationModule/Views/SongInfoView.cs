@@ -142,9 +142,13 @@ namespace DanceDanceRotationModule.Views
             ControlExtensions.ConvertToButton(_openBuildUrlBuildTemplateButton);
             _openBuildUrlBuildTemplateButton.Click += delegate
             {
-                if (_song != null)
+                if (_song != null && _song.BuildUrl != null)
                 {
                     UrlHelper.OpenUrl(_song.BuildUrl);
+                }
+                else
+                {
+                    ScreenNotification.ShowNotification("Failed to open link.");
                 }
             };
 
@@ -190,13 +194,18 @@ namespace DanceDanceRotationModule.Views
             ControlExtensions.ConvertToButton(_copyBuildTemplateButton);
             _copyBuildTemplateButton.Click += delegate
             {
-                if (_song != null)
+                if (_song != null && _song.BuildTemplateCode != null)
                 {
-                    ScreenNotification.ShowNotification("Copied Build to Clipboard");
                     ClipboardUtil.WindowsClipboardService.SetTextAsync(
                         _song.BuildTemplateCode
                     );
+                    ScreenNotification.ShowNotification("Copied Build to Clipboard");
                 }
+                else
+                {
+                    ScreenNotification.ShowNotification("No Build Template to Copy");
+                }
+
             };
 
             // MARK: Utility Skills Remap
@@ -497,6 +506,8 @@ namespace DanceDanceRotationModule.Views
                 _descriptionLabel.Text = "--";
                 _buildUrlTextBox.Text = "--";
                 _buildTemplateTextBox.Text = "--";
+                _copyBuildTemplateButton.Visible = false;
+                _openBuildUrlBuildTemplateButton.Visible = false;
                 _remapUtilityImage1.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage2.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
@@ -505,10 +516,12 @@ namespace DanceDanceRotationModule.Views
                 return;
             }
 
-            _nameLabel.Text = _song.Name;
-            _descriptionLabel.Text = _song.Description;
-            _buildUrlTextBox.Text = _song.BuildUrl;
-            _buildTemplateTextBox.Text = _song.BuildTemplateCode;
+            _nameLabel.Text = _song.Name ?? "<no name>";
+            _descriptionLabel.Text = _song.Description ?? "";
+            _buildUrlTextBox.Text = _song.BuildUrl ?? "";
+            _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "";
+            _openBuildUrlBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildUrl);
+            _copyBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildTemplateCode);
 
             GetRemappedAbilityTexture(_song.Utility1, _songData.Utility1Mapping);
             GetRemappedAbilityTexture(_song.Utility2, _songData.Utility2Mapping);
