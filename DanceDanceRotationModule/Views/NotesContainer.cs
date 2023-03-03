@@ -68,7 +68,6 @@ namespace DanceDanceRotationModule.NoteDisplay
          */
         internal class WindowInfo
         {
-            internal const double TimeToReachEnd = 3.0;
 
             internal int NoteWidth { get; private set; }
             internal int NoteHeight { get; private set; }
@@ -90,13 +89,20 @@ namespace DanceDanceRotationModule.NoteDisplay
             internal Range<double> HitRangeGood { get; private set; }
             internal Range<double> HitRangeBoo { get; private set; }
             internal int DestroyNotePosition { get; private set; }
-            /** How fast the note should move per note change */
+            /** How fast the note should move per note change. Determined by SongData. */
             internal double NotePositionChangePerSecond { get; private set; }
+            internal double TimeToReachEnd { get; private set; }
 
-            public void Recalculate(int width, int height)
+            public void Recalculate(int width, int height, SongData songData)
             {
                 // How long a note moves before hitting the "perfect" position
                 int perfectPosition = (int)(0.14 * width);
+
+                NotePositionChangePerSecond = Math.Max(
+                    songData.NotePositionChangePerSecond,
+                    SongData.MinimumNotePositionChangePerSecond
+                );
+                TimeToReachEnd = (NewNoteXPosition - perfectPosition) / NotePositionChangePerSecond;
 
                 VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
                     LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
@@ -121,7 +127,6 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 // New notes spawn right at the edge of the window
                 NewNoteXPosition = width;
-                NotePositionChangePerSecond = (NewNoteXPosition - perfectPosition) / TimeToReachEnd;
 
                 // Define the ranges for the other's
                 HitPerfect = perfectPosition;
@@ -582,7 +587,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             public void Update(GameTime gameTime, TimeSpan timeInRotation)
             {
                 // TODO: Animation here
-                if (timeInRotation.TotalMilliseconds > Note.TimeInRotation.TotalMilliseconds + (WindowInfo.TimeToReachEnd*1000))
+                if (timeInRotation.TotalMilliseconds > Note.TimeInRotation.TotalMilliseconds + (_windowInfo.TimeToReachEnd*1000))
                 {
                     ShouldDispose = true;
                 }
@@ -612,7 +617,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         public NotesContainer()
         {
-            _windowInfo.Recalculate(Width, Height);
+            _windowInfo.Recalculate(Width, Height, _songData);
 
             CreateTarget();
             UpdateTarget();
@@ -660,7 +665,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 return;
             }
 
-            _windowInfo.Recalculate(Width, Height);
+            _windowInfo.Recalculate(Width, Height, _songData);
             UpdateTarget();
             RecalculateLayoutAbilityIcons();
         }
@@ -680,6 +685,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             _currentSequence.Clear();
             _currentSequence.AddRange(notes);
             _songData = songData;
+            _windowInfo.Recalculate(Width, Height, _songData);
         }
 
         public void ToggleStart()

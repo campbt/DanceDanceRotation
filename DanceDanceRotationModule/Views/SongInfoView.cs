@@ -43,6 +43,8 @@ namespace DanceDanceRotationModule.Views
         private TrackBar _playbackRateTrackbar;
         private Label _startAtLabel;
         private TrackBar _startAtTrackbar;
+        private Label _noteSpeedLabel;
+        private TrackBar _noteSpeedTrackBar;
 
         public SongInfoView()
         {
@@ -486,6 +488,65 @@ namespace DanceDanceRotationModule.Views
                     _startAtLabel.Text = $"{minutes} : {seconds:00}";
                 };
 
+            // Note Speed
+
+            FlowPanel noteSpeedSection = new FlowPanel()
+            {
+                HeightSizingMode = SizingMode.AutoSize,
+                WidthSizingMode = SizingMode.Fill,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                Parent = practiceSettingsSection
+            };
+            new Label()
+            {
+                Text = "Note Speed",
+                BasicTooltipText = "Sets how fast notes move.",
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Parent = noteSpeedSection
+            };
+            _noteSpeedLabel = new Label()
+            {
+                Text = "" + SongData.MinimumNotePositionChangePerSecond,
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont18,
+                TextColor = Color.White,
+                Parent = noteSpeedSection
+            };
+            _noteSpeedTrackBar = new TrackBar()
+            {
+                Enabled = true,
+                MinValue = SongData.MinimumNotePositionChangePerSecond,
+                MaxValue = SongData.MaximumNotePositionChangePerSecond,
+                SmallStep = false,
+                Value = SongData.DefaultNotePositionChangePerSecond,
+                Parent = practiceSettingsSection
+            };
+            _noteSpeedTrackBar.ValueChanged +=
+                delegate(object sender, ValueEventArgs<float> args)
+                {
+                    if (_song != null)
+                    {
+                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                            .UpdateData(
+                                _song.Id,
+                                songData =>
+                                {
+                                    songData.NotePositionChangePerSecond = (int)args.Value;
+                                    return songData;
+                                }
+                            );
+                    }
+
+                    // While the raw value is in raw X position change per second, that isn't entirely useful to the user
+                    // So, convert it to a percentage of the default note speed
+                    int percentage = (int)(args.Value * 100.0f / SongData.DefaultNotePositionChangePerSecond);
+                    _noteSpeedLabel.Text = percentage + "%";
+                };
+
             // MARK: View Created. Set up subscriptions
 
             DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
@@ -513,6 +574,7 @@ namespace DanceDanceRotationModule.Views
                 _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
                 _playbackRateTrackbar.Value = 100;
                 _startAtTrackbar.Value = 0;
+                _noteSpeedTrackBar.Value = SongData.DefaultNotePositionChangePerSecond;
                 return;
             }
 
@@ -531,6 +593,7 @@ namespace DanceDanceRotationModule.Views
             _startAtTrackbar.Value = _songData.StartAtSecond;
             _startAtTrackbar.MaxValue =
                 (int)_song.Notes.LastOrDefault().TimeInRotation.TotalSeconds;
+            _noteSpeedTrackBar.Value = _songData.NotePositionChangePerSecond;
         }
 
         private void GetRemappedAbilityTexture(

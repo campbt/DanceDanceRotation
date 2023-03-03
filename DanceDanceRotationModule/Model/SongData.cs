@@ -7,6 +7,10 @@ namespace DanceDanceRotationModule.Model
      */
     public struct SongData
     {
+        public const int MinimumNotePositionChangePerSecond = 75;
+        public const int MaximumNotePositionChangePerSecond = 600;
+        public const int DefaultNotePositionChangePerSecond = 300;
+
         public enum UtilitySkillMapping
         {
             One,
@@ -22,6 +26,8 @@ namespace DanceDanceRotationModule.Model
         public float PlaybackRate { get; set; }
         /* Should start with notes at this second. */
         public int StartAtSecond { get; set; }
+        /* Determines how fast notes move */
+        public int NotePositionChangePerSecond { get; set; }
 
 
         public SongData(
@@ -34,6 +40,7 @@ namespace DanceDanceRotationModule.Model
             Utility3Mapping = UtilitySkillMapping.Three;
             PlaybackRate = 1.0f;
             StartAtSecond = 0;
+            NotePositionChangePerSecond = DefaultNotePositionChangePerSecond;
         }
 
         /**
