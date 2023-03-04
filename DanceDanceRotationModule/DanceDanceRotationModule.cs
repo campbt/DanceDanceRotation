@@ -81,7 +81,7 @@ namespace DanceDanceRotationModule
         [ImportingConstructor]
         public DanceDanceRotationModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
         {
-            DanceDanceRotationModuleInstance = this;
+            Instance = this;
         }
 
         // Define the settings you would like to use in your module.  Settings are persistent
@@ -364,7 +364,7 @@ namespace DanceDanceRotationModule
             // All static members must be manually unset
             // Static members are not automatically cleared and will keep a reference to your,
             // module unless manually unset.
-            DanceDanceRotationModuleInstance = null;
+            Instance = null;
         }
 
         public void ToggleSongList()
@@ -391,7 +391,7 @@ namespace DanceDanceRotationModule
             }
         }
 
-        internal static DanceDanceRotationModule DanceDanceRotationModuleInstance;
+        internal static DanceDanceRotationModule Instance;
         private CornerIcon _cornerIcon;
 
         // Windows

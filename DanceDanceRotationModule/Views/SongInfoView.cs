@@ -288,7 +288,7 @@ namespace DanceDanceRotationModule.Views
                 if (_song == null)
                     return;
 
-                DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                DanceDanceRotationModule.Instance.SongRepo
                     .UpdateData(
                         _song.Id,
                         songData =>
@@ -417,7 +417,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (_song != null)
                     {
-                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                        DanceDanceRotationModule.Instance.SongRepo
                             .UpdateData(
                                 _song.Id,
                                 songData =>
@@ -472,7 +472,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (_song != null)
                     {
-                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                        DanceDanceRotationModule.Instance.SongRepo
                             .UpdateData(
                                 _song.Id,
                                 songData =>
@@ -530,7 +530,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (_song != null)
                     {
-                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo
+                        DanceDanceRotationModule.Instance.SongRepo
                             .UpdateData(
                                 _song.Id,
                                 songData =>
@@ -549,7 +549,7 @@ namespace DanceDanceRotationModule.Views
 
             // MARK: View Created. Set up subscriptions
 
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
+            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
                     OnSelectedSongChanged(songInfo);

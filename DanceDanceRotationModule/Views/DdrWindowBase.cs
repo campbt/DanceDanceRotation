@@ -106,7 +106,7 @@ namespace DanceDanceRotationModule.Views
       private static readonly Texture2D _textureBlackFade = Control.Content.GetTexture("fade-down-46");
       // DDR: Custom settings
       private static readonly SettingCollection _windowSettings =
-        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SettingsManager.ModuleSettings.AddSubCollection(
+        DanceDanceRotationModule.Instance.SettingsManager.ModuleSettings.AddSubCollection(
           "DdrWindowBase");
       private readonly AsyncTexture2D _textureWindowCorner = AsyncTexture2D.FromAssetId(156008);
       private readonly AsyncTexture2D _textureWindowResizableCorner = AsyncTexture2D.FromAssetId(156009);

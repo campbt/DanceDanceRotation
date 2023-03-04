@@ -53,12 +53,12 @@ namespace DanceDanceRotationModule
                 ZIndex = -1,
                 Parent = buildPanel
             };
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.BackgroundOpacity.SettingChanged += delegate(object sender, ValueChangedEventArgs<float> args)
+            DanceDanceRotationModule.Instance.BackgroundOpacity.SettingChanged += delegate(object sender, ValueChangedEventArgs<float> args)
             {
                 backgroundPanel.Opacity = args.NewValue;
                 topPanelBackground.Opacity = 1 - args.NewValue;
             };
-            backgroundPanel.Opacity = DanceDanceRotationModule.DanceDanceRotationModuleInstance.BackgroundOpacity.Value;
+            backgroundPanel.Opacity = DanceDanceRotationModule.Instance.BackgroundOpacity.Value;
             topPanelBackground.Opacity = 1 - backgroundPanel.Opacity;
 
             FlowPanel flowPanel = new FlowPanel()
@@ -142,7 +142,7 @@ namespace DanceDanceRotationModule
             ControlExtensions.ConvertToButton(songListButton);
             songListButton.Click += delegate
             {
-                DanceDanceRotationModule.DanceDanceRotationModuleInstance.ToggleSongList();
+                DanceDanceRotationModule.Instance.ToggleSongList();
             };
 
             // MARK: Song Title
@@ -158,10 +158,10 @@ namespace DanceDanceRotationModule
             ControlExtensions.ConvertToButton(activeSongName);
             activeSongName.Click += delegate
             {
-                DanceDanceRotationModule.DanceDanceRotationModuleInstance.ToggleSongInfo();
+                DanceDanceRotationModule.Instance.ToggleSongInfo();
             };
             // Make value equal to currently selected song
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.OnSelectedSongChanged +=
+            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
                     if (songInfo.Song != null)

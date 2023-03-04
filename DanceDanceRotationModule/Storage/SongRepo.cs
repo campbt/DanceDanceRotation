@@ -31,7 +31,7 @@ namespace DanceDanceRotationModule.Storage
         private static readonly Logger Logger = Logger.GetLogger<SongRepo>();
 
         private const string SONGS_FOLDER_NAME = "songs";
-        public static string SongsDir => DanceDanceRotationModule.DanceDanceRotationModuleInstance.DirectoriesManager.GetFullDirectoryPath(SONGS_FOLDER_NAME);
+        public static string SongsDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(SONGS_FOLDER_NAME);
 
         private Song.ID _selectedSongId;
         private Dictionary<Song.ID, Song> _songs;
@@ -187,8 +187,8 @@ namespace DanceDanceRotationModule.Storage
             // Load all .json files in songs directory
             LoadSongFiles();
 
-            _selectedSongId = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.Value;
-            var songDatas = DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value;
+            _selectedSongId = DanceDanceRotationModule.Instance.SelectedSong.Value;
+            var songDatas = DanceDanceRotationModule.Instance.SongDatas.Value;
 
             foreach (var songData in songDatas)
             {
@@ -237,8 +237,8 @@ namespace DanceDanceRotationModule.Storage
          */
         private void Save()
         {
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SelectedSong.Value = _selectedSongId;
-            DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongDatas.Value = _songDatas.Values.ToList();
+            DanceDanceRotationModule.Instance.SelectedSong.Value = _selectedSongId;
+            DanceDanceRotationModule.Instance.SongDatas.Value = _songDatas.Values.ToList();
         }
 
         public void StartDirectoryWatcher()
@@ -282,7 +282,7 @@ namespace DanceDanceRotationModule.Storage
 
                     if (json.Length > 0)
                     {
-                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.AddSong(json);
+                        DanceDanceRotationModule.Instance.SongRepo.AddSong(json);
                     }
                     break;
                 case WatcherChangeTypes.Renamed:
@@ -292,7 +292,7 @@ namespace DanceDanceRotationModule.Storage
                 case WatcherChangeTypes.Deleted:
                 default:
                     // No easy way to know which song was
-                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.SongRepo.LoadSongFiles();
+                    DanceDanceRotationModule.Instance.SongRepo.LoadSongFiles();
                     break;
             }
         }
