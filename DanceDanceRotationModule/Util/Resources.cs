@@ -46,10 +46,6 @@ namespace DanceDanceRotationModule.Util
                 }
             }
 
-            MugTexture = contentsManager.GetTexture("mug.png");
-            WindowBackgroundEmptyTexture = contentsManager.GetTexture("windowBgEmpty.png");
-            WindowBackgroundTexture = contentsManager.GetTexture("windowBg.png");
-            WindowBackground2Texture = contentsManager.GetTexture("windowBg2.png");
             ButtonCopy = contentsManager.GetTexture("buttons/copyIcon.png");
             ButtonDelete = contentsManager.GetTexture("buttons/deleteIcon.png");
             ButtonDownload = contentsManager.GetTexture("buttons/downloadIcon.png");
@@ -59,21 +55,22 @@ namespace DanceDanceRotationModule.Util
             ButtonPlay = contentsManager.GetTexture("buttons/playIcon.png");
             ButtonReload = contentsManager.GetTexture("buttons/reloadIcon.png");
             ButtonStop = contentsManager.GetTexture("buttons/stopIcon.png");
-            DdrLogoTexture = contentsManager.GetTexture("ddr_logo.png");
+            DdrLogoTexture = contentsManager.GetTexture("notes/ddr_logo.png");
             DdrLogoEmblemTexture = contentsManager.GetTexture("ddr_logo_emblem.png");
             DdrNoteGreenTexture = contentsManager.GetTexture("ddr_note_green.png");
-            DdrNotePurpleTexture = contentsManager.GetTexture("ddr_note_purple.png");
-            DdrNoteRedTexture = contentsManager.GetTexture("ddr_note_red.png");
-            DdrStar = contentsManager.GetTexture("ddr_star.png");
-            DdrTargetBottom = contentsManager.GetTexture("ddr_target_bottom.png");
-            DdrTargetCircle = contentsManager.GetTexture("ddr_target_circle.png");
-            DdrTargetSpacer = contentsManager.GetTexture("ddr_target_spacer.png");
-            DdrTargetTop = contentsManager.GetTexture("ddr_target_top.png");
-            NotesControlsBg = contentsManager.GetTexture("notesControlsBg.png");
-            NotesBg = contentsManager.GetTexture("notesBg.png");
-            SongInfoBackground = contentsManager.GetTexture("songInfoBg.png");
-            SongListIcon = contentsManager.GetTexture("songListIcon.png");
-            UnknownAbilityIcon = contentsManager.GetTexture("unknownAbilityIcon.png");
+            DdrNotePurpleTexture = contentsManager.GetTexture("notes/ddr_note_purple.png");
+            DdrNoteRedTexture = contentsManager.GetTexture("notes/ddr_note_red.png");
+            DdrTargetBottom = contentsManager.GetTexture("notes/ddr_target_bottom.png");
+            DdrTargetCircle = contentsManager.GetTexture("notes/ddr_target_circle.png");
+            DdrTargetSpacer = contentsManager.GetTexture("notes/ddr_target_spacer.png");
+            DdrTargetTop = contentsManager.GetTexture("notes/ddr_target_top.png");
+            NotesControlsBg = contentsManager.GetTexture("notes/notesControlsBg.png");
+            NotesBg = contentsManager.GetTexture("notes/notesBg.png");
+            SongInfoBackground = contentsManager.GetTexture("windows/songInfoBg.png");
+            UnknownAbilityIcon = contentsManager.GetTexture("abilityIcons/special/unknownAbilityIcon.png");
+            WindowBackgroundEmptyTexture = contentsManager.GetTexture("windows/windowBgEmpty.png");
+            WindowBackgroundTexture = contentsManager.GetTexture("windows/windowBg.png");
+            WindowBackground2Texture = contentsManager.GetTexture("windows/windowBg2.png");
         }
 
         public Texture2D GetAbilityIcon(AbilityId abilityId)
@@ -89,7 +86,7 @@ namespace DanceDanceRotationModule.Util
                 else
                 {
                     // Load it
-                    string imageFileName = "abilityIcons/" + AbilityToIconNames[abilityId];
+                    string imageFileName = "abilityIcons/api/" + AbilityToIconNames[abilityId];
                     var icon = ContentsManager.GetTexture(imageFileName);
                     if (icon == null)
                     {
@@ -124,7 +121,6 @@ namespace DanceDanceRotationModule.Util
             WindowBackgroundEmptyTexture?.Dispose();
             WindowBackgroundTexture?.Dispose();
             WindowBackground2Texture?.Dispose();
-            MugTexture?.Dispose();
             ButtonCopy?.Dispose();
             ButtonDelete?.Dispose();
             ButtonDownload?.Dispose();
@@ -139,7 +135,6 @@ namespace DanceDanceRotationModule.Util
             DdrNoteGreenTexture?.Dispose();
             DdrNotePurpleTexture?.Dispose();
             DdrNoteRedTexture?.Dispose();
-            DdrStar?.Dispose();
             DdrTargetBottom?.Dispose();
             DdrTargetCircle?.Dispose();
             DdrTargetSpacer?.Dispose();
@@ -147,7 +142,6 @@ namespace DanceDanceRotationModule.Util
             NotesControlsBg?.Dispose();
             NotesBg?.Dispose();
             SongInfoBackground?.Dispose();
-            SongListIcon?.Dispose();
             UnknownAbilityIcon?.Dispose();
         }
 
@@ -155,7 +149,6 @@ namespace DanceDanceRotationModule.Util
         private IDictionary<AbilityId, string> AbilityToIconNames = new Dictionary<AbilityId, string>();
         private IDictionary<string, Texture2D> AbilityIcons = new Dictionary<string, Texture2D>();
 
-        public Texture2D MugTexture { get; private set; }
         public Texture2D WindowBackgroundEmptyTexture { get; private set; }
         public Texture2D WindowBackgroundTexture { get; private set; }
         public Texture2D WindowBackground2Texture { get; private set; }
@@ -165,7 +158,6 @@ namespace DanceDanceRotationModule.Util
         public Texture2D DdrNotePurpleTexture { get; private set; }
         public Texture2D DdrNoteRedTexture { get; private set; }
         public Texture2D DdrNoteGreenTexture { get; private set; }
-        public Texture2D DdrStar { get; private set; }
         public Texture2D DdrTargetBottom { get; private set; }
         public Texture2D DdrTargetCircle { get; private set; }
         public Texture2D DdrTargetSpacer { get; private set; }
@@ -183,7 +175,6 @@ namespace DanceDanceRotationModule.Util
         public Texture2D NotesControlsBg { get; private set; }
         public Texture2D NotesBg { get; private set; }
         public Texture2D SongInfoBackground { get; private set; }
-        public Texture2D SongListIcon { get; private set; }
         public Texture2D UnknownAbilityIcon { get; private set; }
     }
 }
