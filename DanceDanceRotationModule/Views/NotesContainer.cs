@@ -145,9 +145,16 @@ namespace DanceDanceRotationModule.NoteDisplay
                 );
             }
 
+            // Standard Note Size
             public Point GetNewNoteSize()
             {
                 return new Point(NoteWidth, NoteHeight);
+            }
+
+            // Note Size for de-emphasized things, like Weapon1 when it's auto hit
+            public Point GetNewNoteSizeSmall()
+            {
+                return new Point(NoteWidth * 3 / 4, NoteHeight * 3 / 4);
             }
             public Point GetNewNoteLocation(int lane)
             {
@@ -214,11 +221,24 @@ namespace DanceDanceRotationModule.NoteDisplay
                     noteBackground
                 )
                 {
-                    Size = _windowInfo.GetNewNoteSize(),
+                    Size = windowInfo.GetNewNoteSize(),
                     Location = _windowInfo.GetNewNoteLocation(lane),
                     Opacity = 0.7f,
                     Parent = parent
                 };
+                // Adjust the size and position of the icon if AutoHit is on and this is a Weapon1
+                if (
+                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.AutoHitWeapon1.Value &&
+                    note.NoteType == NoteType.Weapon1
+                )
+                {
+                    var oldSize = Image.Size;
+                    Image.Size = _windowInfo.GetNewNoteSizeSmall();
+                    Image.Location = new Point(
+                        Image.Location.X + (oldSize.X - Image.Size.X) / 2,
+                        Image.Location.Y + (oldSize.Y - Image.Size.Y) / 2
+                    );
+                }
 
                 BitmapFont font;
                 if (hotkeyText.Length < 3)
@@ -272,12 +292,6 @@ namespace DanceDanceRotationModule.NoteDisplay
                     AutoSizeWidth = true,
                     Parent = parent
                 };
-                // "ShowHotkeys" preference
-                // Just setting opacity to 0 so all the calculations that need the label position work. Lazy.
-                if (DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowHotkeys.Value == false)
-                {
-                    Label.Opacity = 0.0f;
-                }
                 // Must set this AFTER creation, so the auto width/height is used
                 Label.Location = new Point(
                     (int)(XPosition) + ((Image.Width - Label.Width) / 2),
@@ -296,10 +310,23 @@ namespace DanceDanceRotationModule.NoteDisplay
                 {
                     Opacity = 1.0f
                 }, FadeInTime);
-                Animation.Tweener.Tween(Label, new
+
+                // "ShowHotkeys" preference
+                // Just setting opacity to 0 so all the calculations that need the label position work. Lazy.
+                bool HideHotkey =
+                    DanceDanceRotationModule.DanceDanceRotationModuleInstance.ShowHotkeys.Value == false ||
+                    (
+                        DanceDanceRotationModule.DanceDanceRotationModuleInstance.AutoHitWeapon1.Value &&
+                        note.NoteType == NoteType.Weapon1
+                    );
+
+                if (HideHotkey == false)
                 {
-                    Opacity = 1.0f
-                }, FadeInTime);
+                    Animation.Tweener.Tween(Label, new
+                    {
+                        Opacity = 1.0f
+                    }, FadeInTime);
+                }
             }
 
             public void Update(GameTime gameTime, double moveAmount)
