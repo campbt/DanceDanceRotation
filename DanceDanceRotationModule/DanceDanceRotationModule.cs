@@ -71,6 +71,12 @@ namespace DanceDanceRotationModule
         internal SettingEntry<KeyBinding> PauseHotkey { get; private set; }
         internal SettingEntry<KeyBinding> StopHotkey { get; private set; }
 
+        // MARK: Window Hotkeys
+
+        internal SettingEntry<KeyBinding> ToggleNotesWindowHotkey { get; private set; }
+        internal SettingEntry<KeyBinding> ToggleSongListWindowHotkey { get; private set; }
+        internal SettingEntry<KeyBinding> ToggleSongInfoWindowHotkey { get; private set; }
+
         // MARK: Hidden Settings
 
         internal SettingEntry<List<SongData>> SongDatas { get; private set; }
@@ -190,6 +196,42 @@ namespace DanceDanceRotationModule
             StopHotkey.Value.Activated += delegate
             {
                 _mainView.GetNotesContainer()?.Reset();
+            };
+
+            // MARK: Window Visibility Hotkeys
+
+            var windowHotkeySettings = settings.AddSubCollection(
+                collectionKey: "window_hotkey_settings",
+                renderInUi: true,
+                displayNameFunc: () => "Window Hotkeys",
+                lazyLoaded: false
+            );
+            ToggleNotesWindowHotkey = windowHotkeySettings.DefineSetting("ToggleNotesWindowHotkey",
+                new KeyBinding(Keys.None),
+                () => "Toggle Notes Window",
+                () => "Will Show/Hide the main Notes window");
+            ToggleNotesWindowHotkey.Value.Enabled = true;
+            ToggleNotesWindowHotkey.Value.Activated += delegate
+            {
+                ToggleNotesWindow();
+            };
+            ToggleSongListWindowHotkey = windowHotkeySettings.DefineSetting("ToggleSongListWindowHotkey",
+                new KeyBinding(Keys.None),
+                () => "Toggle Song List Window",
+                () => "Will Show/Hide the Song List window");
+            ToggleSongListWindowHotkey.Value.Enabled = true;
+            ToggleSongListWindowHotkey.Value.Activated += delegate
+            {
+                ToggleSongList();
+            };
+            ToggleSongInfoWindowHotkey = windowHotkeySettings.DefineSetting("ToggleSongInfoWindowHotkey",
+                new KeyBinding(Keys.None),
+                () => "Toggle Song Info Window",
+                () => "Will Show/Hide the Song Info window");
+            ToggleSongInfoWindowHotkey.Value.Enabled = true;
+            ToggleSongInfoWindowHotkey.Value.Activated += delegate
+            {
+                ToggleSongInfo();
             };
 
             // MARK: Private settings (not visible to the user)
@@ -318,11 +360,9 @@ namespace DanceDanceRotationModule
             _songListView = new SongListView();
             _songInfoView = new SongInfoView();
 
-            _mainWindow.Show(_mainView);
-
             _cornerIcon.Click += delegate
             {
-                _mainWindow.ToggleWindow();
+                _mainWindow.ToggleWindow(_mainView);
             };
 
             // Set up a listener for when the setting is changed.
@@ -367,28 +407,19 @@ namespace DanceDanceRotationModule
             Instance = null;
         }
 
+        public void ToggleNotesWindow()
+        {
+            _mainWindow.ToggleWindow(_mainView);
+        }
+
         public void ToggleSongList()
         {
-            if (_songListWindow.Visible)
-            {
-                _songListWindow.Hide();
-            }
-            else
-            {
-                _songListWindow.Show(_songListView);
-            }
+            _songListWindow.ToggleWindow(_songListView);
         }
 
         public void ToggleSongInfo()
         {
-            if (_songInfoWindow.Visible)
-            {
-                _songInfoWindow.Hide();
-            }
-            else
-            {
-                _songInfoWindow.Show(_songInfoView);
-            }
+            _songInfoWindow.ToggleWindow(_songInfoView);
         }
 
         internal static DanceDanceRotationModule Instance;
