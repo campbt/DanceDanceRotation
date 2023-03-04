@@ -46,11 +46,11 @@ namespace DanceDanceRotationModule.Model
         public string BuildTemplateCode { get; set; }
 
         /** The Ability in the first Utility slot. */
-        public AbilityId Utility1 { get; set; }
+        public PaletteId Utility1 { get; set; }
         /** The Ability in the second Utility slot. */
-        public AbilityId Utility2 { get; set; }
+        public PaletteId Utility2 { get; set; }
         /** The Ability in the third Utility slot. */
-        public AbilityId Utility3 { get; set; }
+        public PaletteId Utility3 { get; set; }
 
         /** The notes of the song, sorted by time in rotation. */
         public List<Note> Notes { get; set; }

@@ -80,9 +80,9 @@ namespace DanceDanceRotationModule.Storage
                 Description = songJson.description,
                 BuildUrl = songJson.buildUrl,
                 BuildTemplateCode = songJson.buildChatCode,
-                Utility1 = new AbilityId(utilities[0]),
-                Utility2 = new AbilityId(utilities[1]),
-                Utility3 = new AbilityId(utilities[2]),
+                Utility1 = new PaletteId(utilities[0]),
+                Utility2 = new PaletteId(utilities[1]),
+                Utility3 = new PaletteId(utilities[2]),
                 Notes = songJson.notes.Select(noteJson =>
                 {
                     if (NoteType.TryParse(noteJson.noteType, out NoteType noteType) == false)

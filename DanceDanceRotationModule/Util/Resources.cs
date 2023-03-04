@@ -12,13 +12,25 @@ namespace DanceDanceRotationModule.Util
 {
     public class Resources
     {
+        // MARK: Statics
+
         private static readonly Logger Logger = Logger.GetLogger<Resources>();
 
         public static Resources Instance = new Resources();
 
+        // MARK: Inner Types
+
+        private struct AbilityInfo
+        {
+            public string icon { get; set; }
+            public string name { get; set; }
+        }
+
         public Resources()
         {
         }
+
+        // MARK: Resource Loading
 
         public void LoadResources(ContentsManager contentsManager)
         {
@@ -26,25 +38,16 @@ namespace DanceDanceRotationModule.Util
             ContentsManager = contentsManager;
 
             // Load the abilityIds lookup table for later abilityId -> image loading
-            var fileStream = ContentsManager.GetFileStream("abilityIdsToImageId.json");
-            var streamReader = new StreamReader(fileStream, Encoding.UTF8);
-            string content = streamReader.ReadToEnd();
-            var rawJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(
-                content
-            );
-            foreach (KeyValuePair<string, string> entry in rawJson)
-            {
-                try
-                {
-                    var raw = int.Parse(entry.Key);
-                    var abilityId = new AbilityId(raw);
-                    AbilityToIconNames[abilityId] = entry.Value;
-                }
-                catch
-                {
-                    Logger.Warn("Failed to decode an entry in the abilityIdsToImageId.json: " + entry);
-                }
-            }
+            // Note: All icons in this json need to be prefixed with "api/"
+            LoadAbilityInfoFile("abilityInfoApi.json", "api/");
+
+            // Load custom ones not provided by the API
+            // Note: No prefix is applied here because some custom ones are referring to special icons
+            //       while others refer to actual api ones
+            LoadAbilityInfoFile("abilityInfoCustom.json", "");
+
+            // Load the PaletteId -> AbilityId table
+            LoadPaletteIdLookup("paletteSkillLookup.json");
 
             ButtonCopy = contentsManager.GetTexture("buttons/copyIcon.png");
             ButtonDelete = contentsManager.GetTexture("buttons/deleteIcon.png");
@@ -73,20 +76,102 @@ namespace DanceDanceRotationModule.Util
             WindowBackground2Texture = contentsManager.GetTexture("windows/windowBg2.png");
         }
 
+        /**
+         * Reads in [AbilityInfo] from the json file supplied
+         * Icons in the files are just the file name, but each .json file
+         * is referring to different sub-folders in abilityIcons/ for organizational purposes,
+         * so the icon name needs to be prefixed with this
+         */
+        private void LoadAbilityInfoFile(string fileName, string iconSubfolder)
+        {
+            var fileStream = ContentsManager.GetFileStream(fileName);
+            var streamReader = new StreamReader(fileStream, Encoding.UTF8);
+            string content = streamReader.ReadToEnd();
+            var rawJson = JsonConvert.DeserializeObject<Dictionary<string, AbilityInfo>>(
+                content
+            );
+            foreach (KeyValuePair<string, AbilityInfo> entry in rawJson)
+            {
+                try
+                {
+                    var raw = int.Parse(entry.Key);
+                    var abilityId = new AbilityId(raw);
+                    var abilityInfo = entry.Value;
+                    abilityInfo.icon = iconSubfolder + abilityInfo.icon;
+                    AbilityInfos[abilityId] = abilityInfo;
+                }
+                catch
+                {
+                    Logger.Warn("Failed to decode an entry in " + fileName + ": " + entry);
+                }
+            }
+        }
+
+        /**
+         * Reads in the paletteSkillLookup.json file into the lookup table, PaletteIdLookup
+         */
+        private void LoadPaletteIdLookup(string fileName)
+        {
+            Logger.Info("Loading Palette ID lookup tables from: " + fileName);
+
+            var fileStream = ContentsManager.GetFileStream(fileName);
+            var streamReader = new StreamReader(fileStream, Encoding.UTF8);
+            string content = streamReader.ReadToEnd();
+            var rawJson = JsonConvert.DeserializeObject<Dictionary<string, int>>(
+                content
+            );
+            foreach (KeyValuePair<string, int> entry in rawJson)
+            {
+                try
+                {
+                    var raw = int.Parse(entry.Key);
+                    var paletteId = new PaletteId(raw);
+                    var abilityId = new AbilityId(entry.Value);
+                    PaletteIdLookup[paletteId] = abilityId;
+                }
+                catch
+                {
+                    Logger.Warn("Failed to decode an entry in " + fileName + ": " + entry);
+                }
+            }
+        }
+
+        // MARK: Information Retrieval
+
+        public AbilityId GetAbilityIdForPaletteId(PaletteId paletteId)
+        {
+            if (PaletteIdLookup.ContainsKey(paletteId))
+            {
+                return PaletteIdLookup[paletteId];
+            }
+            else
+            {
+                return AbilityId.Unknown;
+            }
+        }
+
+        public Texture2D GetAbilityIcon(PaletteId paletteId)
+        {
+            AbilityId abilityId = GetAbilityIdForPaletteId(paletteId);
+            return GetAbilityIcon(
+                abilityId
+            );
+        }
+
         public Texture2D GetAbilityIcon(AbilityId abilityId)
         {
-            if (AbilityToIconNames.ContainsKey(abilityId))
+            if (AbilityInfos.ContainsKey(abilityId))
             {
-                var iconName = AbilityToIconNames[abilityId];
-                if (AbilityIcons.ContainsKey(iconName))
+                var iconName = AbilityInfos[abilityId].icon;
+                if (AbilityIconTextureCache.ContainsKey(iconName))
                 {
                     // Already loaded this icon
-                    return AbilityIcons[iconName];
+                    return AbilityIconTextureCache[iconName];
                 }
                 else
                 {
                     // Load it
-                    string imageFileName = "abilityIcons/api/" + AbilityToIconNames[abilityId];
+                    string imageFileName = "abilityIcons/" + iconName;
                     var icon = ContentsManager.GetTexture(imageFileName);
                     if (icon == null)
                     {
@@ -96,7 +181,7 @@ namespace DanceDanceRotationModule.Util
                     }
                     else
                     {
-                        AbilityIcons[imageFileName] = icon;
+                        AbilityIconTextureCache[imageFileName] = icon;
                         return icon;
                     }
                 }
@@ -111,12 +196,12 @@ namespace DanceDanceRotationModule.Util
 
         public void Unload()
         {
-            foreach (Texture2D Icon in AbilityIcons.Values)
+            foreach (Texture2D Icon in AbilityIconTextureCache.Values)
             {
                 Icon.Dispose();
             }
-            AbilityIcons.Clear();
-            AbilityToIconNames.Clear();
+            AbilityIconTextureCache.Clear();
+            AbilityInfos.Clear();
 
             WindowBackgroundEmptyTexture?.Dispose();
             WindowBackgroundTexture?.Dispose();
@@ -146,8 +231,12 @@ namespace DanceDanceRotationModule.Util
         }
 
         private ContentsManager ContentsManager;
-        private IDictionary<AbilityId, string> AbilityToIconNames = new Dictionary<AbilityId, string>();
-        private IDictionary<string, Texture2D> AbilityIcons = new Dictionary<string, Texture2D>();
+        // Read in from .json files at load, this provides information ability each ability ID
+        private IDictionary<AbilityId, AbilityInfo> AbilityInfos = new Dictionary<AbilityId, AbilityInfo>();
+        // Read in from a .json file at load, this provides a table to convert PaletteId -> AbilityId
+        private IDictionary<PaletteId, AbilityId> PaletteIdLookup = new Dictionary<PaletteId, AbilityId>();
+        // A cache of loaded Texture2Ds given an ability icon image name.
+        private IDictionary<string, Texture2D> AbilityIconTextureCache = new Dictionary<string, Texture2D>();
 
         public Texture2D WindowBackgroundEmptyTexture { get; private set; }
         public Texture2D WindowBackgroundTexture { get; private set; }

@@ -597,7 +597,7 @@ namespace DanceDanceRotationModule.Views
         }
 
         private void GetRemappedAbilityTexture(
-            AbilityId abilityId,
+            PaletteId paletteId,
             SongData.UtilitySkillMapping skillMapping
         )
         {
@@ -616,49 +616,7 @@ namespace DanceDanceRotationModule.Views
                 default:
                     return;
             }
-            image.Texture = Resources.Instance.GetAbilityIcon(abilityId);
-        }
-
-        /**
-         * A remapping is going to take
-         */
-        private Texture2D GetRemappedAbilityTexture2(
-            Song song,
-            SongData.UtilitySkillMapping skillMapping
-        )
-        {
-            AbilityId abilityId;
-            switch (skillMapping)
-            {
-                case SongData.UtilitySkillMapping.One:
-                    abilityId = song.Utility1;
-                    break;
-                case SongData.UtilitySkillMapping.Two:
-                    abilityId = song.Utility2;
-                    break;
-                case SongData.UtilitySkillMapping.Three:
-                    abilityId = song.Utility3;
-                    break;
-                default:
-                    return Resources.Instance.UnknownAbilityIcon;
-            }
-
-            return Resources.Instance.GetAbilityIcon(abilityId);
-        }
-
-        private String UtilitySkillDescription(SongData.UtilitySkillMapping mapping)
-        {
-            switch (mapping)
-            {
-                case SongData.UtilitySkillMapping.One:
-                    return "1";
-                case SongData.UtilitySkillMapping.Two:
-                    return "2";
-                case SongData.UtilitySkillMapping.Three:
-                    return "3";
-            }
-
-            return "";
+            image.Texture = Resources.Instance.GetAbilityIcon(paletteId);
         }
     }
 }
