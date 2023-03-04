@@ -81,7 +81,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             internal int AbilityIconsHeight { get; private set; }
             internal int AbilityIconsLocationY { get; private set; }
-            internal int TargetLocationY { get; private set; }
+            internal Point TargetLocation { get; private set; }
 
             internal int HitPerfect { get; private set; }
             internal Range<double> HitRangePerfect { get; private set; }
@@ -121,7 +121,12 @@ namespace DanceDanceRotationModule.NoteDisplay
                     AbilityIconsHeight = 0;
                 }
                 NoteWidth = NoteHeight;
-                TargetLocationY = VerticalPadding + AbilityIconsHeight;
+
+                double perfectCenter = (HitRangePerfect.Max + HitRangePerfect.Min) / 2.0;
+                TargetLocation = new Point(
+                    (int)(perfectCenter - (NoteWidth / 2.0)),
+                    VerticalPadding + AbilityIconsHeight
+                );
 
                 DestroyNotePosition = 0;
 
@@ -648,6 +653,8 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             CreateTarget();
             UpdateTarget();
+            CreateBackgroundLines();
+            UpdateBackgroundLines();
 
             _timeLabel = new Label()
             {
@@ -694,6 +701,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
             _windowInfo.Recalculate(Width, Height, _songData);
             UpdateTarget();
+            UpdateBackgroundLines();
             RecalculateLayoutAbilityIcons();
         }
 
@@ -943,6 +951,47 @@ namespace DanceDanceRotationModule.NoteDisplay
             _info.HitTexts.Add(hitText);
         }
 
+        // MARK: Background Lines
+
+        private void CreateBackgroundLines()
+        {
+            if (_laneLines == null || _laneLines.Count < 6)
+            {
+                _laneLines = new List<Control>();
+                for (int lane = 0; lane < 6; lane++)
+                {
+                    _laneLines.Add(
+                        new Image()
+                        {
+                            BackgroundColor = Color.White,
+                            Height = 2,
+                            Width = Width,
+                            Opacity = 0.1f,
+                            Parent = this,
+                        }
+                    );
+                }
+            }
+        }
+
+        private void UpdateBackgroundLines()
+        {
+            if (_laneLines == null || _laneLines.Count < 6)
+            {
+                return;
+            }
+
+            for (int lane = 0; lane < 6; lane++)
+            {
+                // Find the location of middle of the lane
+                var location = _windowInfo.GetNewNoteLocation(lane);
+                location.X = _windowInfo.TargetLocation.X + _windowInfo.NoteWidth;
+                location.Y += (_windowInfo.GetNewNoteSize().Y / 2) - 1;
+                _laneLines[lane].Location = location;
+                _laneLines[lane].Width = Width;
+            }
+        }
+
         // MARK: Target
 
         private void CreateTarget()
@@ -998,12 +1047,10 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void UpdateTarget()
         {
-            double perfectCenter = (_windowInfo.HitRangePerfect.Max + _windowInfo.HitRangePerfect.Min) / 2.0;
-
             int targetWidth = _windowInfo.NoteWidth;
 
-            int xPos = (int)(perfectCenter - (_windowInfo.NoteWidth / 2.0));
-            int yPos = _windowInfo.TargetLocationY - _targetTop.Height;
+            int xPos = _windowInfo.TargetLocation.X;
+            int yPos = _windowInfo.TargetLocation.Y - _targetTop.Height;
 
             int roundEdgesHeight = (int)Math.Min(
                 _windowInfo.VerticalPadding - 4,
@@ -1103,6 +1150,7 @@ namespace DanceDanceRotationModule.NoteDisplay
         private Image _targetBottom;
         private List<Image> _targetCircles;
         private List<Image> _targetSpacers;
+        private List<Control> _laneLines;
     }
 
 
