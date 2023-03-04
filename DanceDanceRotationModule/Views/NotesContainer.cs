@@ -495,6 +495,35 @@ namespace DanceDanceRotationModule.NoteDisplay
                 }, 0.1f);
             }
 
+            internal void ShowTooltip()
+            {
+                string abilityName = Resources.Instance.GetAbilityName(
+                    Note.AbilityId
+                );
+                if (abilityName.Length != 0)
+                {
+                    abilityName += ", ";
+                }
+
+                string tooltip = String.Format(
+                    "{0}Time: {1:0.000}ms, Dur: {2:n0}ms",
+                    abilityName,
+                    Note.TimeInRotation.TotalMilliseconds / 1000.0,
+                    Note.Duration.TotalMilliseconds
+                );
+                // Set the BasicTooltipText of both because I can't figure out
+                // how to disable the Label from overriding the show tooltip of the Image
+                // when it is hovered over.
+                Image.BasicTooltipText = tooltip;
+                Label.BasicTooltipText = tooltip;
+            }
+
+            internal void HideTooltip()
+            {
+                Image.BasicTooltipText = "";
+                Label.BasicTooltipText = "";
+            }
+
         }
 
         // MARK: HitText
@@ -785,6 +814,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 // Resume from paused
                 _info.IsPaused = false;
                 _info.StartTime += _lastGameTime - _info.PausedTime;
+                HideAllTooltips();
             }
         }
 
@@ -798,6 +828,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                 TimeSpan totalInGameTime = (_info.PausedTime - _info.StartTime);
                 _timeLabel.Text = $"{totalInGameTime.Minutes} : {totalInGameTime.Seconds:00}";
                 _timeLabel.Visible = true;
+
+                ShowAllTooltips();
             }
         }
 
@@ -949,6 +981,30 @@ namespace DanceDanceRotationModule.NoteDisplay
                 )
             );
             _info.HitTexts.Add(hitText);
+        }
+
+        // MARK: Tooltips
+
+        /**
+         * Shows all tooltips. Enabled when the notes are paused
+         */
+        private void ShowAllTooltips()
+        {
+            foreach (ActiveNote activeNote in _info.ActiveNotes)
+            {
+                activeNote.ShowTooltip();
+            }
+        }
+
+        /**
+         * Hides tooltips on all skills. Should be down when the notes are running
+         */
+        private void HideAllTooltips()
+        {
+            foreach (ActiveNote activeNote in _info.ActiveNotes)
+            {
+                activeNote.HideTooltip();
+            }
         }
 
         // MARK: Background Lines

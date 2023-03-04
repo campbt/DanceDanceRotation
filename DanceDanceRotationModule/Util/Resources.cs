@@ -194,6 +194,15 @@ namespace DanceDanceRotationModule.Util
             }
         }
 
+        public string GetAbilityName(AbilityId abilityId)
+        {
+            if (AbilityInfos.ContainsKey(abilityId))
+            {
+                return AbilityInfos[abilityId].name;
+            }
+            return "";
+        }
+
         public void Unload()
         {
             foreach (Texture2D Icon in AbilityIconTextureCache.Values)
