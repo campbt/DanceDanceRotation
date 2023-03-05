@@ -71,6 +71,7 @@ namespace DanceDanceRotationModule.Storage
                 return;
 
             _selectedSongId = songId;
+            DanceDanceRotationModule.Instance.SelectedSong.Value = songId;
             InvokeSelectedSongInfo();
         }
 
@@ -316,6 +317,11 @@ namespace DanceDanceRotationModule.Storage
         public Song GetSong(Song.ID songId)
         {
             return _songs[songId];
+        }
+
+        public Song.ID GetSelectedSongId()
+        {
+            return _selectedSongId;
         }
 
         // MARK: Dispose

@@ -48,17 +48,6 @@ namespace DanceDanceRotationModule.Storage
     public class SongListView : View
     {
         private static readonly Logger Logger = Logger.GetLogger<SongListView>();
-        public SongListView()
-        {
-            DanceDanceRotationModule.Instance.SelectedSong.SettingChanged += delegate
-            {
-                BuildSongList();
-            };
-            DanceDanceRotationModule.Instance.SongRepo.OnSongsChanged += delegate
-            {
-                BuildSongList();
-            };
-        }
 
         protected override void Build(Container buildPanel)
         {
@@ -112,7 +101,14 @@ namespace DanceDanceRotationModule.Storage
             };
             _rows = new List<SongListRow>();
 
-            BuildSongList();
+            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged += delegate
+            {
+                BuildSongList();
+            };
+            DanceDanceRotationModule.Instance.SongRepo.OnSongsChanged += delegate
+            {
+                BuildSongList();
+            };
         }
 
         private void BuildSongList()
@@ -120,45 +116,12 @@ namespace DanceDanceRotationModule.Storage
             _songsListPanel.ClearChildren();
             _rows.Clear();
 
-            var selectedSong = DanceDanceRotationModule.Instance.SelectedSong.Value;
+            var selectedSong = DanceDanceRotationModule.Instance.SongRepo.GetSelectedSongId();
             var songList = DanceDanceRotationModule.Instance.SongRepo.GetAllSongs();
 
             foreach (var song in songList)
             {
                 new SongListRow(song, selectedSong)
-                {
-                    WidthSizingMode = SizingMode.Fill,
-                    HeightSizingMode = SizingMode.AutoSize,
-                    Parent = _songsListPanel
-                };
-            }
-        }
-
-        /**
-         * Just used for development.
-         * TODO: Remove
-         */
-        private void BuildDummySongList()
-        {
-            _songsListPanel.ClearChildren();
-            var selectedSong = DanceDanceRotationModule.Instance.SelectedSong.Value;
-
-            List<Song> songList = new List<Song>();
-            for (int i = 0; i < 60; i++)
-            {
-                songList.Add(
-                    new Song()
-                    {
-                        Id = new Song.ID() { Name = "song_" + i },
-                        Description = "Lorum Ipsum something asdlkjb asoiasdlkj asdjlkasjlk",
-                        Notes = new List<Note>()
-                    }
-                );
-            }
-
-            foreach (var song in songList)
-            {
-                var blah = new SongListRow(song, selectedSong)
                 {
                     WidthSizingMode = SizingMode.Fill,
                     HeightSizingMode = SizingMode.AutoSize,
