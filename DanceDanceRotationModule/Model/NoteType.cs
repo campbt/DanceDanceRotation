@@ -7,8 +7,10 @@ namespace DanceDanceRotationModule.Model
 {
     public enum NoteType
     {
+        // Special
         Dodge,
         WeaponSwap,
+        WeaponStow,
         // Weapon Skills
         Weapon1,
         Weapon2,
@@ -43,6 +45,8 @@ namespace DanceDanceRotationModule.Model
                     return Keys.V;
                 case NoteType.WeaponSwap:
                     return Keys.OemTilde;
+                case NoteType.WeaponStow:
+                    return Keys.None;
                 case NoteType.Weapon1:
                     return Keys.D1;
                 case NoteType.Weapon2:
@@ -88,6 +92,8 @@ namespace DanceDanceRotationModule.Model
                     return "Dodge";
                 case NoteType.WeaponSwap:
                     return "Swap Weapons";
+                case NoteType.WeaponStow:
+                    return "Stow Weapons";
                 case NoteType.Weapon1:
                     return "Weapon Skill 1";
                 case NoteType.Weapon2:
@@ -154,6 +160,7 @@ namespace DanceDanceRotationModule.Model
                     return 4;
                 case NoteType.Dodge:
                 case NoteType.WeaponSwap:
+                case NoteType.WeaponStow:
                 case NoteType.Unknown:
                     return 5;
                 default:
@@ -179,6 +186,7 @@ namespace DanceDanceRotationModule.Model
                 case NoteType.UtilitySkill3:
                 case NoteType.EliteSkill:
                     return Resources.Instance.DdrNotePurpleTexture;
+                case NoteType.WeaponStow:
                 case NoteType.ProfessionSkill1:
                 case NoteType.ProfessionSkill2:
                 case NoteType.ProfessionSkill3:

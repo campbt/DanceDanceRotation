@@ -41,7 +41,7 @@ namespace DanceDanceRotationModule.Util
             switch (keys)
             {
                 case Keys.None:
-                    return "-";
+                    return "";
                 case Keys.Back:
                     return "Back";
                 case Keys.Tab:

@@ -63,6 +63,7 @@ namespace DanceDanceRotationModule
         internal SettingEntry<KeyBinding> ProfessionSkill3 { get; private set; }
         internal SettingEntry<KeyBinding> ProfessionSkill4 { get; private set; }
         internal SettingEntry<KeyBinding> ProfessionSkill5 { get; private set; }
+        internal SettingEntry<KeyBinding> WeaponStow { get; private set; }
 
         // MARK: Control Hotkeys
 
@@ -152,6 +153,7 @@ namespace DanceDanceRotationModule
             ProfessionSkill3 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill3);
             ProfessionSkill4 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill4);
             ProfessionSkill5 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill5);
+            WeaponStow       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.WeaponStow);
 
             // MARK: DDR Control Hotkeys
 
