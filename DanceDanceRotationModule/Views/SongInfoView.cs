@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Blish_HUD;
+using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
 using Blish_HUD.Settings;
@@ -76,6 +77,7 @@ namespace DanceDanceRotationModule.Views
 
         // Views
         private Label _nameLabel;
+        private Label _professionLabel;
         private Label _descriptionLabel;
         private TextBox _buildUrlTextBox;
         private Image _openBuildUrlBuildTemplateButton;
@@ -99,14 +101,22 @@ namespace DanceDanceRotationModule.Views
         {
             FlowPanel rootPanel = new FlowPanel()
             {
+                // TODO: This does get rid of scroll bars, interestingly enough
+                // Width = buildPanel.Width + 8,
                 WidthSizingMode = SizingMode.Fill,
                 HeightSizingMode = SizingMode.Fill,
                 FlowDirection = ControlFlowDirection.SingleTopToBottom,
-                CanScroll = false,
+                CanScroll = true,
+                OuterControlPadding = new Vector2(0, 0),
+                AutoSizePadding = new Point(0, 0),
                 Parent = buildPanel
             };
 
-            FlowPanel infoPanel = new FlowPanel()
+            // Minor offset because of the potential scrollbar
+            // var childSectionWidth = buildPanel.Width - 18;
+            var childSectionWidth = buildPanel.Width;
+
+            FlowPanel namePanel = new FlowPanel()
             {
                 WidthSizingMode = SizingMode.Fill,
                 HeightSizingMode = SizingMode.AutoSize,
@@ -115,27 +125,52 @@ namespace DanceDanceRotationModule.Views
                 OuterControlPadding = new Vector2(10, 10),
                 AutoSizePadding = new Point(10, 10),
                 // ControlPadding is padding in between the elements
-                ControlPadding = new Vector2(0, 8),
-                CanScroll = true,
+                ControlPadding = new Vector2(0, 2),
                 Parent = rootPanel
             };
-
             _nameLabel = new Label()
             {
                 Text = "--",
                 AutoSizeWidth = true,
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont18,
-                Parent = infoPanel
+                Parent = namePanel
             };
-            _descriptionLabel = new Label()
+            _professionLabel = new Label()
             {
-                Text = "--",
+                Text = "",
                 AutoSizeWidth = true,
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont14,
+                Parent = namePanel
+            };
+
+            FlowPanel descriptionPanel = new FlowPanel()
+            {
+                Width = childSectionWidth,
+                // WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleTopToBottom,
+                // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
+                OuterControlPadding = new Vector2(10, 10),
+                AutoSizePadding = new Point(10, 10),
+                // ControlPadding is padding in between the elements
+                ControlPadding = new Vector2(0, 8),
+                Title = "Description",
+                CanCollapse = true,
+                Parent = rootPanel
+            };
+
+            _descriptionLabel = new Label()
+            {
+                Text = "--",
+                Width = childSectionWidth,
+                // AutoSizeWidth = true, <-- Don't use this here. It messes up height.
+                AutoSizeHeight = true,
+                WrapText = true,
+                Font = GameService.Content.DefaultFont14,
                 TextColor = Color.LightGray,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
 
             // Spacer
@@ -144,7 +179,7 @@ namespace DanceDanceRotationModule.Views
             {
                 Text = "",
                 Height = 4,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
 
             // MARK: Build Template
@@ -156,7 +191,7 @@ namespace DanceDanceRotationModule.Views
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont12,
                 TextColor = Color.LightGray,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
             FlowPanel buildUrlPanel = new FlowPanel()
             {
@@ -165,7 +200,7 @@ namespace DanceDanceRotationModule.Views
                 FlowDirection = ControlFlowDirection.SingleLeftToRight,
                 ControlPadding = new Vector2(8, 0),
                 CanScroll = false,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
             _buildUrlTextBox = new TextBox()
             {
@@ -208,7 +243,7 @@ namespace DanceDanceRotationModule.Views
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont12,
                 TextColor = Color.LightGray,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
             FlowPanel buildLink = new FlowPanel()
             {
@@ -217,7 +252,7 @@ namespace DanceDanceRotationModule.Views
                 FlowDirection = ControlFlowDirection.SingleLeftToRight,
                 ControlPadding = new Vector2(8, 0),
                 CanScroll = false,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
             _buildTemplateTextBox = new TextBox()
             {
@@ -259,13 +294,14 @@ namespace DanceDanceRotationModule.Views
 
             FlowPanel utilityRemap = new FlowPanel()
             {
+                Width = childSectionWidth,
                 HeightSizingMode = SizingMode.AutoSize,
-                WidthSizingMode = SizingMode.Fill,
                 // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
                 OuterControlPadding = new Vector2(10, 10),
                 AutoSizePadding = new Point(10, 10),
                 ControlPadding = new Vector2(0, 10),
                 Title = "Remap Utility Skills",
+                CanCollapse = true,
                 Parent = rootPanel
             };
             new Label()
@@ -403,20 +439,21 @@ namespace DanceDanceRotationModule.Views
             {
                 Text = "",
                 Height = 4,
-                Parent = infoPanel
+                Parent = descriptionPanel
             };
 
             // MARK: Practice Settings
 
             FlowPanel practiceSettingsSection = new FlowPanel()
             {
+                Width = childSectionWidth,
                 HeightSizingMode = SizingMode.AutoSize,
-                WidthSizingMode = SizingMode.Fill,
                 // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
                 OuterControlPadding = new Vector2(10, 10),
                 AutoSizePadding = new Point(10, 10),
                 ControlPadding = new Vector2(0, 10),
                 Title = "Practice Settings",
+                CanCollapse = true,
                 Parent = rootPanel
             };
 
@@ -610,6 +647,7 @@ namespace DanceDanceRotationModule.Views
             {
                 _nameLabel.Text = "--";
                 _descriptionLabel.Text = "--";
+                _professionLabel.Text = "";
                 _buildUrlTextBox.Text = "--";
                 _buildTemplateTextBox.Text = "--";
                 _copyBuildTemplateButton.Visible = false;
@@ -625,6 +663,8 @@ namespace DanceDanceRotationModule.Views
 
             _nameLabel.Text = _song.Name ?? "<no name>";
             _descriptionLabel.Text = _song.Description ?? "";
+            _professionLabel.Text = ProfessionExtensions.GetProfessionDisplayText(_song.Profession);
+            _professionLabel.TextColor = ProfessionExtensions.GetProfessionColor(_song.Profession);
             _buildUrlTextBox.Text = _song.BuildUrl ?? "";
             _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "";
             _openBuildUrlBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildUrl);
