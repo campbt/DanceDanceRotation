@@ -51,6 +51,8 @@ namespace DanceDanceRotationModule.Model
         public PaletteId Utility2 { get; set; }
         /** The Ability in the third Utility slot. */
         public PaletteId Utility3 { get; set; }
+        /** The Profession that plays this song */
+        public Profession Profession { get; set; }
 
         /** The notes of the song, sorted by time in rotation. */
         public List<Note> Notes { get; set; }

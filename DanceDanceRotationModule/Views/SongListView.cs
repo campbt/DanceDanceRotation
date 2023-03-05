@@ -119,6 +119,16 @@ namespace DanceDanceRotationModule.Storage
             var selectedSong = DanceDanceRotationModule.Instance.SongRepo.GetSelectedSongId();
             var songList = DanceDanceRotationModule.Instance.SongRepo.GetAllSongs();
 
+            // Sort song list by Profession, then by Song title
+            songList.Sort(delegate(Song song1, Song song2)
+            {
+                if (song1.Profession != song2.Profession)
+                {
+                    return song1.Profession.CompareTo(song2.Profession);
+                }
+                return song1.Name.CompareTo(song2.Name);
+            });
+
             foreach (var song in songList)
             {
                 new SongListRow(song, selectedSong)
@@ -140,7 +150,8 @@ namespace DanceDanceRotationModule.Storage
 
         private Checkbox Checkbox { get; }
         private Label NameLabel { get; }
-        private Label DescriptionLabel { get; }
+        // private Label DescriptionLabel { get; }
+        private Label ProfessionLabel { get; }
         private Image DeleteButton { get; }
 
         public SongListRow(Song song, Song.ID checkedID)
@@ -172,15 +183,15 @@ namespace DanceDanceRotationModule.Storage
                 Location = new Point(Checkbox.Width + 20, 8),
                 Parent = this
             };
-            DescriptionLabel = new Label()
+            ProfessionLabel = new Label()
             {
-                Text = song.Description,
+                Text = ProfessionExtensions.GetProfessionDisplayText(song.Profession),
                 AutoSizeWidth = true,
                 Font = GameService.Content.DefaultFont14,
-                TextColor = Color.LightGray,
+                TextColor = ProfessionExtensions.GetProfessionColor(song.Profession),
                 Location = new Point(
                     NameLabel.Left,
-                    NameLabel.Bottom + 2
+                    NameLabel.Bottom
                 ),
                 Parent = this
             };
@@ -198,7 +209,13 @@ namespace DanceDanceRotationModule.Storage
                 DanceDanceRotationModule.Instance.SongRepo.DeleteSong(song.Id);
             };
 
-            Height = 16 + NameLabel.Height + DescriptionLabel.Height;
+            Height = CalculateHeight();
+        }
+
+        private int CalculateHeight()
+        {
+            // return 16 + NameLabel.Height + DescriptionLabel.Height + ProfessionLabel.Height;
+            return 16 + NameLabel.Height + ProfessionLabel.Height;
         }
 
         protected override void OnContentResized(RegionChangedEventArgs e)
@@ -208,7 +225,7 @@ namespace DanceDanceRotationModule.Storage
             if (NameLabel == null)
                 return;
 
-            var actualHeight = 16 + NameLabel.Height + DescriptionLabel.Height;
+            var actualHeight = CalculateHeight();
             var centerY = actualHeight / 2;
 
             // Delete Button
@@ -221,21 +238,15 @@ namespace DanceDanceRotationModule.Storage
             Checkbox.Location = new Point(
                 Checkbox.Location.X,
                 centerY - (Checkbox.Height / 2)
-                // Height - (Checkbox.Height / 2)
-                // songName.Top + ((songDescription.Bottom - songName.Top) / 2) - (Checkbox.Height / 2)
             );
 
             NameLabel.Location = new Point(
                 Checkbox.Width + 20,
                 8
             );
-            // NameLabel.Width = Width - CopyButton.Width - 8 - NameLabel.Left;
-            NameLabel.Width = Width - 8 - NameLabel.Left;
-            DescriptionLabel.Location = new Point(
-                Checkbox.Width + 20,
-                8 + NameLabel.Height
-            );
-            DescriptionLabel.Width = NameLabel.Width;
+            NameLabel.Width = Width - 8 - NameLabel.Left - DeleteButton.Width;
+
+            ProfessionLabel.Width = NameLabel.Width;
         }
     }
 }

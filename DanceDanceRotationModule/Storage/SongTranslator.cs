@@ -83,6 +83,9 @@ namespace DanceDanceRotationModule.Storage
                 Utility1 = new PaletteId(utilities[0]),
                 Utility2 = new PaletteId(utilities[1]),
                 Utility3 = new PaletteId(utilities[2]),
+                Profession = ProfessionExtensions.ProfessionFromBuildTemplate(
+                    songJson.decodedBuildTemplate.profession
+                ),
                 Notes = songJson.notes.Select(noteJson =>
                 {
                     if (NoteType.TryParse(noteJson.noteType, out NoteType noteType) == false)
