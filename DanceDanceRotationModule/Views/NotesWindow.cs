@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Blish_HUD;
@@ -19,12 +20,12 @@ namespace DanceDanceRotationModule.Views
     /// <summary>
     /// The StandardWindow is a control meant to replicate the standard Guild Wars 2 windows.
     /// </summary>
-    public class DdrNotesWindow : DdrWindowBase
+    public class NotesWindow : DdrWindowBase
     {
         public const int InitialWidth = 800;
         public const int InitialHeight = 400;
 
-        public DdrNotesWindow() :
+        public NotesWindow() :
           this(
                 Resources.Instance.WindowBackgroundEmptyTexture,
                 new Rectangle(40, 26, 913, 691),
@@ -46,7 +47,7 @@ namespace DanceDanceRotationModule.Views
             Id = "DDR_MainView_ID";
         }
 
-        public DdrNotesWindow(
+        public NotesWindow(
           AsyncTexture2D background,
           Rectangle windowRegion,
           Rectangle contentRegion)
@@ -54,12 +55,12 @@ namespace DanceDanceRotationModule.Views
           this.ConstructWindow(background, windowRegion, contentRegion);
         }
 
-        public DdrNotesWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion)
+        public NotesWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion)
           : this((AsyncTexture2D) background, windowRegion, contentRegion)
         {
         }
 
-        public DdrNotesWindow(
+        public NotesWindow(
           AsyncTexture2D background,
           Rectangle windowRegion,
           Rectangle contentRegion,
@@ -68,7 +69,7 @@ namespace DanceDanceRotationModule.Views
           this.ConstructWindow(background, windowRegion, contentRegion, windowSize);
         }
 
-        public DdrNotesWindow(
+        public NotesWindow(
           Texture2D background,
           Rectangle windowRegion,
           Rectangle contentRegion,
@@ -108,7 +109,7 @@ namespace DanceDanceRotationModule.Views
     }
 
     /**
-     * A customized copy of the [DdrWindowBase] developed by the Blish team
+     * A customized copy of the [WindowBase] developed by the Blish team
      */
     public abstract class DdrWindowBase : Container, IWindow, IViewContainer
     {

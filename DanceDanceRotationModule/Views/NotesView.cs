@@ -21,7 +21,7 @@ using Point = Microsoft.Xna.Framework.Point;
 
 namespace DanceDanceRotationModule
 {
-    public class MainView : View
+    public class NotesView : View
     {
         protected override void Build(Container buildPanel)
         {

@@ -59,7 +59,7 @@ namespace DanceDanceRotationModule
             retval.Value.Enabled = true;
             retval.Value.Activated += delegate
             {
-                _mainView?.GetNotesContainer()?.OnHotkeyPressed(noteType);
+                _notesView?.GetNotesContainer()?.OnHotkeyPressed(noteType);
             };
             return retval;
         }
@@ -124,7 +124,7 @@ namespace DanceDanceRotationModule
         // slowing down the overlay.
         protected override void Update(GameTime gameTime)
         {
-            _mainView?.Update(gameTime);
+            _notesView?.Update(gameTime);
         }
 
         // For a good module experience, your module should clean up ANY and ALL entities
@@ -134,7 +134,7 @@ namespace DanceDanceRotationModule
         {
             Resources.Instance.Unload();
 
-            _mainWindow?.Dispose();
+            _notesWindow?.Dispose();
             _cornerIcon?.Dispose();
             _songListWindow?.Dispose();
             _songInfoWindow?.Dispose();
@@ -154,12 +154,12 @@ namespace DanceDanceRotationModule
          */
         private void LoadWindows()
         {
-            _mainWindow = new DdrNotesWindow()
+            _notesWindow = new NotesWindow()
             {
                 // This is just the initial location on first load of the module
                 Location = new Point(
-                    (GameService.Graphics.SpriteScreen.Width / 2) - (DdrNotesWindow.InitialWidth / 2),
-                    (GameService.Graphics.SpriteScreen.Height) - DdrNotesWindow.InitialHeight - 180 /* 180 is trying to push this above the ability bar a bit */
+                    (GameService.Graphics.SpriteScreen.Width / 2) - (NotesWindow.InitialWidth / 2),
+                    (GameService.Graphics.SpriteScreen.Height) - NotesWindow.InitialHeight - 180 /* 180 is trying to push this above the ability bar a bit */
                 ),
             };
 
@@ -167,8 +167,8 @@ namespace DanceDanceRotationModule
             {
                 // This is just the initial location on first load of the module
                 Location = new Point(
-                    _mainWindow.Left,
-                    _mainWindow.Top - 400 - 20
+                    _notesWindow.Left,
+                    _notesWindow.Top - 400 - 20
                 )
             };
 
@@ -176,24 +176,24 @@ namespace DanceDanceRotationModule
             {
                 // This is just the initial location on first load of the module
                 Location = new Point(
-                    _mainWindow.Left - 390,
+                    _notesWindow.Left - 390,
                     _songListWindow.Top
                 )
             };
 
-            _mainView = new MainView();
+            _notesView = new NotesView();
             _songListView = new SongListView();
             _songInfoView = new SongInfoView();
         }
 
         public NotesContainer GetNotesContainer()
         {
-            return _mainView?.GetNotesContainer();
+            return _notesView?.GetNotesContainer();
         }
 
         public void ToggleNotesWindow()
         {
-            _mainWindow.ToggleWindow(_mainView);
+            _notesWindow.ToggleWindow(_notesView);
         }
 
         public void ToggleSongList()
@@ -213,11 +213,11 @@ namespace DanceDanceRotationModule
         private CornerIcon _cornerIcon;
 
         // Windows
-        private DdrNotesWindow _mainWindow;
+        private NotesWindow _notesWindow;
         private SongListWindow _songListWindow;
         private StandardWindow _songInfoWindow;
         // Views
-        private MainView _mainView;
+        private NotesView _notesView;
         private SongListView _songListView;
         private SongInfoView _songInfoView;
 
