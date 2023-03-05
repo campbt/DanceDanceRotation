@@ -20,6 +20,9 @@ namespace DanceDanceRotationModule.Views
     /// </summary>
     public class DdrNotesWindow : DdrWindowBase
     {
+        public const int InitialWidth = 800;
+        public const int InitialHeight = 400;
+
         public DdrNotesWindow(
           AsyncTexture2D background,
           Rectangle windowRegion,

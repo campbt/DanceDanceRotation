@@ -509,7 +509,7 @@ namespace DanceDanceRotationModule.Views
             };
             _noteSpeedLabel = new Label()
             {
-                Text = "" + SongData.MinimumNotePositionChangePerSecond,
+                Text = "100%",
                 Width = 100,
                 AutoSizeHeight = true,
                 Font = GameService.Content.DefaultFont18,

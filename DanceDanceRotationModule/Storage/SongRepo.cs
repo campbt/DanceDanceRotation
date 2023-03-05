@@ -92,10 +92,15 @@ namespace DanceDanceRotationModule.Storage
 
                 _songs[song.Id] = song;
                 OnSongsChanged?.Invoke(sender: this, null);
-                // If the added song has the same ID of the selected song, it overwrites it, and all screens should update
                 if (_selectedSongId.Equals(song.Id))
                 {
+                    // If the added song has the same ID of the selected song, it overwrites it,
+                    // and all screens should update, even though the ID didn't change
                     InvokeSelectedSongInfo();
+                }
+                else
+                {
+                    SetSelectedSong(song.Id);
                 }
 
                 var fullFilePath = GetSongPath(song);
@@ -187,14 +192,18 @@ namespace DanceDanceRotationModule.Storage
             // Load all .json files in songs directory
             LoadSongFiles();
 
-            _selectedSongId = DanceDanceRotationModule.Instance.SelectedSong.Value;
+            // Load song specific settings for every song
             var songDatas = DanceDanceRotationModule.Instance.SongDatas.Value;
-
             foreach (var songData in songDatas)
             {
                 _songDatas[songData.Id] = songData;
             }
-            InvokeSelectedSongInfo();
+
+            // Load the last selected song
+            SetSelectedSong(
+                DanceDanceRotationModule.Instance.SelectedSong.Value
+            );
+
             return Task.CompletedTask;
         }
 

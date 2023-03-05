@@ -102,18 +102,18 @@ namespace DanceDanceRotationModule
             );
 
             BackgroundOpacity = generalSettings.DefineSetting("BackgroundOpacity",
-                1.0f,
+                0.9f,
                 () => "Background Transparency",
                 () => "Sets the transparency of the notes background. Min=0% Max=100%");
             BackgroundOpacity.SetRange(0.0f, 1.0f);
 
             AutoHitWeapon1 = generalSettings.DefineSetting("AutoHitWeapon1",
-                false,
+                true,
                 () => "Auto Hit Weapon 1",
                 () => "If enabled, Weapon1 skills will automatically clear, instead of requiring hotkey presses, since they are probably on auto-cast.");
 
             ShowAbilityIconsForNotes = generalSettings.DefineSetting("ShowAbilityIconsForNotes",
-                false,
+                true,
                 () => "Show ability icon as note",
                 () => "If enabled, notes will use the actual ability icon instead of the generic.");
 
@@ -290,56 +290,6 @@ namespace DanceDanceRotationModule
             SongRepo = new SongRepo();
             SongRepo.StartDirectoryWatcher();
             await SongRepo.Load();
-
-            // GraphicsDevice graphicsDevice = GameService.Graphics.LendGraphicsDeviceContext().GraphicsDevice;
-            _mainWindow = new DdrNotesWindow(
-                Resources.Instance.WindowBackgroundEmptyTexture,
-                new Rectangle(40, 26, 913, 691),
-                new Rectangle(40, 26, 913, 691)
-            )
-            {
-                Parent = GameService.Graphics.SpriteScreen,
-                Title = "Dance Dance Rotation",
-                Subtitle = "v0.0.1",
-                Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                CanResize = true,
-                CanCloseWithEscape = false,
-                SavesPosition = true,
-                SavesSize = true,
-                Id = "DDR_MainView_ID"
-            };
-
-            _songListWindow = new SongListWindow(
-                Resources.Instance.WindowBackgroundTexture,
-                new Rectangle(40, 26, 913, 691),
-                new Rectangle(40, 26, 913, 691)
-            )
-            {
-                Parent = GameService.Graphics.SpriteScreen,
-                Title = "Song List",
-                Subtitle = "Dance Dance Rotation",
-                Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                CanResize = true,
-                CanCloseWithEscape = true,
-                SavesPosition = true,
-                SavesSize = true,
-                Id = "DDR_SongList_ID"
-            };
-
-            _songInfoWindow = new StandardWindow(
-                Resources.Instance.SongInfoBackground,
-                new Rectangle(40, 26, 333, 676),
-                new Rectangle(40, 26, 333, 676)
-            )
-            {
-                Parent = GameService.Graphics.SpriteScreen,
-                Title = "Song Info",
-                Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                CanResize = false,
-                CanCloseWithEscape = true,
-                SavesPosition = true,
-                Id = "DDR_SongInfo_ID"
-            };
         }
 
         // Allows you to perform an action once your module has finished loading (once
@@ -347,6 +297,8 @@ namespace DanceDanceRotationModule
         // end for the <see cref="DanceDanceRotationModule.ModuleLoaded"/> event to fire.
         protected override void OnModuleLoaded(EventArgs e)
         {
+            LoadWindows();
+
             // Add a mug corner icon in the top left next to the other icons in guild wars 2 (e.g. inventory icon, Mail icon)
             _cornerIcon = new CornerIcon()
             {
@@ -354,25 +306,10 @@ namespace DanceDanceRotationModule
                 BasicTooltipText = $"Dance Dance Rotation",
                 Parent           = GameService.Graphics.SpriteScreen
             };
-
-            // Load these on OnModuleLoaded, otherwise SavesPosition seems to fail
-            _mainView = new MainView();
-            _songListView = new SongListView();
-            _songInfoView = new SongInfoView();
-
             _cornerIcon.Click += delegate
             {
-                _mainWindow.ToggleWindow(_mainView);
+                ToggleNotesWindow();
             };
-
-            // Set up a listener for when the setting is changed.
-            // This ID is then looked up in the Repo and broadcast as a Song for everything else.
-            SelectedSong.SettingChanged +=
-                delegate(object sender, ValueChangedEventArgs<Song.ID> args)
-                {
-                    SongRepo.SetSelectedSong(args.NewValue);
-                };
-            SongRepo.SetSelectedSong(SelectedSong.Value);
 
             // Base handler must be called
             base.OnModuleLoaded(e);
@@ -405,6 +342,84 @@ namespace DanceDanceRotationModule
             // Static members are not automatically cleared and will keep a reference to your,
             // module unless manually unset.
             Instance = null;
+        }
+
+        /**
+         * Creates the main windows and views for them
+         * Load these on OnModuleLoaded, otherwise SavesPosition seems to fail
+         */
+        private void LoadWindows()
+        {
+            _mainWindow = new DdrNotesWindow(
+                Resources.Instance.WindowBackgroundEmptyTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+            )
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Title = "Dance Dance Rotation",
+                Subtitle = "v0.0.1",
+                Emblem = Resources.Instance.DdrLogoEmblemTexture,
+                CanResize = true,
+                CanCloseWithEscape = false,
+                Size = new Point(
+                    DdrNotesWindow.InitialWidth,
+                    DdrNotesWindow.InitialHeight
+                ),
+                Location = new Point(
+                    (GameService.Graphics.SpriteScreen.Width / 2) - (DdrNotesWindow.InitialWidth / 2),
+                    (GameService.Graphics.SpriteScreen.Height) - DdrNotesWindow.InitialHeight - 180 /* 180 is trying to push this above the ability bar a bit */
+                ),
+                SavesPosition = true,
+                SavesSize = true,
+                Id = "DDR_MainView_ID"
+            };
+
+            _songListWindow = new SongListWindow(
+                Resources.Instance.WindowBackgroundTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+            )
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Title = "Song List",
+                Subtitle = "Dance Dance Rotation",
+                Emblem = Resources.Instance.DdrLogoEmblemTexture,
+                CanResize = true,
+                CanCloseWithEscape = true,
+                Size = new Point(500,400),
+                Location = new Point(
+                    _mainWindow.Left,
+                    _mainWindow.Top - 400 - 20
+                ),
+                SavesPosition = true,
+                SavesSize = true,
+                Id = "DDR_SongList_ID"
+            };
+
+            _songInfoWindow = new StandardWindow(
+                Resources.Instance.SongInfoBackground,
+                new Rectangle(40, 26, 333, 676),
+                new Rectangle(40, 26, 333, 676)
+            )
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Title = "Song Info",
+                Emblem = Resources.Instance.DdrLogoEmblemTexture,
+                Size = new Point(333,676),
+                Location = new Point(
+                    _mainWindow.Left - 390,
+                    _songListWindow.Top
+                ),
+                CanResize = false,
+                CanCloseWithEscape = true,
+                SavesPosition = true,
+                Id = "DDR_SongInfo_ID"
+            };
+
+            _mainView = new MainView();
+            _songListView = new SongListView();
+            _songInfoView = new SongInfoView();
         }
 
         public void ToggleNotesWindow()

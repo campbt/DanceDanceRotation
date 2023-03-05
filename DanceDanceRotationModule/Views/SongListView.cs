@@ -197,7 +197,9 @@ namespace DanceDanceRotationModule.Storage
             };
             Checkbox.CheckedChanged += delegate
             {
-                DanceDanceRotationModule.Instance.SelectedSong.Value = song.Id;
+                DanceDanceRotationModule.Instance.SongRepo.SetSelectedSong(
+                    song.Id
+                );
             };
 
             NameLabel = new Label()
