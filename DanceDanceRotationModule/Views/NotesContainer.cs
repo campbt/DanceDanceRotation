@@ -576,6 +576,9 @@ namespace DanceDanceRotationModule.NoteDisplay
                     ShowShadow = true,
                     AutoSizeHeight = true,
                     AutoSizeWidth = true,
+                    // Without ClipsBounds allows this text to potentially float into the parent container
+                    // which looks a bit better than it just cutting cut off.
+                    ClipsBounds = false,
                     Location = location,
                     Parent = parent
                 };

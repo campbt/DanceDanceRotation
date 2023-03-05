@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
+using DanceDanceRotationModule.Util;
 
 namespace DanceDanceRotationModule.Views
 {
@@ -22,6 +23,28 @@ namespace DanceDanceRotationModule.Views
     {
         public const int InitialWidth = 800;
         public const int InitialHeight = 400;
+
+        public DdrNotesWindow() :
+          this(
+                Resources.Instance.WindowBackgroundEmptyTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+          )
+        {
+            Parent = GameService.Graphics.SpriteScreen;
+            Title = "Dance Dance Rotation";
+            Subtitle = "v0.0.1";
+            Emblem = Resources.Instance.DdrLogoEmblemTexture;
+            CanResize = true;
+            CanCloseWithEscape = false;
+            Size = new Point(
+              InitialWidth,
+              InitialHeight
+            );
+            SavesPosition = true;
+            SavesSize = true;
+            Id = "DDR_MainView_ID";
+        }
 
         public DdrNotesWindow(
           AsyncTexture2D background,

@@ -350,71 +350,31 @@ namespace DanceDanceRotationModule
          */
         private void LoadWindows()
         {
-            _mainWindow = new DdrNotesWindow(
-                Resources.Instance.WindowBackgroundEmptyTexture,
-                new Rectangle(40, 26, 913, 691),
-                new Rectangle(40, 26, 913, 691)
-            )
+            _mainWindow = new DdrNotesWindow()
             {
-                Parent = GameService.Graphics.SpriteScreen,
-                Title = "Dance Dance Rotation",
-                Subtitle = "v0.0.1",
-                Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                CanResize = true,
-                CanCloseWithEscape = false,
-                Size = new Point(
-                    DdrNotesWindow.InitialWidth,
-                    DdrNotesWindow.InitialHeight
-                ),
+                // This is just the initial location on first load of the module
                 Location = new Point(
                     (GameService.Graphics.SpriteScreen.Width / 2) - (DdrNotesWindow.InitialWidth / 2),
                     (GameService.Graphics.SpriteScreen.Height) - DdrNotesWindow.InitialHeight - 180 /* 180 is trying to push this above the ability bar a bit */
                 ),
-                SavesPosition = true,
-                SavesSize = true,
-                Id = "DDR_MainView_ID"
             };
 
-            _songListWindow = new SongListWindow(
-                Resources.Instance.WindowBackgroundTexture,
-                new Rectangle(40, 26, 913, 691),
-                new Rectangle(40, 26, 913, 691)
-            )
+            _songListWindow = new SongListWindow()
             {
-                Parent = GameService.Graphics.SpriteScreen,
-                Title = "Song List",
-                Subtitle = "Dance Dance Rotation",
-                Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                CanResize = true,
-                CanCloseWithEscape = true,
-                Size = new Point(500,400),
+                // This is just the initial location on first load of the module
                 Location = new Point(
                     _mainWindow.Left,
                     _mainWindow.Top - 400 - 20
-                ),
-                SavesPosition = true,
-                SavesSize = true,
-                Id = "DDR_SongList_ID"
+                )
             };
 
-            _songInfoWindow = new StandardWindow(
-                Resources.Instance.SongInfoBackground,
-                new Rectangle(40, 26, 333, 676),
-                new Rectangle(40, 26, 333, 676)
-            )
+            _songInfoWindow = new SongInfoWindow()
             {
-                Parent = GameService.Graphics.SpriteScreen,
-                Title = "Song Info",
-                Emblem = Resources.Instance.DdrLogoEmblemTexture,
-                Size = new Point(333,676),
+                // This is just the initial location on first load of the module
                 Location = new Point(
                     _mainWindow.Left - 390,
                     _songListWindow.Top
-                ),
-                CanResize = false,
-                CanCloseWithEscape = true,
-                SavesPosition = true,
-                Id = "DDR_SongInfo_ID"
+                )
             };
 
             _mainView = new MainView();

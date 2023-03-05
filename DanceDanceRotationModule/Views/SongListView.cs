@@ -20,6 +20,25 @@ namespace DanceDanceRotationModule.Storage
 
     public class SongListWindow : StandardWindow
     {
+        public SongListWindow() :
+            this(
+                Resources.Instance.WindowBackgroundTexture,
+                new Rectangle(40, 26, 913, 691),
+                new Rectangle(40, 26, 913, 691)
+            )
+        {
+            Parent = GameService.Graphics.SpriteScreen;
+            Title = "Song List";
+            Subtitle = "Dance Dance Rotation";
+            Emblem = Resources.Instance.DdrLogoEmblemTexture;
+            CanResize = true;
+            CanCloseWithEscape = true;
+            Size = new Point(500, 400);
+            SavesPosition = true;
+            SavesSize = true;
+            Id = "DDR_SongList_ID";
+        }
+
         public SongListWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
         {
 

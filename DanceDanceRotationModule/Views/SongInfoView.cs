@@ -18,6 +18,51 @@ using Microsoft.Xna.Framework.Input.Touch;
 
 namespace DanceDanceRotationModule.Views
 {
+    public class SongInfoWindow : StandardWindow
+    {
+        public SongInfoWindow() :
+            this(
+                Resources.Instance.SongInfoBackground,
+                new Rectangle(40, 26, 333, 676),
+                // The content region is slightly larger because of the scroll bar
+                new Rectangle(40, 26, 349, 676)
+            )
+        {
+            Parent = GameService.Graphics.SpriteScreen;
+            Title = "Song Info";
+            Emblem = Resources.Instance.DdrLogoEmblemTexture;
+            Size = new Point(333, 676);
+            CanResize = false;
+            CanCloseWithEscape = true;
+            SavesPosition = true;
+            Id = "DDR_SongInfo_ID";
+        }
+
+        public SongInfoWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
+        {
+
+        }
+
+        public SongInfoWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
+        {
+        }
+
+        public SongInfoWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion, Point windowSize) : base(background, windowRegion, contentRegion, windowSize)
+        {
+        }
+
+        public SongInfoWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion, Point windowSize) : base(background, windowRegion, contentRegion, windowSize)
+        {
+        }
+
+        // protected override Point HandleWindowResize(Point newSize) =>
+        //   new Point(
+        //     MathHelper.Clamp(newSize.X, 333, 333),
+        //     MathHelper.Clamp(newSize.Y, 500, 1000)
+        //   );
+
+    }
+
     public class SongInfoView : View
     {
         private static readonly Logger Logger = Logger.GetLogger<SongInfoView>();
