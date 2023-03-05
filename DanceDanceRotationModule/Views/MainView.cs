@@ -195,7 +195,7 @@ namespace DanceDanceRotationModule
 
         public void Update(GameTime gameTime)
         {
-            _notesContainer?.Update(gameTime);
+            _notesContainer?.UpdateNotes(gameTime);
         }
 
         public NotesContainer GetNotesContainer()

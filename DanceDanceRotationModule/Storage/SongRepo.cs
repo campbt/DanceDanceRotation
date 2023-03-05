@@ -210,27 +210,25 @@ namespace DanceDanceRotationModule.Storage
 
         private void LoadSongFiles()
         {
-
             // Load all .json files in songs directory
             List<Song> loadedSongs = new List<Song>();
             Logger.Info("Loading song .json files in " + SongsDir);
             foreach (string fileName in Directory.GetFiles(SongsDir, "*.json"))
             {
-                using (StreamReader r = new StreamReader(fileName))
+                try
                 {
-                    try
+                    using (StreamReader r = new StreamReader(fileName))
                     {
                         string json = r.ReadToEnd();
                         Song song = SongTranslator.FromJson(json);
                         loadedSongs.Add(song);
                         Logger.Trace("Successfully loaded song file: " + fileName);
                     }
-                    catch (Exception exception)
-                    {
-                        Logger.Warn(exception, "Failed to load song file: " + fileName);
-                    }
                 }
-                // Do something with the file content
+                catch (Exception exception)
+                {
+                    Logger.Warn(exception, "Failed to load song file: " + fileName);
+                }
             }
             Logger.Info($"Successfully loaded {loadedSongs.Count} songs.");
 

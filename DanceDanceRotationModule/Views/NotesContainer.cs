@@ -858,7 +858,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             return _info.IsStarted && _info.IsPaused;
         }
 
-        public void Update(GameTime gameTime)
+        public void UpdateNotes(GameTime gameTime)
         {
             _lastGameTime = gameTime.TotalGameTime;
 
@@ -868,8 +868,8 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
 
             TimeSpan timeInRotation = _lastGameTime - _info.StartTime;
-            double PlaybackRate = _songData.PlaybackRate;
-            timeInRotation = timeInRotation.Multiply(new decimal(PlaybackRate));
+            double playbackRate = _songData.PlaybackRate;
+            timeInRotation = timeInRotation.Multiply(new decimal(playbackRate));
 
             // Check to add notes
             if (_info.SequenceIndex < _currentSequence.Count)
@@ -879,6 +879,14 @@ namespace DanceDanceRotationModule.NoteDisplay
                 {
                     AddNote(nextNote);
                     _info.SequenceIndex += 1;
+                }
+            }
+            else
+            {
+                // Check if song has ended and all notes are gone
+                if (_info.ActiveNotes.Count == 0)
+                {
+                    Reset();
                 }
             }
 
