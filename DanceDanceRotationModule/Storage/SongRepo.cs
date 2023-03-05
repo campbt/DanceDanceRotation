@@ -71,7 +71,7 @@ namespace DanceDanceRotationModule.Storage
                 return;
 
             _selectedSongId = songId;
-            DanceDanceRotationModule.Instance.SelectedSong.Value = songId;
+            DanceDanceRotationModule.Settings.SelectedSong.Value = songId;
             InvokeSelectedSongInfo();
         }
 
@@ -194,7 +194,7 @@ namespace DanceDanceRotationModule.Storage
             LoadSongFiles();
 
             // Load song specific settings for every song
-            var songDatas = DanceDanceRotationModule.Instance.SongDatas.Value;
+            var songDatas = DanceDanceRotationModule.Settings.SongDatas.Value;
             foreach (var songData in songDatas)
             {
                 _songDatas[songData.Id] = songData;
@@ -202,7 +202,7 @@ namespace DanceDanceRotationModule.Storage
 
             // Load the last selected song
             SetSelectedSong(
-                DanceDanceRotationModule.Instance.SelectedSong.Value
+                DanceDanceRotationModule.Settings.SelectedSong.Value
             );
 
             return Task.CompletedTask;
@@ -245,8 +245,8 @@ namespace DanceDanceRotationModule.Storage
          */
         private void Save()
         {
-            DanceDanceRotationModule.Instance.SelectedSong.Value = _selectedSongId;
-            DanceDanceRotationModule.Instance.SongDatas.Value = _songDatas.Values.ToList();
+            DanceDanceRotationModule.Settings.SelectedSong.Value = _selectedSongId;
+            DanceDanceRotationModule.Settings.SongDatas.Value = _songDatas.Values.ToList();
         }
 
         public void StartDirectoryWatcher()
@@ -290,7 +290,7 @@ namespace DanceDanceRotationModule.Storage
 
                     if (json.Length > 0)
                     {
-                        DanceDanceRotationModule.Instance.SongRepo.AddSong(json);
+                        DanceDanceRotationModule.SongRepo.AddSong(json);
                     }
                     break;
                 case WatcherChangeTypes.Renamed:
@@ -300,7 +300,7 @@ namespace DanceDanceRotationModule.Storage
                 case WatcherChangeTypes.Deleted:
                 default:
                     // No easy way to know which song was
-                    DanceDanceRotationModule.Instance.SongRepo.LoadSongFiles();
+                    DanceDanceRotationModule.SongRepo.LoadSongFiles();
                     break;
             }
         }

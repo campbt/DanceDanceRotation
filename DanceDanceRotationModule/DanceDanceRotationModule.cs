@@ -35,54 +35,6 @@ namespace DanceDanceRotationModule
 
         #endregion
 
-        // MARK: Settings - General
-
-        internal SettingEntry<float> BackgroundOpacity { get; private set; }
-        internal SettingEntry<bool> AutoHitWeapon1 { get; private set; }
-        internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
-        internal SettingEntry<bool> ShowHotkeys { get; private set; }
-        internal SettingEntry<bool> ShowNextAbilities { get; private set; }
-
-        // MARK: Settings - Hotkeys
-
-        internal SettingCollection AbilityHotkeysSettings { get; private set; }
-        internal SettingEntry<KeyBinding> SwapWeapons { get; private set; }
-        internal SettingEntry<KeyBinding> Dodge { get; private set; }
-        internal SettingEntry<KeyBinding> Weapon1 { get; private set; }
-        internal SettingEntry<KeyBinding> Weapon2 { get; private set; }
-        internal SettingEntry<KeyBinding> Weapon3 { get; private set; }
-        internal SettingEntry<KeyBinding> Weapon4 { get; private set; }
-        internal SettingEntry<KeyBinding> Weapon5 { get; private set; }
-        internal SettingEntry<KeyBinding> HealingSkill { get; private set; }
-        internal SettingEntry<KeyBinding> UtilitySkill1 { get; private set; }
-        internal SettingEntry<KeyBinding> UtilitySkill2 { get; private set; }
-        internal SettingEntry<KeyBinding> UtilitySkill3 { get; private set; }
-        internal SettingEntry<KeyBinding> EliteSkill { get; private set; }
-        internal SettingEntry<KeyBinding> ProfessionSkill1 { get; private set; }
-        internal SettingEntry<KeyBinding> ProfessionSkill2 { get; private set; }
-        internal SettingEntry<KeyBinding> ProfessionSkill3 { get; private set; }
-        internal SettingEntry<KeyBinding> ProfessionSkill4 { get; private set; }
-        internal SettingEntry<KeyBinding> ProfessionSkill5 { get; private set; }
-        internal SettingEntry<KeyBinding> WeaponStow { get; private set; }
-
-        // MARK: Control Hotkeys
-
-        internal SettingEntry<KeyBinding> ToggleHotkey { get; private set; }
-        internal SettingEntry<KeyBinding> PlayHotkey { get; private set; }
-        internal SettingEntry<KeyBinding> PauseHotkey { get; private set; }
-        internal SettingEntry<KeyBinding> StopHotkey { get; private set; }
-
-        // MARK: Window Hotkeys
-
-        internal SettingEntry<KeyBinding> ToggleNotesWindowHotkey { get; private set; }
-        internal SettingEntry<KeyBinding> ToggleSongListWindowHotkey { get; private set; }
-        internal SettingEntry<KeyBinding> ToggleSongInfoWindowHotkey { get; private set; }
-
-        // MARK: Hidden Settings
-
-        internal SettingEntry<List<SongData>> SongDatas { get; private set; }
-        internal SettingEntry<Song.ID> SelectedSong { get; private set; }
-
         // Ideally you should keep the constructor as is.
         // Use <see cref="Initialize"/> to handle initializing the module.
         [ImportingConstructor]
@@ -95,152 +47,7 @@ namespace DanceDanceRotationModule
         // between updates to both Blish HUD and your module.
         protected override void DefineSettings(SettingCollection settings)
         {
-            var generalSettings = settings.AddSubCollection(
-                collectionKey: "general_settings",
-                renderInUi: true,
-                displayNameFunc: () => "General",
-                lazyLoaded: false
-            );
-
-            BackgroundOpacity = generalSettings.DefineSetting("BackgroundOpacity",
-                0.9f,
-                () => "Background Transparency",
-                () => "Sets the transparency of the notes background. Min=0% Max=100%");
-            BackgroundOpacity.SetRange(0.0f, 1.0f);
-
-            AutoHitWeapon1 = generalSettings.DefineSetting("AutoHitWeapon1",
-                true,
-                () => "Auto Hit Weapon 1",
-                () => "If enabled, Weapon1 skills will automatically clear, instead of requiring hotkey presses, since they are probably on auto-cast.");
-
-            ShowAbilityIconsForNotes = generalSettings.DefineSetting("ShowAbilityIconsForNotes",
-                true,
-                () => "Show ability icon as note",
-                () => "If enabled, notes will use the actual ability icon instead of the generic.");
-
-            ShowHotkeys = generalSettings.DefineSetting("ShowHotkeys",
-                true,
-                () => "Show ability hotkeys",
-                () => "If enabled, notes will have the hotkeys displayed on top of them.");
-
-            ShowNextAbilities = generalSettings.DefineSetting("ShowNextAbilities",
-                false,
-                () => "Show next abilities",
-                () => "If enabled, the next few ability icons will be shown.");
-
-            // MARK: Ability Hotkeys
-
-            AbilityHotkeysSettings = settings.AddSubCollection(
-                collectionKey: "hotkey_settings",
-                renderInUi: true,
-                displayNameFunc: () => "Ability Hotkeys",
-                lazyLoaded: false
-            );
-            SwapWeapons      = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.WeaponSwap);
-            Dodge            = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Dodge);
-            Weapon1          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon1);
-            Weapon2          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon2);
-            Weapon3          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon3);
-            Weapon4          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon4);
-            Weapon5          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon5);
-            HealingSkill     = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.HealingSkill);
-            UtilitySkill1    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill1);
-            UtilitySkill2    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill2 );
-            UtilitySkill3    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill3);
-            EliteSkill       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.EliteSkill );
-            ProfessionSkill1 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill1);
-            ProfessionSkill2 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill2);
-            ProfessionSkill3 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill3);
-            ProfessionSkill4 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill4);
-            ProfessionSkill5 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill5);
-            WeaponStow       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.WeaponStow);
-
-            // MARK: DDR Control Hotkeys
-
-            var controlHotkeySettings = settings.AddSubCollection(
-                collectionKey: "control_hotkey_settings",
-                renderInUi: true,
-                displayNameFunc: () => "Control Hotkeys",
-                lazyLoaded: false
-            );
-            ToggleHotkey = controlHotkeySettings.DefineSetting("ToggleHotkey",
-                new KeyBinding(Keys.None),
-                () => "Toggle Play/Stop",
-                () => "Will start or stop the DDR rotation when pressed based on if it is currently playing.");
-            ToggleHotkey.Value.Enabled = true;
-            ToggleHotkey.Value.Activated += delegate
-            {
-                _mainView.GetNotesContainer()?.ToggleStart();
-            };
-            PlayHotkey = controlHotkeySettings.DefineSetting("PlayHotkey",
-                new KeyBinding(Keys.None),
-                () => "Play",
-                () => "Will start the DDR rotation when pressed, if not already playing.");
-            PlayHotkey.Value.Enabled = true;
-            PlayHotkey.Value.Activated += delegate
-            {
-                _mainView.GetNotesContainer()?.Play();
-            };
-            PauseHotkey = controlHotkeySettings.DefineSetting("PauseHotkey",
-                new KeyBinding(Keys.None),
-                () => "Pause",
-                () => "Will pause the DDR rotation when pressed, if playing.");
-            PauseHotkey.Value.Enabled = true;
-            PauseHotkey.Value.Activated += delegate
-            {
-                _mainView.GetNotesContainer()?.Pause();
-            };
-            StopHotkey = controlHotkeySettings.DefineSetting("StopHotkey",
-                new KeyBinding(Keys.None),
-                () => "Stop",
-                () => "Will stop the DDR rotation when pressed, if playing.");
-            StopHotkey.Value.Enabled = true;
-            StopHotkey.Value.Activated += delegate
-            {
-                _mainView.GetNotesContainer()?.Reset();
-            };
-
-            // MARK: Window Visibility Hotkeys
-
-            var windowHotkeySettings = settings.AddSubCollection(
-                collectionKey: "window_hotkey_settings",
-                renderInUi: true,
-                displayNameFunc: () => "Window Hotkeys",
-                lazyLoaded: false
-            );
-            ToggleNotesWindowHotkey = windowHotkeySettings.DefineSetting("ToggleNotesWindowHotkey",
-                new KeyBinding(Keys.None),
-                () => "Toggle Notes Window",
-                () => "Will Show/Hide the main Notes window");
-            ToggleNotesWindowHotkey.Value.Enabled = true;
-            ToggleNotesWindowHotkey.Value.Activated += delegate
-            {
-                ToggleNotesWindow();
-            };
-            ToggleSongListWindowHotkey = windowHotkeySettings.DefineSetting("ToggleSongListWindowHotkey",
-                new KeyBinding(Keys.None),
-                () => "Toggle Song List Window",
-                () => "Will Show/Hide the Song List window");
-            ToggleSongListWindowHotkey.Value.Enabled = true;
-            ToggleSongListWindowHotkey.Value.Activated += delegate
-            {
-                ToggleSongList();
-            };
-            ToggleSongInfoWindowHotkey = windowHotkeySettings.DefineSetting("ToggleSongInfoWindowHotkey",
-                new KeyBinding(Keys.None),
-                () => "Toggle Song Info Window",
-                () => "Will Show/Hide the Song Info window");
-            ToggleSongInfoWindowHotkey.Value.Enabled = true;
-            ToggleSongInfoWindowHotkey.Value.Activated += delegate
-            {
-                ToggleSongInfo();
-            };
-
-            // MARK: Private settings (not visible to the user)
-
-            var hiddenSettings = settings.AddSubCollection("hidden_settings");
-            SongDatas = hiddenSettings.DefineSetting("SavedSongSettings", new List<SongData>());
-            SelectedSong = hiddenSettings.DefineSetting("SelectedSong", new Song.ID());
+            Settings = new ModuleSettings(settings);
         }
 
         private SettingEntry<KeyBinding> DefineHotkeySetting(SettingCollection settings, NoteType noteType)
@@ -254,13 +61,6 @@ namespace DanceDanceRotationModule
             {
                 _mainView?.GetNotesContainer()?.OnHotkeyPressed(noteType);
             };
-            return retval;
-        }
-
-        public SettingEntry<KeyBinding> GetKeyBindingForNoteType(NoteType noteType)
-        {
-            SettingEntry<KeyBinding> retval = new SettingEntry<KeyBinding>();
-            AbilityHotkeysSettings.TryGetSetting<KeyBinding>(noteType.ToString(), out retval);
             return retval;
         }
 
@@ -344,6 +144,8 @@ namespace DanceDanceRotationModule
             // Static members are not automatically cleared and will keep a reference to your,
             // module unless manually unset.
             Instance = null;
+            Settings = null;
+            SongRepo = null;
         }
 
         /**
@@ -384,6 +186,11 @@ namespace DanceDanceRotationModule
             _songInfoView = new SongInfoView();
         }
 
+        public NotesContainer GetNotesContainer()
+        {
+            return _mainView?.GetNotesContainer();
+        }
+
         public void ToggleNotesWindow()
         {
             _mainWindow.ToggleWindow(_mainView);
@@ -400,6 +207,9 @@ namespace DanceDanceRotationModule
         }
 
         internal static DanceDanceRotationModule Instance;
+        internal static ModuleSettings Settings;
+        internal static SongRepo SongRepo { get; private set; }
+
         private CornerIcon _cornerIcon;
 
         // Windows
@@ -411,6 +221,5 @@ namespace DanceDanceRotationModule
         private SongListView _songListView;
         private SongInfoView _songInfoView;
 
-        public SongRepo SongRepo { get; set; }
     }
 }

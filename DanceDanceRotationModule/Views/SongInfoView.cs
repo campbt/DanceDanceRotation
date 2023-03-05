@@ -369,7 +369,7 @@ namespace DanceDanceRotationModule.Views
                 if (_song == null)
                     return;
 
-                DanceDanceRotationModule.Instance.SongRepo
+                DanceDanceRotationModule.SongRepo
                     .UpdateData(
                         _song.Id,
                         songData =>
@@ -499,7 +499,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (_song != null)
                     {
-                        DanceDanceRotationModule.Instance.SongRepo
+                        DanceDanceRotationModule.SongRepo
                             .UpdateData(
                                 _song.Id,
                                 songData =>
@@ -554,7 +554,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (_song != null)
                     {
-                        DanceDanceRotationModule.Instance.SongRepo
+                        DanceDanceRotationModule.SongRepo
                             .UpdateData(
                                 _song.Id,
                                 songData =>
@@ -612,7 +612,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (_song != null)
                     {
-                        DanceDanceRotationModule.Instance.SongRepo
+                        DanceDanceRotationModule.SongRepo
                             .UpdateData(
                                 _song.Id,
                                 songData =>
@@ -631,7 +631,7 @@ namespace DanceDanceRotationModule.Views
 
             // MARK: View Created. Set up subscriptions
 
-            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged +=
+            DanceDanceRotationModule.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
                     OnSelectedSongChanged(songInfo);

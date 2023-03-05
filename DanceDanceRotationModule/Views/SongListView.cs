@@ -96,7 +96,7 @@ namespace DanceDanceRotationModule.Storage
             {
                 Logger.Info("Attempting to read in clipboard contents");
                 string clipboardContents = ClipboardUtil.WindowsClipboardService.GetTextAsync().Result;
-                DanceDanceRotationModule.Instance.SongRepo.AddSong(clipboardContents);
+                DanceDanceRotationModule.SongRepo.AddSong(clipboardContents);
             };
             StandardButton findSongsButton = new StandardButton()
             {
@@ -120,11 +120,11 @@ namespace DanceDanceRotationModule.Storage
             };
             _rows = new List<SongListRow>();
 
-            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged += delegate
+            DanceDanceRotationModule.SongRepo.OnSelectedSongChanged += delegate
             {
                 BuildSongList();
             };
-            DanceDanceRotationModule.Instance.SongRepo.OnSongsChanged += delegate
+            DanceDanceRotationModule.SongRepo.OnSongsChanged += delegate
             {
                 BuildSongList();
             };
@@ -135,8 +135,8 @@ namespace DanceDanceRotationModule.Storage
             _songsListPanel.ClearChildren();
             _rows.Clear();
 
-            var selectedSong = DanceDanceRotationModule.Instance.SongRepo.GetSelectedSongId();
-            var songList = DanceDanceRotationModule.Instance.SongRepo.GetAllSongs();
+            var selectedSong = DanceDanceRotationModule.SongRepo.GetSelectedSongId();
+            var songList = DanceDanceRotationModule.SongRepo.GetAllSongs();
 
             // Sort song list by Profession, then by Song title
             songList.Sort(delegate(Song song1, Song song2)
@@ -145,7 +145,7 @@ namespace DanceDanceRotationModule.Storage
                 {
                     return song1.Profession.CompareTo(song2.Profession);
                 }
-                return song1.Name.CompareTo(song2.Name);
+                return String.Compare(song1.Name, song2.Name, StringComparison.Ordinal);
             });
 
             foreach (var song in songList)
@@ -190,7 +190,7 @@ namespace DanceDanceRotationModule.Storage
             };
             Checkbox.CheckedChanged += delegate
             {
-                DanceDanceRotationModule.Instance.SongRepo.SetSelectedSong(
+                DanceDanceRotationModule.SongRepo.SetSelectedSong(
                     song.Id
                 );
             };
@@ -225,7 +225,7 @@ namespace DanceDanceRotationModule.Storage
             ControlExtensions.ConvertToButton(DeleteButton);
             DeleteButton.Click += delegate
             {
-                DanceDanceRotationModule.Instance.SongRepo.DeleteSong(song.Id);
+                DanceDanceRotationModule.SongRepo.DeleteSong(song.Id);
             };
 
             Height = CalculateHeight();

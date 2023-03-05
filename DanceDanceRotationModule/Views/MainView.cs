@@ -53,12 +53,12 @@ namespace DanceDanceRotationModule
                 ZIndex = -1,
                 Parent = buildPanel
             };
-            DanceDanceRotationModule.Instance.BackgroundOpacity.SettingChanged += delegate(object sender, ValueChangedEventArgs<float> args)
+            DanceDanceRotationModule.Settings.BackgroundOpacity.SettingChanged += delegate(object sender, ValueChangedEventArgs<float> args)
             {
                 backgroundPanel.Opacity = args.NewValue;
                 topPanelBackground.Opacity = 1 - args.NewValue;
             };
-            backgroundPanel.Opacity = DanceDanceRotationModule.Instance.BackgroundOpacity.Value;
+            backgroundPanel.Opacity = DanceDanceRotationModule.Settings.BackgroundOpacity.Value;
             topPanelBackground.Opacity = 1 - backgroundPanel.Opacity;
 
             FlowPanel flowPanel = new FlowPanel()
@@ -161,7 +161,7 @@ namespace DanceDanceRotationModule
                 DanceDanceRotationModule.Instance.ToggleSongInfo();
             };
             // Make value equal to currently selected song
-            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged +=
+            DanceDanceRotationModule.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
                     if (songInfo.Song != null)

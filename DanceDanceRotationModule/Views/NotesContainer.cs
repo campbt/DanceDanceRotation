@@ -106,7 +106,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
                     LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
-                if (DanceDanceRotationModule.Instance.ShowNextAbilities.Value)
+                if (DanceDanceRotationModule.Settings.ShowNextAbilities.Value)
                 {
                     // Show ability icons section as an extra "lane"
                     NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 7;
@@ -207,7 +207,10 @@ namespace DanceDanceRotationModule.NoteDisplay
                 _windowInfo = windowInfo;
                 this.Note = note;
 
-                var keyBinding = DanceDanceRotationModule.Instance.GetKeyBindingForNoteType(note.NoteType);
+                var keyBinding = DanceDanceRotationModule.Settings
+                    .GetKeyBindingForNoteType(
+                        note.NoteType
+                    );
                 string hotkeyText =
                     (keyBinding != null)
                         ? KeysExtensions.NotesString(keyBinding.Value)
@@ -218,7 +221,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 // Respect "ShowAbilityIconsForNotes" preference
                 var noteBackground =
-                    DanceDanceRotationModule.Instance.ShowAbilityIconsForNotes.Value
+                    DanceDanceRotationModule.Settings.ShowAbilityIconsForNotes.Value
                         ? Resources.Instance.GetAbilityIcon(note.AbilityId)
                         : NoteTypeExtensions.NoteImage(note.NoteType);
 
@@ -233,7 +236,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 };
                 // Adjust the size and position of the icon if AutoHit is on and this is a Weapon1
                 if (
-                    DanceDanceRotationModule.Instance.AutoHitWeapon1.Value &&
+                    DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     note.NoteType == NoteType.Weapon1
                 )
                 {
@@ -319,9 +322,9 @@ namespace DanceDanceRotationModule.NoteDisplay
                 // "ShowHotkeys" preference
                 // Just setting opacity to 0 so all the calculations that need the label position work. Lazy.
                 bool HideHotkey =
-                    DanceDanceRotationModule.Instance.ShowHotkeys.Value == false ||
+                    DanceDanceRotationModule.Settings.ShowHotkeys.Value == false ||
                     (
-                        DanceDanceRotationModule.Instance.AutoHitWeapon1.Value &&
+                        DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                         note.NoteType == NoteType.Weapon1
                     );
 
@@ -339,7 +342,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 XPosition -= moveAmount;
                 if (
                     _isHit == false &&
-                    DanceDanceRotationModule.Instance.AutoHitWeapon1.Value &&
+                    DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1 &&
                     XPosition <= _windowInfo.HitPerfect
                 )
@@ -387,7 +390,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 }
 
                 if (
-                    DanceDanceRotationModule.Instance.AutoHitWeapon1.Value &&
+                    DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1
                 )
                 {
@@ -701,7 +704,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             };
 
             // Listen for selected song changes to update the notes
-            DanceDanceRotationModule.Instance.SongRepo.OnSelectedSongChanged +=
+            DanceDanceRotationModule.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
                     if (songInfo.Song != null)
@@ -712,7 +715,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                         );
                     }
                 };
-            DanceDanceRotationModule.Instance.ShowNextAbilities.SettingChanged +=
+            DanceDanceRotationModule.Settings.ShowNextAbilities.SettingChanged +=
                 delegate
                 {
                     Reset();
@@ -1155,7 +1158,7 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void AddInitialAbilityIcons()
         {
-            if (DanceDanceRotationModule.Instance.ShowNextAbilities.Value)
+            if (DanceDanceRotationModule.Settings.ShowNextAbilities.Value)
             {
                 for (int index = 0, size = Math.Min(3, _currentSequence.Count); index < size; index++)
                 {
