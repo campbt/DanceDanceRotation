@@ -193,6 +193,12 @@ namespace DanceDanceRotationModule.Storage
             // Load all .json files in songs directory
             LoadSongFiles();
 
+            if (_songs.Count == 0)
+            {
+                Logger.Info($"No songs were found in {SongsDir}! Loading default songs");
+                LoadDefaultSongFiles();
+            }
+
             // Load song specific settings for every song
             var songDatas = DanceDanceRotationModule.Settings.SongDatas.Value;
             foreach (var songData in songDatas)
@@ -238,6 +244,39 @@ namespace DanceDanceRotationModule.Storage
                 _songs[song.Id] = song;
             }
             OnSongsChanged?.Invoke(sender: this, null);
+        }
+
+        /**
+         * Loads the songs in the defaultSongs/ directory
+         */
+        private void LoadDefaultSongFiles()
+        {
+             // Not sure if there is a way to just search for resources in the directory,
+             // so all default songs have to be listed here.
+            var defaultSongFileNames = new List<String>();
+            defaultSongFileNames.Add("Power Weaver");
+
+            var baseRefFolder = "defaultSongs";
+
+            Logger.Info($"Attempting to load in {defaultSongFileNames.Count} songs from ref/${baseRefFolder}.");
+            foreach (var rootName in defaultSongFileNames)
+            {
+                var fileName = Path.Combine(baseRefFolder, rootName + ".json");
+                try
+                {
+                    var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(fileName);
+                    using (StreamReader r = new StreamReader(fileStream))
+                    {
+                        string json = r.ReadToEnd();
+                        AddSong(json);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Warn(exception, "Failed to load song file: " + fileName);
+                }
+            }
+            Logger.Info($"Successfully loaded {_songs.Count} songs.");
         }
 
         /**
