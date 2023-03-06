@@ -32,6 +32,7 @@ namespace DanceDanceRotationModule.Storage
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
         internal SettingEntry<bool> ShowHotkeys { get; private set; }
         internal SettingEntry<bool> ShowNextAbilities { get; private set; }
+        internal SettingEntry<bool> ShowOnlyCharacterClassSongs { get; private set; }
 
         private void InitGeneral(SettingCollection settings)
         {
@@ -67,6 +68,11 @@ namespace DanceDanceRotationModule.Storage
                 false,
                 () => "Show next abilities",
                 () => "If enabled, the next few ability icons will be shown.");
+
+            ShowOnlyCharacterClassSongs = generalSettings.DefineSetting("ShowOnlyCharacterClassSongs",
+                false,
+                () => "Only show current profession songs",
+                () => "If enabled, the song list will only show songs for the current profession");
         }
 
         #endregion

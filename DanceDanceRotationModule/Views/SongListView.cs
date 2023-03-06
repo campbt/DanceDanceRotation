@@ -153,6 +153,18 @@ namespace DanceDanceRotationModule.Storage
                 {
                     BuildSongList();
                 };
+
+            DanceDanceRotationModule.Settings.ShowOnlyCharacterClassSongs.SettingChanged +=
+                delegate
+                {
+                    BuildSongList();
+                };
+
+            // Listen for profession change
+            GameService.Gw2Mumble.PlayerCharacter.NameChanged += delegate
+            {
+                BuildSongList();
+            };
         }
 
         private void BuildSongList()
@@ -163,17 +175,48 @@ namespace DanceDanceRotationModule.Storage
             var selectedSongId = DanceDanceRotationModule.SongRepo.GetSelectedSongId();
             var songList = DanceDanceRotationModule.SongRepo.GetAllSongs();
 
-            // Sort song list by Profession, then by Song title
-            songList.Sort(delegate(Song song1, Song song2)
+            // Get the profession of currently logged in character
+            Profession playerCurrentProfession = ProfessionExtensions.ProfessionFromBuildTemplate(
+                (int)GameService.Gw2Mumble.PlayerCharacter.Profession
+            );
+
+            var showOnlyCharacterClassSongs =
+                DanceDanceRotationModule.Settings.ShowOnlyCharacterClassSongs.Value;
+
+            List<Song> filteredSongs;
+            if (showOnlyCharacterClassSongs)
+            {
+                filteredSongs = new List<Song>();
+                foreach (var song in songList)
+                {
+                    //only add SongListRow for songs in the repo that match the current profession
+                    if (song.Profession == playerCurrentProfession)
+                    {
+                        filteredSongs.Add(song);
+                    }
+                }
+            }
+            else
+            {
+                filteredSongs = songList;
+            }
+
+
+            // Sort song list by Profession, then by Elite, then by Song title
+            filteredSongs.Sort(delegate(Song song1, Song song2)
             {
                 if (song1.Profession != song2.Profession)
                 {
                     return song1.Profession.CompareTo(song2.Profession);
                 }
+                if (song1.EliteName != song2.EliteName)
+                {
+                    return String.Compare(song1.EliteName, song2.EliteName, StringComparison.Ordinal);
+                }
                 return String.Compare(song1.Name, song2.Name, StringComparison.Ordinal);
             });
 
-            foreach (var song in songList)
+            foreach (var song in filteredSongs)
             {
                 _rows.Add(
                     new SongListRow(song, selectedSongId)
@@ -192,7 +235,7 @@ namespace DanceDanceRotationModule.Storage
 
     public class SongListRow : Panel
     {
-        private Song Song { get; set; }
+        internal Song Song { get; set; }
 
         private Checkbox Checkbox { get; }
         private Label NameLabel { get; }
