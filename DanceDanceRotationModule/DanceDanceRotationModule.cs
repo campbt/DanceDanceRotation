@@ -138,6 +138,7 @@ namespace DanceDanceRotationModule
             _cornerIcon?.Dispose();
             _songListWindow?.Dispose();
             _songInfoWindow?.Dispose();
+            _helpWindow?.Dispose();
             SongRepo?.Dispose();
 
             // All static members must be manually unset
@@ -184,6 +185,21 @@ namespace DanceDanceRotationModule
             _notesView = new NotesView();
             _songListView = new SongListView();
             _songInfoView = new SongInfoView();
+
+            // Show the Helper Menu
+            if (Settings.HasShownHelpWindow.Value == false)
+            {
+                Settings.HasShownHelpWindow.Value = true;
+                _helpWindow = new HelpWindow()
+                {
+                    Location = new Point(
+                        (GameService.Graphics.SpriteScreen.Width / 2) - (HelpWindow.InitialWidth / 2),
+                        Math.Max(_songListWindow.Top - HelpWindow.InitialHeight, 100)
+                    )
+                };
+                _helpWindow.Show(new HelpView());
+                _helpWindow.CanResize = false; // Lets the background stayed resized
+            }
         }
 
         public NotesContainer GetNotesContainer()
@@ -206,6 +222,21 @@ namespace DanceDanceRotationModule
             _songInfoWindow.ToggleWindow(_songInfoView);
         }
 
+        public void ShowNotesWindow()
+        {
+            _notesWindow.Show(_notesView);
+        }
+
+        public void ShowSongList()
+        {
+            _songListWindow.Show(_songListView);
+        }
+
+        public void ShowSongInfo()
+        {
+            _songInfoWindow.Show(_songInfoView);
+        }
+
         internal static DanceDanceRotationModule Instance;
         internal static ModuleSettings Settings;
         internal static SongRepo SongRepo { get; private set; }
@@ -216,6 +247,7 @@ namespace DanceDanceRotationModule
         private NotesWindow _notesWindow;
         private SongListWindow _songListWindow;
         private StandardWindow _songInfoWindow;
+        private StandardWindow _helpWindow;
         // Views
         private NotesView _notesView;
         private SongListView _songListView;

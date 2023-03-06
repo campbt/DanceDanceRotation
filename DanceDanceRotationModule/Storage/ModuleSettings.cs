@@ -20,6 +20,7 @@ namespace DanceDanceRotationModule.Storage
             InitControlHotkeys(settings);
             InitWindowVisibilityHotkeys(settings);
             InitSongRepoSettings(settings);
+            InitHelpSettings(settings);
         }
 
         #region General
@@ -262,7 +263,7 @@ namespace DanceDanceRotationModule.Storage
 
         #endregion
 
-        #region Hidden Settings
+        #region Song Repo Settings
 
         // MARK: Settings - Song Repo
 
@@ -274,6 +275,22 @@ namespace DanceDanceRotationModule.Storage
             var songRepoSettings = settings.AddSubCollection("song_repo_settings");
             SongDatas = songRepoSettings.DefineSetting("SavedSongSettings", new List<SongData>());
             SelectedSong = songRepoSettings.DefineSetting("SelectedSong", new Song.ID());
+        }
+
+        #endregion
+
+        #region Help Settings
+
+        // MARK: Settings - Help Settings (for initial runs)
+
+        internal SettingEntry<bool> HasShownHelpWindow { get; private set; }
+        internal SettingEntry<bool> HasShownInitialSongInfo { get; private set; }
+
+        private void InitHelpSettings(SettingCollection settings)
+        {
+            var helpSettings = settings.AddSubCollection("help_settings");
+            HasShownHelpWindow = helpSettings.DefineSetting("HasShownHelpWindow", false);
+            HasShownInitialSongInfo = helpSettings.DefineSetting("HasShownInitialSongInfo", false);
         }
 
         #endregion

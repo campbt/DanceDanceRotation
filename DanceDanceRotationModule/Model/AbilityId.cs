@@ -29,7 +29,7 @@ namespace DanceDanceRotationModule.Model
 
         public override int GetHashCode()
         {
-            return (Raw != null ? Raw.GetHashCode() : 0);
+            return Raw.GetHashCode();
         }
     }
 }

@@ -17,6 +17,11 @@ namespace DanceDanceRotationModule.Model
 
             public string Name { get; set; }
 
+            public bool IsValid()
+            {
+                return Name.Length > 0;
+            }
+
             public bool Equals(ID other)
             {
                 return Name == other.Name;
