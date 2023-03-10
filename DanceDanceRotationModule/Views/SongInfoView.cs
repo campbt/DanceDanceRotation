@@ -26,7 +26,7 @@ namespace DanceDanceRotationModule.Views
                 Resources.Instance.SongInfoBackground,
                 new Rectangle(40, 26, 333, 676),
                 // The content region is slightly larger because of the scroll bar
-                new Rectangle(40, 26, 349, 676)
+                new Rectangle(40, 26, 344, 676)
             )
         {
             Parent = GameService.Graphics.SpriteScreen;
