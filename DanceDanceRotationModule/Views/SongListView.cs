@@ -120,14 +120,28 @@ namespace DanceDanceRotationModule.Storage
             };
             _rows = new List<SongListRow>();
 
-            DanceDanceRotationModule.SongRepo.OnSelectedSongChanged += delegate
-            {
-                BuildSongList();
-            };
-            DanceDanceRotationModule.SongRepo.OnSongsChanged += delegate
-            {
-                BuildSongList();
-            };
+            DanceDanceRotationModule.SongRepo.OnSelectedSongChanged +=
+                delegate(object sender, SelectedSongInfo info)
+                {
+                    if (_rows.Count == 0)
+                    {
+                        BuildSongList();
+                    }
+                    else
+                    {
+                        // Selected song may change the display of rows, but it doesn't
+                        // need to rebuild the song
+                        foreach (var row in _rows)
+                        {
+                            row.OnSelectedSongInfoChanged(info.Song.Id);
+                        }
+                    }
+                };
+            DanceDanceRotationModule.SongRepo.OnSongsChanged +=
+                delegate
+                {
+                    BuildSongList();
+                };
         }
 
         private void BuildSongList()
@@ -135,7 +149,7 @@ namespace DanceDanceRotationModule.Storage
             _songsListPanel.ClearChildren();
             _rows.Clear();
 
-            var selectedSong = DanceDanceRotationModule.SongRepo.GetSelectedSongId();
+            var selectedSongId = DanceDanceRotationModule.SongRepo.GetSelectedSongId();
             var songList = DanceDanceRotationModule.SongRepo.GetAllSongs();
 
             // Sort song list by Profession, then by Song title
@@ -150,12 +164,14 @@ namespace DanceDanceRotationModule.Storage
 
             foreach (var song in songList)
             {
-                new SongListRow(song, selectedSong)
-                {
-                    WidthSizingMode = SizingMode.Fill,
-                    HeightSizingMode = SizingMode.AutoSize,
-                    Parent = _songsListPanel
-                };
+                _rows.Add(
+                    new SongListRow(song, selectedSongId)
+                    {
+                        WidthSizingMode = SizingMode.Fill,
+                        HeightSizingMode = SizingMode.AutoSize,
+                        Parent = _songsListPanel
+                    }
+                );
             }
         }
 
@@ -165,7 +181,7 @@ namespace DanceDanceRotationModule.Storage
 
     public class SongListRow : Panel
     {
-        private Song song { get; set; }
+        private Song Song { get; set; }
 
         private Checkbox Checkbox { get; }
         private Label NameLabel { get; }
@@ -173,27 +189,29 @@ namespace DanceDanceRotationModule.Storage
         private Label ProfessionLabel { get; }
         private Image DeleteButton { get; }
 
-        public SongListRow(Song song, Song.ID checkedID)
+        public SongListRow(Song song, Song.ID checkedId)
         {
+            Song = song;
             Padding = new Thickness(12, 12, 12, 0);
             // FlowDirection = ControlFlowDirection.SingleLeftToRight;
             CanScroll = false;
 
-            var isSelectedSong = song.Id.Equals(checkedID);
             Checkbox = new Checkbox()
             {
                 Padding = new Thickness(20, 20),
-                Checked = isSelectedSong,
-                Enabled = isSelectedSong == false,
                 Location = new Point(10, 28),
                 Parent = this
             };
-            Checkbox.CheckedChanged += delegate
-            {
-                DanceDanceRotationModule.SongRepo.SetSelectedSong(
-                    song.Id
-                );
-            };
+            Checkbox.CheckedChanged +=
+                delegate(object sender, CheckChangedEvent checkChangedEvent)
+                {
+                    if (checkChangedEvent.Checked)
+                    {
+                        DanceDanceRotationModule.SongRepo.SetSelectedSong(
+                            song.Id
+                        );
+                    }
+                };
 
             NameLabel = new Label()
             {
@@ -229,6 +247,15 @@ namespace DanceDanceRotationModule.Storage
             };
 
             Height = CalculateHeight();
+
+            OnSelectedSongInfoChanged(checkedId);
+        }
+
+        public void OnSelectedSongInfoChanged(Song.ID checkedId)
+        {
+            var isSelectedSong = Song.Id.Equals(checkedId);
+            Checkbox.Enabled = isSelectedSong == false;
+            Checkbox.Checked = isSelectedSong;
         }
 
         private int CalculateHeight()

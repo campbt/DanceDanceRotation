@@ -150,9 +150,16 @@ namespace DanceDanceRotationModule.Storage
             Func<SongData, SongData> work
         )
         {
+
+            SongData originalData = GetSongData(songId);
             SongData updatedSongData = work(
-                GetSongData(songId)
+                originalData
             );
+            if (updatedSongData.Equals(originalData))
+            {
+                // Ignore. This may be something like a SongInfo callback that didn't actually cause a change
+                return;
+            }
             updatedSongData.Id = songId;
             _songDatas[songId] = updatedSongData;
             Save();

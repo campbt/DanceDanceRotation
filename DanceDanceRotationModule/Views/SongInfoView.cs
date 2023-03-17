@@ -83,9 +83,11 @@ namespace DanceDanceRotationModule.Views
         private Image _openBuildUrlBuildTemplateButton;
         private TextBox _buildTemplateTextBox;
         private Image _copyBuildTemplateButton;
+        private Label _remapInstructionsText;
         private Image _remapUtilityImage1;
         private Image _remapUtilityImage2;
         private Image _remapUtilityImage3;
+        private Image _rotateRemapButton;
         private Label _playbackRateLabel;
         private TrackBar _playbackRateTrackbar;
         private Label _startAtLabel;
@@ -204,7 +206,7 @@ namespace DanceDanceRotationModule.Views
             };
             _buildUrlTextBox = new TextBox()
             {
-                Text = "https://snowcrows.com/en/builds/elementalist/weaver/condition-weaver",
+                Text = "--",
                 Enabled = false,
                 Font = GameService.Content.DefaultFont12,
                 Parent = buildUrlPanel
@@ -212,7 +214,7 @@ namespace DanceDanceRotationModule.Views
             _buildUrlTextBox.TextChanged += delegate
             {
                 // Prevent typing
-                _buildTemplateTextBox.Text = "https://snowcrows.com/en/builds/elementalist/weaver/condition-weaver";
+                _buildTemplateTextBox.Text = _song?.BuildUrl ?? "";
             };
             _openBuildUrlBuildTemplateButton = new Image(
                 Resources.Instance.ButtonOpenUrl
@@ -256,7 +258,7 @@ namespace DanceDanceRotationModule.Views
             };
             _buildTemplateTextBox = new TextBox()
             {
-                Text = "[&DQYfFRomOBV0AAAAcwAAAMsAAAA1FwAAEhcAAAAAAAAAAAAAAAAAAAAAAAA=]",
+                Text = "--",
                 Enabled = false,
                 Font = GameService.Content.DefaultFont12,
                 Parent = buildLink
@@ -264,7 +266,7 @@ namespace DanceDanceRotationModule.Views
             _buildTemplateTextBox.TextChanged += delegate
             {
                 // Prevent typing
-                _buildTemplateTextBox.Text = "[&DQYfFRomOBV0AAAAcwAAAMsAAAA1FwAAEhcAAAAAAAAAAAAAAAAAAAAAAAA=]";
+                _buildTemplateTextBox.Text = _song?.BuildTemplateCode ?? "";
             };
             _copyBuildTemplateButton = new Image(
                 Resources.Instance.ButtonCopy
@@ -304,7 +306,7 @@ namespace DanceDanceRotationModule.Views
                 CanCollapse = true,
                 Parent = rootPanel
             };
-            new Label()
+            _remapInstructionsText = new Label()
             {
                 Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template",
                 Width = 280,
@@ -352,7 +354,7 @@ namespace DanceDanceRotationModule.Views
                 Size = UtilityIconSize,
                 Parent = remapIcons
             };
-            var rotateRemapButtons = new Image(
+            _rotateRemapButton = new Image(
                 Resources.Instance.ButtonReload
             )
             {
@@ -364,7 +366,7 @@ namespace DanceDanceRotationModule.Views
                 BasicTooltipText = "Change the remapping ordering.",
                 Parent = rotateRemapButtonPanel
             };
-            rotateRemapButtons.Click += delegate
+            _rotateRemapButton.Click += delegate
             {
                 if (_song == null)
                     return;
@@ -655,6 +657,7 @@ namespace DanceDanceRotationModule.Views
                 _remapUtilityImage1.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage2.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
+                SetRemappingEnabled(true);
                 _playbackRateTrackbar.Value = 100;
                 _startAtTrackbar.Value = 0;
                 _notePaceTrackBar.Value = SongData.DefaultNotePositionChangePerSecond;
@@ -665,10 +668,14 @@ namespace DanceDanceRotationModule.Views
             _descriptionLabel.Text = _song.Description ?? "";
             _professionLabel.Text = ProfessionExtensions.GetProfessionDisplayText(_song.Profession);
             _professionLabel.TextColor = ProfessionExtensions.GetProfessionColor(_song.Profession);
-            _buildUrlTextBox.Text = _song.BuildUrl ?? "";
-            _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "";
+            _buildUrlTextBox.Text = _song.BuildUrl ?? "--";
+            _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "--";
             _openBuildUrlBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildUrl);
             _copyBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildTemplateCode);
+
+            SetRemappingEnabled(
+                _song.Profession != Profession.Elementalist
+            );
 
             GetRemappedAbilityTexture(_song.Utility1, _songData.Utility1Mapping);
             GetRemappedAbilityTexture(_song.Utility2, _songData.Utility2Mapping);
@@ -679,6 +686,21 @@ namespace DanceDanceRotationModule.Views
             _startAtTrackbar.MaxValue =
                 (int)_song.Notes.LastOrDefault().TimeInRotation.TotalSeconds;
             _notePaceTrackBar.Value = _songData.NotePositionChangePerSecond;
+        }
+
+        private void SetRemappingEnabled(bool isEnabled)
+        {
+            _rotateRemapButton.Visible = isEnabled;
+            if (isEnabled)
+            {
+                _remapInstructionsText.Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template.";
+                _remapInstructionsText.TextColor = Color.LightGray;
+            }
+            else
+            {
+                _remapInstructionsText.Text = "Remapping utilities is currently disabled for Revenant. Utility skills on both Legends must match the song's build.";
+                _remapInstructionsText.TextColor = Color.Tomato;
+            }
         }
 
         private void GetRemappedAbilityTexture(
