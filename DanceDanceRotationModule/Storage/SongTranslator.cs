@@ -53,6 +53,7 @@ namespace DanceDanceRotationModule.Storage
                 public double duration { get; set; }
                 public string noteType { get; set; }
                 public int abilityId { get; set; }
+                public bool overrideAuto { get; set; }
             }
         }
 
@@ -99,7 +100,8 @@ namespace DanceDanceRotationModule.Storage
                         TimeInRotation = TimeSpan.FromMilliseconds(Math.Round(noteJson.time)),
                         NoteType = noteType,
                         Duration = TimeSpan.FromMilliseconds(Math.Round(noteJson.duration)),
-                        AbilityId = new AbilityId(noteJson.abilityId)
+                        AbilityId = new AbilityId(noteJson.abilityId),
+                        OverrideAuto = noteJson.overrideAuto
                     };
                 }).ToList()
             };

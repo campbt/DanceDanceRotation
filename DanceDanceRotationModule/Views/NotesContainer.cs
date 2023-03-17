@@ -235,10 +235,11 @@ namespace DanceDanceRotationModule.NoteDisplay
                     Parent = parent
                 };
                 // Adjust the size and position of the icon if AutoHit is on and this is a Weapon1
-                if (
+                bool isMiniIcon =
                     DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
-                    note.NoteType == NoteType.Weapon1
-                )
+                    note.NoteType == NoteType.Weapon1 &&
+                    note.OverrideAuto == false;
+                if (isMiniIcon)
                 {
                     var oldSize = Image.Size;
                     Image.Size = _windowInfo.GetNewNoteSizeSmall();
@@ -322,11 +323,8 @@ namespace DanceDanceRotationModule.NoteDisplay
                 // "ShowHotkeys" preference
                 // Just setting opacity to 0 so all the calculations that need the label position work. Lazy.
                 bool HideHotkey =
-                    DanceDanceRotationModule.Settings.ShowHotkeys.Value == false ||
-                    (
-                        DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
-                        note.NoteType == NoteType.Weapon1
-                    );
+                    isMiniIcon ||
+                    DanceDanceRotationModule.Settings.ShowHotkeys.Value == false;
 
                 if (HideHotkey == false)
                 {
