@@ -233,7 +233,7 @@ namespace DanceDanceRotationModule.Storage
             };
             ProfessionLabel = new Label()
             {
-                Text = ProfessionExtensions.GetProfessionDisplayText(song.Profession),
+                Text = song.EliteName,
                 AutoSizeWidth = true,
                 Font = GameService.Content.DefaultFont14,
                 TextColor = ProfessionExtensions.GetProfessionColor(song.Profession),

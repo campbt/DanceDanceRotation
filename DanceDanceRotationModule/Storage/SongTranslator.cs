@@ -31,7 +31,13 @@ namespace DanceDanceRotationModule.Storage
             public struct BuildTemplate
             {
                 public int profession { get; set; }
+                public List<Specialization> Specializations { get; set; }
                 public Skills skills { get; set; }
+
+                public struct Specialization
+                {
+                    public int id { get; set; }
+                }
 
                 public struct Skills
                 {
@@ -75,6 +81,15 @@ namespace DanceDanceRotationModule.Storage
                 utilities.Add(0);
             }
 
+            var profession = ProfessionExtensions.ProfessionFromBuildTemplate(
+                songJson.decodedBuildTemplate.profession
+            );
+            var eliteName = EliteNameFromBuildTemplate(
+                profession,
+                songJson.decodedBuildTemplate.Specializations.Last().id
+            );
+
+
             return new Song()
             {
                 Id = new Song.ID(songJson.name),
@@ -84,9 +99,8 @@ namespace DanceDanceRotationModule.Storage
                 Utility1 = new PaletteId(utilities[0]),
                 Utility2 = new PaletteId(utilities[1]),
                 Utility3 = new PaletteId(utilities[2]),
-                Profession = ProfessionExtensions.ProfessionFromBuildTemplate(
-                    songJson.decodedBuildTemplate.profession
-                ),
+                Profession = profession,
+                EliteName = eliteName,
                 Notes = songJson.notes.Select(noteJson =>
                 {
                     if (NoteType.TryParse(noteJson.noteType, out NoteType noteType) == false)
@@ -105,6 +119,45 @@ namespace DanceDanceRotationModule.Storage
                     };
                 }).ToList()
             };
+        }
+
+        private static string EliteNameFromBuildTemplate(
+            Profession profession,
+            int BuildTemplateCode
+        )
+        {
+            switch (BuildTemplateCode)
+            {
+                case 5: return "Druid";
+                case 7: return "Daredevil";
+                case 18: return "Berserker";
+                case 27: return "Dragonhunter";
+                case 34: return "Reaper";
+                case 40: return "Chronomancer";
+                case 43: return "Scrapper";
+                case 48: return "Tempest";
+                case 52: return "Herald";
+                case 55: return "Soulbeast";
+                case 56: return "Weaver";
+                case 57: return "Holosmith";
+                case 58: return "Deadeye";
+                case 59: return "Mirage";
+                case 60: return "Scourge";
+                case 61: return "Spellbreaker";
+                case 62: return "Firebrand";
+                case 63: return "Renegade";
+                case 64: return "Harbinger";
+                case 65: return "Willbender";
+                case 66: return "Virtuoso";
+                case 67: return "Catalyst";
+                case 68: return "Bladesworn";
+                case 69: return "Vindicator";
+                case 70: return "Mechanist";
+                case 71: return "Specter";
+                default:
+                    // Not an elite spec. Just use the profession text
+                    return ProfessionExtensions.GetProfessionDisplayText(profession);
+            }
         }
     }
 }

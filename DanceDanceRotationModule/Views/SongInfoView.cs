@@ -666,7 +666,7 @@ namespace DanceDanceRotationModule.Views
 
             _nameLabel.Text = _song.Name ?? "<no name>";
             _descriptionLabel.Text = _song.Description ?? "";
-            _professionLabel.Text = ProfessionExtensions.GetProfessionDisplayText(_song.Profession);
+            _professionLabel.Text = _song.EliteName;
             _professionLabel.TextColor = ProfessionExtensions.GetProfessionColor(_song.Profession);
             _buildUrlTextBox.Text = _song.BuildUrl ?? "--";
             _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "--";

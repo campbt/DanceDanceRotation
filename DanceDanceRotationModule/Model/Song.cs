@@ -58,6 +58,8 @@ namespace DanceDanceRotationModule.Model
         public PaletteId Utility3 { get; set; }
         /** The Profession that plays this song */
         public Profession Profession { get; set; }
+        /** The Elite Spec Name (or profession name if not elite) */
+        public string EliteName { get; set; }
 
         /** The notes of the song, sorted by time in rotation. */
         public List<Note> Notes { get; set; }
