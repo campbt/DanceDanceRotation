@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Util;
-using MonoGame.Extended.Collections;
-using Newtonsoft.Json;
-using SharpDX.Direct2D1;
-using SharpDX.X3DAudio;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace DanceDanceRotationModule.Storage
 {
@@ -30,32 +25,32 @@ namespace DanceDanceRotationModule.Storage
     {
         private static readonly Logger Logger = Logger.GetLogger<SongRepo>();
 
-        private const string SONGS_FOLDER_NAME = "songs";
-        public static string SongsDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(SONGS_FOLDER_NAME);
+        private const string SongsFolderName = "songs";
+        private static string SongsDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(SongsFolderName);
 
         private Song.ID _selectedSongId;
         private Dictionary<Song.ID, Song> _songs;
         private Dictionary<Song.ID, SongData> _songDatas;
 
-        public FileSystemWatcher _fileSystemWatcher;
+        private FileSystemWatcher _fileSystemWatcher;
 
         public event EventHandler OnSongsChanged;
 
         // OnSelectedSongChange
-        private EventHandler<SelectedSongInfo> SelectedSongChangedHandler;
+        private EventHandler<SelectedSongInfo> _selectedSongChangedHandler;
         public event EventHandler<SelectedSongInfo> OnSelectedSongChanged
         {
             // This code is to immediately emit the selected song when something subscribes
             add
             {
-                SelectedSongChangedHandler =
-                    (EventHandler<SelectedSongInfo>)Delegate.Combine(SelectedSongChangedHandler, value);
+                _selectedSongChangedHandler =
+                    (EventHandler<SelectedSongInfo>)Delegate.Combine(_selectedSongChangedHandler, value);
                 InvokeSelectedSongInfo();
             }
             remove
             {
-                SelectedSongChangedHandler =
-                    (EventHandler<SelectedSongInfo>)Delegate.Remove(SelectedSongChangedHandler, value);
+                _selectedSongChangedHandler =
+                    (EventHandler<SelectedSongInfo>)Delegate.Remove(_selectedSongChangedHandler, value);
             }
         }
 
@@ -265,6 +260,7 @@ namespace DanceDanceRotationModule.Storage
         /**
          * Loads the songs in the defaultSongs/ directory
          */
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
         private void LoadDefaultSongFiles()
         {
              // Not sure if there is a way to just search for resources in the directory,
@@ -422,7 +418,7 @@ namespace DanceDanceRotationModule.Storage
                     ? _songDatas[_selectedSongId]
                     : SongData.DefaultSettings(_selectedSongId);
 
-            SelectedSongChangedHandler?.Invoke(
+            _selectedSongChangedHandler?.Invoke(
                 sender: this,
                 new SelectedSongInfo()
                 {

@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
-using Blish_HUD.Settings;
-using Blish_HUD.Settings.UI.Views;
 using DanceDanceRotationModule.Model;
-using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 
 namespace DanceDanceRotationModule.Views
 {
@@ -95,10 +89,7 @@ namespace DanceDanceRotationModule.Views
         private Label _notePaceLabel;
         private TrackBar _notePaceTrackBar;
 
-        public SongInfoView()
-        {
-        }
-
+        [SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
         protected override void Build(Container buildPanel)
         {
             FlowPanel rootPanel = new FlowPanel()

@@ -7,14 +7,14 @@ namespace DanceDanceRotationModule.Model
      * These IDs seem to be used by the build templates, and need a lookup table
      * to find the actual [AbilityId] they refer to.
      */
-    public struct PaletteId : IEquatable<PaletteId>
+    public readonly struct PaletteId : IEquatable<PaletteId>
     {
         public PaletteId(int raw)
         {
             Raw = raw;
         }
 
-        public int Raw { get; set; }
+        private int Raw { get; }
 
         public bool Equals(PaletteId other)
         {

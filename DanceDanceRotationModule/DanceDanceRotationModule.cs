@@ -1,23 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
-using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
-using DanceDanceRotationModule.Model;
-using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using DanceDanceRotationModule.Views;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace DanceDanceRotationModule
 {
@@ -28,10 +20,10 @@ namespace DanceDanceRotationModule
 
         #region Service Managers
 
-        internal SettingsManager SettingsManager => this.ModuleParameters.SettingsManager;
-        internal ContentsManager ContentsManager => this.ModuleParameters.ContentsManager;
-        internal DirectoriesManager DirectoriesManager => this.ModuleParameters.DirectoriesManager;
-        internal Gw2ApiManager Gw2ApiManager => this.ModuleParameters.Gw2ApiManager;
+        internal SettingsManager SettingsManager => ModuleParameters.SettingsManager;
+        internal ContentsManager ContentsManager => ModuleParameters.ContentsManager;
+        internal DirectoriesManager DirectoriesManager => ModuleParameters.DirectoriesManager;
+        // internal Gw2ApiManager Gw2ApiManager => ModuleParameters.Gw2ApiManager;
 
         #endregion
 
@@ -50,20 +42,6 @@ namespace DanceDanceRotationModule
             Settings = new ModuleSettings(settings);
         }
 
-        private SettingEntry<KeyBinding> DefineHotkeySetting(SettingCollection settings, NoteType noteType)
-        {
-            SettingEntry<KeyBinding> retval = settings.DefineSetting(noteType.ToString(),
-                new KeyBinding(NoteTypeExtensions.DefaultHotkey(noteType)),
-                () => NoteTypeExtensions.HotkeyDescription(noteType),
-                () => "Hotkey used for " + NoteTypeExtensions.HotkeyDescription(noteType) + "\nThis must match your in-game hotkeys to work!");
-            retval.Value.Enabled = true;
-            retval.Value.Activated += delegate
-            {
-                _notesView?.GetNotesContainer()?.OnHotkeyPressed(noteType);
-            };
-            return retval;
-        }
-
         // Allows your module to perform any initialization it needs before starting to run.
         // Please note that Initialize is NOT asynchronous and will block Blish HUD's update
         // and render loop, so be sure to not do anything here that takes too long.
@@ -75,16 +53,6 @@ namespace DanceDanceRotationModule
         // any long running steps for your module including loading resources from file or ref.
         protected override async Task LoadAsync()
         {
-            // Get your manifest registered directories with the DirectoriesManager
-            foreach (string directoryName in this.DirectoriesManager.RegisteredDirectories)
-            {
-                // string fullDirectoryPath = DirectoriesManager.GetFullDirectoryPath(directoryName);
-                // var allFiles = Directory.EnumerateFiles(fullDirectoryPath, "*", SearchOption.AllDirectories).ToList();
-
-                // example of how to log something in the blishhud.XXX-XXX.log file in %userprofile%\Documents\Guild Wars 2\addons\blishhud\logs
-                // Logger.Info($"'{directoryName}' can be found at '{fullDirectoryPath}' and has {allFiles.Count} total files within it.");
-            }
-
             // Load content from the ref directory in the module.bhm automatically with the ContentsManager
             Resources.Instance.LoadResources(ContentsManager);
 
@@ -105,7 +73,7 @@ namespace DanceDanceRotationModule
             _cornerIcon = new CornerIcon()
             {
                 Icon             = Resources.Instance.DdrLogoEmblemTexture,
-                BasicTooltipText = $"Dance Dance Rotation",
+                BasicTooltipText = "Dance Dance Rotation",
                 Parent           = GameService.Graphics.SpriteScreen
             };
             _cornerIcon.Click += delegate
@@ -161,7 +129,7 @@ namespace DanceDanceRotationModule
                 Location = new Point(
                     (GameService.Graphics.SpriteScreen.Width / 2) - (NotesWindow.InitialWidth / 2),
                     (GameService.Graphics.SpriteScreen.Height) - NotesWindow.InitialHeight - 180 /* 180 is trying to push this above the ability bar a bit */
-                ),
+                )
             };
 
             _songListWindow = new SongListWindow()

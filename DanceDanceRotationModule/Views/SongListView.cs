@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
-using Blish_HUD.Modules;
-using Blish_HUD.Settings.UI.Views;
 using DanceDanceRotationModule.Model;
-using DanceDanceRotationModule.NoteDisplay;
+using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 
-namespace DanceDanceRotationModule.Storage
+namespace DanceDanceRotationModule.Views
 {
 
     public class SongListWindow : StandardWindow
@@ -39,20 +34,7 @@ namespace DanceDanceRotationModule.Storage
             Id = "DDR_SongList_ID";
         }
 
-        public SongListWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
-        {
-
-        }
-
         public SongListWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion) : base(background, windowRegion, contentRegion)
-        {
-        }
-
-        public SongListWindow(AsyncTexture2D background, Rectangle windowRegion, Rectangle contentRegion, Point windowSize) : base(background, windowRegion, contentRegion, windowSize)
-        {
-        }
-
-        public SongListWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion, Point windowSize) : base(background, windowRegion, contentRegion, windowSize)
         {
         }
 
@@ -189,7 +171,10 @@ namespace DanceDanceRotationModule.Storage
                 DanceDanceRotationModule.Settings.ShowOnlyCharacterClassSongs.Value;
 
             List<Song> filteredSongs;
-            if (showOnlyCharacterClassSongs)
+            if (
+                showOnlyCharacterClassSongs &&
+                playerCurrentProfession != Profession.Unknown // Unknown may mean the player is on the initial character select screen.
+            )
             {
                 filteredSongs = new List<Song>();
                 foreach (var song in songList)
@@ -243,7 +228,7 @@ namespace DanceDanceRotationModule.Storage
     {
         private static readonly Logger Logger = Logger.GetLogger<SongListRow>();
 
-        internal Song Song { get; set; }
+        internal Song Song { get; }
 
         private Checkbox Checkbox { get; }
         private Label NameLabel { get; }

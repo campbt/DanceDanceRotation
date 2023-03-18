@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
 using DanceDanceRotationModule.Util;
+// ReSharper disable All
 
 namespace DanceDanceRotationModule.Views
 {
@@ -111,6 +112,10 @@ namespace DanceDanceRotationModule.Views
     /**
      * A customized copy of the [WindowBase] developed by the Blish team
      */
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    [SuppressMessage("ReSharper", "RedundantTypeArgumentsOfMethod")]
+    [SuppressMessage("ReSharper", "RedundantDelegateCreation")]
+    [SuppressMessage("ReSharper", "RedundantCast")]
     public abstract class DdrWindowBase : Container, IWindow, IViewContainer
     {
       private const int STANDARD_TITLEBAR_HEIGHT = 40;

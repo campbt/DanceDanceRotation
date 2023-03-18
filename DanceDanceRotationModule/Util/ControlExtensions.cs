@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework;
 
 namespace DanceDanceRotationModule.Util
 {
-    public class ControlExtensions
+    public static class ControlExtensions
     {
-        public const float ButtonUnhoveredOpacity = 0.7f;
-        public const float ButtonHoveredOpacity = 1.0f;
-        public const float ButtonHoveredAnimationDuration = 0.2f;
+        private const float ButtonUnhoveredOpacity = 0.7f;
+        private const float ButtonHoveredOpacity = 1.0f;
+        private const float ButtonHoveredAnimationDuration = 0.2f;
 
         public static readonly Point ImageButtonSmallSize = new Point(24, 24);
 
@@ -20,9 +20,9 @@ namespace DanceDanceRotationModule.Util
         {
             image.MouseEntered += delegate
             {
-                GameService.Animation.Tweener.Tween<Control>(
+                GameService.Animation.Tweener.Tween(
                     image,
-                    (object) new
+                    new
                     {
                         Opacity = hoveredOpacity
                     },
@@ -31,9 +31,9 @@ namespace DanceDanceRotationModule.Util
             };
             image.MouseLeft += delegate
             {
-                GameService.Animation.Tweener.Tween<Control>(
+                GameService.Animation.Tweener.Tween(
                     image,
-                    (object) new
+                    new
                     {
                         Opacity = unhoveredOpacity
                     },

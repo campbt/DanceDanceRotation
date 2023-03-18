@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Numerics;
 using System.Text;
 using Blish_HUD;
 using Blish_HUD.Modules.Managers;
@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 namespace DanceDanceRotationModule.Util
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class Resources
     {
         // MARK: Statics
@@ -24,10 +25,6 @@ namespace DanceDanceRotationModule.Util
         {
             public string icon { get; set; }
             public string name { get; set; }
-        }
-
-        public Resources()
-        {
         }
 
         // MARK: Resource Loading
@@ -181,7 +178,7 @@ namespace DanceDanceRotationModule.Util
                     }
                     else
                     {
-                        AbilityIconTextureCache[imageFileName] = icon;
+                        AbilityIconTextureCache[iconName] = icon;
                         return icon;
                     }
                 }

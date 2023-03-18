@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using Blish_HUD;
+﻿using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
-using Blish_HUD.Input;
-using Blish_HUD.Settings.UI.Views;
-using DanceDanceRotationModule.Model;
-using DanceDanceRotationModule.NoteDisplay;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input.Touch;
-using SharpDX.Direct3D11;
-using Color = Microsoft.Xna.Framework.Color;
 using Container = Blish_HUD.Controls.Container;
 using Image = Blish_HUD.Controls.Image;
 using Point = Microsoft.Xna.Framework.Point;
 
-namespace DanceDanceRotationModule
+namespace DanceDanceRotationModule.Views
 {
     public class NotesView : View
     {
@@ -164,14 +153,10 @@ namespace DanceDanceRotationModule
             DanceDanceRotationModule.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    if (songInfo.Song != null)
-                    {
-                        activeSongName.Text = songInfo.Song.Name;
-                    }
-                    else
-                    {
-                        activeSongName.Text = "--";
-                    }
+                    activeSongName.Text =
+                        songInfo.Song != null
+                            ? songInfo.Song.Name
+                            : "--";
                 };
 
             _notesContainer= new NotesContainer()

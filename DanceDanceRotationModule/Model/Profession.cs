@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace DanceDanceRotationModule.Model
@@ -24,9 +23,9 @@ namespace DanceDanceRotationModule.Model
 
     public static class ProfessionExtensions
     {
-        public static Profession ProfessionFromBuildTemplate(int BuildTemplateCode)
+        public static Profession ProfessionFromBuildTemplate(int buildTemplateCode)
         {
-            switch (BuildTemplateCode)
+            switch (buildTemplateCode)
             {
                 case 1:
                     return Profession.Guardian;

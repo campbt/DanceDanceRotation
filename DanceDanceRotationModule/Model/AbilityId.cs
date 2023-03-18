@@ -5,7 +5,7 @@ namespace DanceDanceRotationModule.Model
     /**
      * Represents an Ability ID that GW2 uses to identify a skill
      */
-    public struct AbilityId : IEquatable<AbilityId>
+    public readonly struct AbilityId : IEquatable<AbilityId>
     {
         /** Special ID used to indicate an unknown ability */
         public static readonly AbilityId Unknown = new AbilityId(-9999999);
@@ -15,7 +15,7 @@ namespace DanceDanceRotationModule.Model
             Raw = raw;
         }
 
-        public int Raw { get; set; }
+        public int Raw { get; }
 
         public bool Equals(AbilityId other)
         {

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DanceDanceRotationModule.Util
 {
-    public class JsonHelper
+    public static class JsonHelper
     {
 
         public static string FormatJson(string json, string indent = "  ")

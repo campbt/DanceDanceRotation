@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using Blish_HUD;
 using DanceDanceRotationModule.Model;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace DanceDanceRotationModule.Storage
 {
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class SongTranslator
     {
         private static readonly Logger Logger = Logger.GetLogger<SongTranslator>();
@@ -31,7 +30,7 @@ namespace DanceDanceRotationModule.Storage
             public struct BuildTemplate
             {
                 public int profession { get; set; }
-                public List<Specialization> Specializations { get; set; }
+                public List<Specialization> specializations { get; set; }
                 public Skills skills { get; set; }
 
                 public struct Specialization
@@ -86,7 +85,7 @@ namespace DanceDanceRotationModule.Storage
             );
             var eliteName = EliteNameFromBuildTemplate(
                 profession,
-                songJson.decodedBuildTemplate.Specializations.Last().id
+                songJson.decodedBuildTemplate.specializations.Last().id
             );
 
 
@@ -109,24 +108,24 @@ namespace DanceDanceRotationModule.Storage
                         noteType = NoteType.Unknown;
                     }
 
-                    return new Note()
-                    {
-                        TimeInRotation = TimeSpan.FromMilliseconds(Math.Round(noteJson.time)),
-                        NoteType = noteType,
-                        Duration = TimeSpan.FromMilliseconds(Math.Round(noteJson.duration)),
-                        AbilityId = new AbilityId(noteJson.abilityId),
-                        OverrideAuto = noteJson.overrideAuto
-                    };
+                    return new Note(
+                        noteType: noteType,
+                        timeInRotation: TimeSpan.FromMilliseconds(Math.Round(noteJson.time)),
+                        duration: TimeSpan.FromMilliseconds(Math.Round(noteJson.duration)),
+                        abilityId: new AbilityId(noteJson.abilityId),
+                        overrideAuto: noteJson.overrideAuto
+                    );
                 }).ToList()
             };
         }
 
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
         private static string EliteNameFromBuildTemplate(
             Profession profession,
-            int BuildTemplateCode
+            int buildTemplateCode
         )
         {
-            switch (BuildTemplateCode)
+            switch (buildTemplateCode)
             {
                 case 5: return "Druid";
                 case 7: return "Daredevil";

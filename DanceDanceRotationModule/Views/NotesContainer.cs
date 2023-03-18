@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Blish_HUD;
 using Blish_HUD.Controls;
-using Blish_HUD.Input;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
@@ -15,9 +12,9 @@ using Color = Microsoft.Xna.Framework.Color;
 using BlishContainer = Blish_HUD.Controls.Container;
 
 
-namespace DanceDanceRotationModule.NoteDisplay
+namespace DanceDanceRotationModule.Views
 {
-    public class NotesContainer : Blish_HUD.Controls.Container
+    public class NotesContainer : Container
     {
         private static readonly Logger Logger = Logger.GetLogger<NotesContainer>();
 
@@ -195,7 +192,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             // be more granular than that
             internal double XPosition { get; set; }
 
-            private bool _isHit = false;
+            private bool _isHit;
             private bool _allowMovement = true;
 
             internal bool ShouldRemove { get; private set; }
@@ -225,7 +222,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                         ? Resources.Instance.GetAbilityIcon(note.AbilityId)
                         : NoteTypeExtensions.NoteImage(note.NoteType);
 
-                this.Image = new Image(
+                Image = new Image(
                     noteBackground
                 )
                 {
@@ -322,11 +319,11 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 // "ShowHotkeys" preference
                 // Just setting opacity to 0 so all the calculations that need the label position work. Lazy.
-                bool HideHotkey =
+                bool hideHotkey =
                     isMiniIcon ||
                     DanceDanceRotationModule.Settings.ShowHotkeys.Value == false;
 
-                if (HideHotkey == false)
+                if (hideHotkey == false)
                 {
                     Animation.Tweener.Tween(Label, new
                     {
@@ -358,7 +355,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 {
                     if (_isHit == false && XPosition <= _windowInfo.HitRangeBoo.Min)
                     {
-                        setHit(HitType.Miss);
+                        SetHit(HitType.Miss);
                         PlayMissAnimation();
                     }
 
@@ -429,7 +426,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                     ScreenNotification.ShowNotification("Miss");
                 }
 
-                setHit(hitType);
+                SetHit(hitType);
                 PlayHitAnimation();
                 return true;
             }
@@ -440,7 +437,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 Label.Dispose();
             }
 
-            private void setHit(HitType hitType)
+            private void SetHit(HitType hitType)
             {
                 if (_isHit)
                     return;
@@ -613,10 +610,8 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         internal class AbilityIcon
         {
-            internal Note Note { get; set; }
-            internal Image Image { get; set; }
-            internal double XPosition { get; set; }
-            internal bool IsDisappearing { get; private set; }
+            internal Note Note { get; }
+            internal Image Image { get; }
             internal bool ShouldDispose { get; private set; }
 
             private WindowInfo _windowInfo;
@@ -629,7 +624,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 _windowInfo = windowInfo;
                 Note = note;
-                this.Image = new Image(
+                Image = new Image(
                     Resources.Instance.GetAbilityIcon(note.AbilityId)
                 )
                 {
@@ -641,12 +636,6 @@ namespace DanceDanceRotationModule.NoteDisplay
                 };
 
                 ShouldDispose = false;
-            }
-
-            void SetTargetPosition(int xPos)
-            {
-                // TODO: Animate to here
-                Image.Location = new Point(xPos, Image.Location.Y);
             }
 
             public void Update(GameTime gameTime, TimeSpan timeInRotation)
@@ -1075,13 +1064,13 @@ namespace DanceDanceRotationModule.NoteDisplay
 
         private void CreateTarget()
         {
-            float TargetOpacity = 0.5f;
+            const float targetOpacity = 0.5f;
             _targetTop = new Image(Resources.Instance.DdrTargetTop)
             {
                 Width = 64,
                 Height = 24,
                 Location = new Point(0, 0),
-                Opacity = TargetOpacity,
+                Opacity = targetOpacity,
                 Parent = this
             };
             _targetBottom = new Image(Resources.Instance.DdrTargetBottom)
@@ -1089,7 +1078,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 Width = 64,
                 Height = 24,
                 Location = new Point(0, 0),
-                Opacity = TargetOpacity,
+                Opacity = targetOpacity,
                 Parent = this
             };
             _targetCircles = new List<Image>(6);
@@ -1101,7 +1090,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                         Width = 64,
                         Height = 64,
                         Location = new Point(0, 0),
-                        Opacity = TargetOpacity,
+                        Opacity = targetOpacity,
                         Parent = this
                     }
                 );
@@ -1115,7 +1104,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                         Width = 64,
                         Height = 24,
                         Location = new Point(0, 0),
-                        Opacity = TargetOpacity,
+                        Opacity = targetOpacity,
                         Parent = this
                     }
                 );

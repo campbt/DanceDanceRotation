@@ -8,6 +8,7 @@ namespace DanceDanceRotationModule.Model
      */
     public class Song
     {
+        // ReSharper disable once InconsistentNaming
         public struct ID : IEquatable<ID>
         {
             public ID(string name)
@@ -47,6 +48,7 @@ namespace DanceDanceRotationModule.Model
         /** Ex: https://snowcrows.com/en/builds/elementalist/weaver/condition-weaver */
         public string BuildUrl { get; set; }
 
+        // ReSharper disable once InvalidXmlDocComment
         /** Ex: [&DQYfFRomOBV0AAAAcwAAAMsAAAA1FwAAEhcAAAAAAAAAAAAAAAAAAAAAAAA=] */
         public string BuildTemplateCode { get; set; }
 
@@ -64,9 +66,6 @@ namespace DanceDanceRotationModule.Model
         /** The notes of the song, sorted by time in rotation. */
         public List<Note> Notes { get; set; }
 
-        public string Name
-        {
-            get => Id.Name;
-        }
+        public string Name => Id.Name;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using DanceDanceRotationModule.Util;
+﻿using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 

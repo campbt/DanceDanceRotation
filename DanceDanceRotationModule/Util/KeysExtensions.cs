@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using Blish_HUD.Input;
 using Microsoft.Xna.Framework.Input;
 
 namespace DanceDanceRotationModule.Util
 {
-    public class KeysExtensions
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
+    public static class KeysExtensions
     {
         /**
          * Returns a condensed version of the hotkey, useful for overlaying on the notes themself
