@@ -84,6 +84,7 @@ namespace DanceDanceRotationModule.Storage
                 // Height = 30,
                 HeightSizingMode = SizingMode.AutoSize,
                 WidthSizingMode = SizingMode.Fill,
+                ControlPadding = new Vector2(4, 0),
                 Parent = rootPanel
             };
 
@@ -108,14 +109,14 @@ namespace DanceDanceRotationModule.Storage
                     );
                 }
             };
-            StandardButton findSongsButton = new StandardButton()
+            StandardButton createSongButton = new StandardButton()
             {
-                Text = "Find Songs",
+                Text = "Create Song",
                 Parent = topPanel
             };
-            findSongsButton.Click += delegate
+            createSongButton.Click += delegate
             {
-                UrlHelper.OpenUrl("http://45.37.87.70:8080/songs/view#");
+                UrlHelper.OpenUrl("https://campbt.github.io/DanceDanceRotationComposer/create.html");
             };
 
             _songsListPanel = new FlowPanel()
@@ -286,7 +287,7 @@ namespace DanceDanceRotationModule.Storage
 
             // Delete Button
             DeleteButton.Location = new Point(
-                Width - DeleteButton.Width - 8,
+                Width - DeleteButton.Width - 20,
                 centerY - (DeleteButton.Height / 2)
             );
 
