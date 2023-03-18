@@ -77,13 +77,17 @@ namespace DanceDanceRotationModule.Storage
 
         // MARK: Mutation
 
-        public void AddSong(string json)
+        public Song AddSong(
+            string json,
+            bool showNotification
+        )
         {
+            Song song = null;
             Logger.Info("Attempting to decode into a song:\n" + json);
 
             try
             {
-                Song song = SongTranslator.FromJson(json);
+                song = SongTranslator.FromJson(json);
 
                 Logger.Info(
                     _songs.ContainsKey(song.Id)
@@ -99,10 +103,6 @@ namespace DanceDanceRotationModule.Storage
                     // and all screens should update, even though the ID didn't change
                     InvokeSelectedSongInfo();
                 }
-                else
-                {
-                    SetSelectedSong(song.Id);
-                }
 
                 var fullFilePath = GetSongPath(song);
                 Logger.Info("Attempting to save song file " + fullFilePath);
@@ -114,7 +114,10 @@ namespace DanceDanceRotationModule.Storage
                 File.WriteAllText(fullFilePath, prettyJson);
                 Logger.Info("Successfully saved pretty song file " + fullFilePath);
 
-                ScreenNotification.ShowNotification("Added Song Successfully");
+                if (showNotification)
+                {
+                    ScreenNotification.ShowNotification("Added Song Successfully");
+                }
             }
             catch (Exception exception)
             {
@@ -123,11 +126,15 @@ namespace DanceDanceRotationModule.Storage
                     exception.Message + "\n" +
                     exception
                 );
-                ScreenNotification.ShowNotification("Failed to decode song.");
+                if (showNotification)
+                {
+                    ScreenNotification.ShowNotification("Failed to decode song.");
+                }
             }
 
             // Re-enable watching
             _fileSystemWatcher.EnableRaisingEvents = true;
+            return song;
         }
 
         /**
@@ -261,7 +268,20 @@ namespace DanceDanceRotationModule.Storage
              // Not sure if there is a way to just search for resources in the directory,
              // so all default songs have to be listed here.
             var defaultSongFileNames = new List<String>();
+            defaultSongFileNames.Add("Button Mash Condi Weaver");
+            defaultSongFileNames.Add("Condi Alacrity Mirage (Staff) [Benchmark]");
+            defaultSongFileNames.Add("Condi Virtuoso [Benchmark]");
+            defaultSongFileNames.Add("Condi Weaver [Benchmark]");
+            defaultSongFileNames.Add("Lightning God Power Weaver");
+            defaultSongFileNames.Add("Power Button Mash Weaver");
+            defaultSongFileNames.Add("Power Catalyst [Benchmark]");
+            defaultSongFileNames.Add("Power Chronomancer [Benchmark]");
+            defaultSongFileNames.Add("Power Quickness Catalyst [Benchmark]");
+            defaultSongFileNames.Add("Power Virtuoso [Benchmark]");
+            defaultSongFileNames.Add("Power Weaver [Benchmark]");
             defaultSongFileNames.Add("Power Weaver");
+            defaultSongFileNames.Add("The New Holosmith");
+            defaultSongFileNames.Add("The New Pistol Alac Mechanist");
 
             var baseRefFolder = "defaultSongs";
 
@@ -275,7 +295,10 @@ namespace DanceDanceRotationModule.Storage
                     using (StreamReader r = new StreamReader(fileStream))
                     {
                         string json = r.ReadToEnd();
-                        AddSong(json);
+                        AddSong(
+                            json,
+                            showNotification: false
+                        );
                     }
                 }
                 catch (Exception exception)
@@ -336,7 +359,10 @@ namespace DanceDanceRotationModule.Storage
 
                     if (json.Length > 0)
                     {
-                        DanceDanceRotationModule.SongRepo.AddSong(json);
+                        DanceDanceRotationModule.SongRepo.AddSong(
+                            json,
+                            showNotification: true
+                        );
                     }
                     break;
                 case WatcherChangeTypes.Renamed:

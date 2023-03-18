@@ -96,7 +96,17 @@ namespace DanceDanceRotationModule.Storage
             {
                 Logger.Info("Attempting to read in clipboard contents");
                 string clipboardContents = ClipboardUtil.WindowsClipboardService.GetTextAsync().Result;
-                DanceDanceRotationModule.SongRepo.AddSong(clipboardContents);
+                var song = DanceDanceRotationModule.SongRepo.AddSong(
+                    clipboardContents,
+                    showNotification: true
+                );
+
+                if (song != null)
+                {
+                    DanceDanceRotationModule.SongRepo.SetSelectedSong(
+                        song.Id
+                    );
+                }
             };
             StandardButton findSongsButton = new StandardButton()
             {
@@ -127,7 +137,7 @@ namespace DanceDanceRotationModule.Storage
                     {
                         BuildSongList();
                     }
-                    else
+                    else if (info.Song != null)
                     {
                         // Selected song may change the display of rows, but it doesn't
                         // need to rebuild the song
