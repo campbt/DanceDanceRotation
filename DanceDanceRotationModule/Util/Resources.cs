@@ -237,6 +237,7 @@ namespace DanceDanceRotationModule.Util
             NotesBg?.Dispose();
             SongInfoBackground?.Dispose();
             UnknownAbilityIcon?.Dispose();
+            Logger.Info("Resourced Unloaded");
         }
 
         private ContentsManager ContentsManager;

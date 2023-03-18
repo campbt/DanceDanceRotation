@@ -189,6 +189,7 @@ namespace DanceDanceRotationModule
             // Show the Helper Menu
             if (Settings.HasShownHelpWindow.Value == false)
             {
+                Logger.Info("Showing Help Window");
                 Settings.HasShownHelpWindow.Value = true;
                 _helpWindow = new HelpWindow()
                 {
@@ -209,31 +210,37 @@ namespace DanceDanceRotationModule
 
         public void ToggleNotesWindow()
         {
+            Logger.Trace("ToggleNotesWindow");
             _notesWindow.ToggleWindow(_notesView);
         }
 
         public void ToggleSongList()
         {
+            Logger.Trace("ToggleSongList");
             _songListWindow.ToggleWindow(_songListView);
         }
 
         public void ToggleSongInfo()
         {
+            Logger.Trace("ToggleSongInfo");
             _songInfoWindow.ToggleWindow(_songInfoView);
         }
 
         public void ShowNotesWindow()
         {
+            Logger.Trace("Showing Notes Window");
             _notesWindow.Show(_notesView);
         }
 
         public void ShowSongList()
         {
+            Logger.Trace("Showing Song List Window");
             _songListWindow.Show(_songListView);
         }
 
         public void ShowSongInfo()
         {
+            Logger.Trace("Showing Song Info Window");
             _songInfoWindow.Show(_songInfoView);
         }
 

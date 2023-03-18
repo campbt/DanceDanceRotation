@@ -1,12 +1,16 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Blish_HUD;
 
 namespace DanceDanceRotationModule.Util
 {
     public class UrlHelper
     {
+        private static readonly Logger Logger = Logger.GetLogger<UrlHelper>();
+
         public static void OpenUrl(string url)
         {
+            Logger.Info($"Opening URL: {url}");
             try
             {
                 Process.Start(url);

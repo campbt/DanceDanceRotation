@@ -108,6 +108,7 @@ namespace DanceDanceRotationModule.Views
             );
             openSongListButton.Click += delegate
             {
+                Logger.Info($"HelpView - ShowSongList selected");
                 DanceDanceRotationModule.Instance.ShowSongList();
             };
 
@@ -121,6 +122,7 @@ namespace DanceDanceRotationModule.Views
             );
             openNotesContainerButton.Click += delegate
             {
+                Logger.Info($"HelpView - ShowNotesWindow selected");
                 DanceDanceRotationModule.Instance.ShowNotesWindow();
             };
             // Only enable this button once the user has selected a song

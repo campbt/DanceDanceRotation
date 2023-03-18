@@ -226,6 +226,7 @@ namespace DanceDanceRotationModule.Views
             ControlExtensions.ConvertToButton(_openBuildUrlBuildTemplateButton);
             _openBuildUrlBuildTemplateButton.Click += delegate
             {
+                Logger.Info("OpenBuildUrl Clicked");
                 if (_song != null && _song.BuildUrl != null)
                 {
                     UrlHelper.OpenUrl(_song.BuildUrl);
@@ -278,6 +279,7 @@ namespace DanceDanceRotationModule.Views
             ControlExtensions.ConvertToButton(_copyBuildTemplateButton);
             _copyBuildTemplateButton.Click += delegate
             {
+                Logger.Info("CopyBuild Clicked");
                 if (_song != null && _song.BuildTemplateCode != null)
                 {
                     ClipboardUtil.WindowsClipboardService.SetTextAsync(
@@ -368,6 +370,7 @@ namespace DanceDanceRotationModule.Views
             };
             _rotateRemapButton.Click += delegate
             {
+                Logger.Info("RotateRemapping Clicked");
                 if (_song == null)
                     return;
 
@@ -642,6 +645,7 @@ namespace DanceDanceRotationModule.Views
 
         private void OnSelectedSongChanged(SelectedSongInfo songInfo)
         {
+            Logger.Trace($"OnSelectedSongChanged: {songInfo.Song?.Id.Name}");
             _song = songInfo.Song;
             _songData = songInfo.Data;
 

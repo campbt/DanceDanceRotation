@@ -95,6 +95,7 @@ namespace DanceDanceRotationModule.Storage
             };
             addSongButton.Click += delegate
             {
+                Logger.Info("AddFromClipboardButton Clicked");
                 Logger.Info("Attempting to read in clipboard contents");
                 string clipboardContents = ClipboardUtil.WindowsClipboardService.GetTextAsync().Result;
                 var song = DanceDanceRotationModule.SongRepo.AddSong(
@@ -116,6 +117,7 @@ namespace DanceDanceRotationModule.Storage
             };
             createSongButton.Click += delegate
             {
+                Logger.Info("CreateSongButton Clicked");
                 UrlHelper.OpenUrl("https://campbt.github.io/DanceDanceRotationComposer/create.html");
             };
 
@@ -151,18 +153,21 @@ namespace DanceDanceRotationModule.Storage
             DanceDanceRotationModule.SongRepo.OnSongsChanged +=
                 delegate
                 {
+                    Logger.Trace("OnSongsChanged - Rebuilding Song List");
                     BuildSongList();
                 };
 
             DanceDanceRotationModule.Settings.ShowOnlyCharacterClassSongs.SettingChanged +=
                 delegate
                 {
+                    Logger.Trace("ShowOnlyCharacterClassSongs.SettingsChanged - Rebuilding Song List");
                     BuildSongList();
                 };
 
             // Listen for profession change
             GameService.Gw2Mumble.PlayerCharacter.NameChanged += delegate
             {
+                Logger.Trace("PlayerCharacter.NameChanged - Rebuilding Song List");
                 BuildSongList();
             };
         }
@@ -201,7 +206,6 @@ namespace DanceDanceRotationModule.Storage
                 filteredSongs = songList;
             }
 
-
             // Sort song list by Profession, then by Elite, then by Song title
             filteredSongs.Sort(delegate(Song song1, Song song2)
             {
@@ -215,6 +219,8 @@ namespace DanceDanceRotationModule.Storage
                 }
                 return String.Compare(song1.Name, song2.Name, StringComparison.Ordinal);
             });
+
+            Logger.Trace($"BuildSongList | {filteredSongs.Count}/{songList.Count} songs shown");
 
             foreach (var song in filteredSongs)
             {
@@ -235,6 +241,8 @@ namespace DanceDanceRotationModule.Storage
 
     public class SongListRow : Panel
     {
+        private static readonly Logger Logger = Logger.GetLogger<SongListRow>();
+
         internal Song Song { get; set; }
 
         private Checkbox Checkbox { get; }
@@ -297,6 +305,7 @@ namespace DanceDanceRotationModule.Storage
             ControlExtensions.ConvertToButton(DeleteButton);
             DeleteButton.Click += delegate
             {
+                Logger.Info($"DeleteButton Clicked: song={song.Id.Name}");
                 DanceDanceRotationModule.SongRepo.DeleteSong(song.Id);
             };
 

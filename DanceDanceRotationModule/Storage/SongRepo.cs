@@ -70,6 +70,7 @@ namespace DanceDanceRotationModule.Storage
             if (_selectedSongId.Equals(songId))
                 return;
 
+            Logger.Info($"Setting selected song to: {songId.Name}");
             _selectedSongId = songId;
             DanceDanceRotationModule.Settings.SelectedSong.Value = songId;
             InvokeSelectedSongInfo();
@@ -83,7 +84,7 @@ namespace DanceDanceRotationModule.Storage
         )
         {
             Song song = null;
-            Logger.Info("Attempting to decode into a song:\n" + json);
+            Logger.Info($"Attempting to decode into a song:\n{json}");
 
             try
             {
@@ -91,8 +92,8 @@ namespace DanceDanceRotationModule.Storage
 
                 Logger.Info(
                     _songs.ContainsKey(song.Id)
-                    ? "Successfully replaced song: " + song.Name
-                    : "Successfully added song: " + song.Name
+                    ? $"Successfully replaced song: {song.Name}"
+                    : $"Successfully added song: {song.Name}"
                 );
 
                 _songs[song.Id] = song;
@@ -105,14 +106,14 @@ namespace DanceDanceRotationModule.Storage
                 }
 
                 var fullFilePath = GetSongPath(song);
-                Logger.Info("Attempting to save song file " + fullFilePath);
+                Logger.Info($"Attempting to save song file {fullFilePath}");
 
                 // Disable watcher, or it can infinite loop
                 _fileSystemWatcher.EnableRaisingEvents = false;
 
                 string prettyJson = JsonHelper.FormatJson(json);
                 File.WriteAllText(fullFilePath, prettyJson);
-                Logger.Info("Successfully saved pretty song file " + fullFilePath);
+                Logger.Info($"Successfully saved pretty song file {fullFilePath}");
 
                 if (showNotification)
                 {
@@ -122,9 +123,7 @@ namespace DanceDanceRotationModule.Storage
             catch (Exception exception)
             {
                 Logger.Warn(
-                    "Failed to decode clipboard contents into a song:\n" +
-                    exception.Message + "\n" +
-                    exception
+                    $"Failed to decode clipboard contents into a song:\n{exception.Message}\n{exception}"
                 );
                 if (showNotification)
                 {
@@ -167,6 +166,7 @@ namespace DanceDanceRotationModule.Storage
                 // Ignore. This may be something like a SongInfo callback that didn't actually cause a change
                 return;
             }
+            Logger.Info($"SongData Updated: {songId.Name}\n{updatedSongData}");
             updatedSongData.Id = songId;
             _songDatas[songId] = updatedSongData;
             Save();
@@ -182,14 +182,14 @@ namespace DanceDanceRotationModule.Storage
         {
             if (_songs.ContainsKey(songId))
             {
-                Logger.Info("Removing song: " + songId.Name);
+                Logger.Info($"Removing song: {songId.Name}");
                 Song song = _songs[songId];
                 _songs.Remove(songId);
                 _songDatas.Remove(songId);
 
                 // Attempt to delete file with this song's name
                 var fullFilePath = GetSongPath(song);
-                Logger.Info("Attempting to delete song file " + fullFilePath);
+                Logger.Info($"Attempting to delete song file {fullFilePath}");
                 File.Delete(fullFilePath);
 
                 OnSongsChanged?.Invoke(sender: this, null);
@@ -220,6 +220,8 @@ namespace DanceDanceRotationModule.Storage
                 _songDatas[songData.Id] = songData;
             }
 
+            Logger.Info($"Setting initial default song {DanceDanceRotationModule.Settings.SelectedSong.Value.Name}");
+
             // Load the last selected song
             SetSelectedSong(
                 DanceDanceRotationModule.Settings.SelectedSong.Value
@@ -232,7 +234,7 @@ namespace DanceDanceRotationModule.Storage
         {
             // Load all .json files in songs directory
             List<Song> loadedSongs = new List<Song>();
-            Logger.Info("Loading song .json files in " + SongsDir);
+            Logger.Info($"Loading song .json files in {SongsDir}");
             foreach (string fileName in Directory.GetFiles(SongsDir, "*.json"))
             {
                 try
@@ -242,12 +244,12 @@ namespace DanceDanceRotationModule.Storage
                         string json = r.ReadToEnd();
                         Song song = SongTranslator.FromJson(json);
                         loadedSongs.Add(song);
-                        Logger.Trace("Successfully loaded song file: " + fileName);
+                        Logger.Trace($"Successfully loaded song file: {fileName}");
                     }
                 }
                 catch (Exception exception)
                 {
-                    Logger.Warn(exception, "Failed to load song file: " + fileName);
+                    Logger.Warn(exception, $"Failed to load song file: {fileName}");
                 }
             }
             Logger.Info($"Successfully loaded {loadedSongs.Count} songs.");
@@ -316,6 +318,7 @@ namespace DanceDanceRotationModule.Storage
         {
             DanceDanceRotationModule.Settings.SelectedSong.Value = _selectedSongId;
             DanceDanceRotationModule.Settings.SongDatas.Value = _songDatas.Values.ToList();
+            Logger.Info("Saved SongRepo");
         }
 
         public void StartDirectoryWatcher()
@@ -403,6 +406,7 @@ namespace DanceDanceRotationModule.Storage
 
             _songs.Clear();
             _songDatas.Clear();
+            Logger.Info("Disposed SongRepo");
         }
 
         // MARK: Utility

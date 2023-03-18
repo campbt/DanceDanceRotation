@@ -203,6 +203,14 @@ namespace DanceDanceRotationModule
             return _notesContainer;
         }
 
+        protected override void Unload()
+        {
+            base.Unload();
+
+            _notesContainer.Dispose();
+            _topPanel.Dispose();
+        }
+
         private NotesContainer _notesContainer;
         private FlowPanel _topPanel;
     }

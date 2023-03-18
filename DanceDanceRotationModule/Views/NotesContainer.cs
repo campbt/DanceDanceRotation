@@ -749,6 +749,7 @@ namespace DanceDanceRotationModule.NoteDisplay
             SongData songData
         )
         {
+            Logger.Trace($"Setting Notes Sequence");
             Reset();
             _currentSequence.Clear();
             _currentSequence.AddRange(notes);
@@ -777,12 +778,13 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 Logger.Warn("Play pressed, but no song loaded.");
             }
-
             _timeLabel.Visible = false;
 
             if (_info.IsStarted == false)
             {
                 // Start from stopped
+                Logger.Trace("Starting Notes");
+
                 _info.IsStarted = true;
                 _info.StartTime = _lastGameTime;
 
@@ -816,6 +818,8 @@ namespace DanceDanceRotationModule.NoteDisplay
             else
             {
                 // Resume from paused
+                Logger.Trace("Resuming Notes");
+
                 _info.IsPaused = false;
                 _info.StartTime += _lastGameTime - _info.PausedTime;
                 HideAllTooltips();
@@ -826,6 +830,7 @@ namespace DanceDanceRotationModule.NoteDisplay
         {
             if (_info.IsStarted && _info.IsPaused == false)
             {
+                Logger.Trace("Pausing Notes");
                 _info.IsPaused = true;
                 _info.PausedTime = _lastGameTime;
 
@@ -835,12 +840,17 @@ namespace DanceDanceRotationModule.NoteDisplay
 
                 ShowAllTooltips();
             }
+            else
+            {
+                Logger.Trace("Pause called, but notes are not started");
+            }
         }
 
         public void Reset()
         {
             if (_info.IsStarted)
             {
+                Logger.Trace("Reset");
                 _info.IsStarted = false;
                 _info.IsPaused = false;
                 _info.Reset();
@@ -887,6 +897,7 @@ namespace DanceDanceRotationModule.NoteDisplay
                 // Check if song has ended and all notes are gone
                 if (_info.ActiveNotes.Count == 0)
                 {
+                    Logger.Trace("No more active notes. Resetting.");
                     Reset();
                 }
             }
@@ -1196,8 +1207,10 @@ namespace DanceDanceRotationModule.NoteDisplay
             }
         }
 
-        public void Destroy()
+        protected override void DisposeControl()
         {
+            base.DisposeControl();
+
             _targetTop.Dispose();
             _targetBottom.Dispose();
             foreach (var targetCircle in _targetCircles)
@@ -1208,7 +1221,6 @@ namespace DanceDanceRotationModule.NoteDisplay
             {
                 targetSpacer.Dispose();
             }
-            Dispose();
         }
 
         // MARK: Properties
