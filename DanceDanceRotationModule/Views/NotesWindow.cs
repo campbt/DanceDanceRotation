@@ -35,7 +35,6 @@ namespace DanceDanceRotationModule.Views
         {
             Parent = GameService.Graphics.SpriteScreen;
             Title = "Dance Dance Rotation";
-            Subtitle = "v0.3.0";
             Emblem = Resources.Instance.DdrLogoEmblemTexture;
             CanResize = true;
             CanCloseWithEscape = false;
