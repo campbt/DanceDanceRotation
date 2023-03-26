@@ -116,16 +116,16 @@ namespace DanceDanceRotationModule.Storage
             Weapon3          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon3);
             Weapon4          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon4);
             Weapon5          = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Weapon5);
-            HealingSkill     = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.HealingSkill);
-            UtilitySkill1    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill1);
-            UtilitySkill2    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill2 );
-            UtilitySkill3    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.UtilitySkill3);
-            EliteSkill       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.EliteSkill );
-            ProfessionSkill1 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill1);
-            ProfessionSkill2 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill2);
-            ProfessionSkill3 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill3);
-            ProfessionSkill4 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill4);
-            ProfessionSkill5 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.ProfessionSkill5);
+            HealingSkill     = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Heal);
+            UtilitySkill1    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Utility1);
+            UtilitySkill2    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Utility2 );
+            UtilitySkill3    = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Utility3);
+            EliteSkill       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Elite );
+            ProfessionSkill1 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Profession1);
+            ProfessionSkill2 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Profession2);
+            ProfessionSkill3 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Profession3);
+            ProfessionSkill4 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Profession4);
+            ProfessionSkill5 = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.Profession5);
             WeaponStow       = DefineHotkeySetting(AbilityHotkeysSettings, NoteType.WeaponStow);
         }
 

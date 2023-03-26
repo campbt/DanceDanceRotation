@@ -52,11 +52,11 @@ namespace DanceDanceRotationModule.Model
         {
             switch (noteType)
             {
-                case NoteType.UtilitySkill1:
+                case NoteType.Utility1:
                     return RemapNoteType(Utility1Mapping);
-                case NoteType.UtilitySkill2:
+                case NoteType.Utility2:
                     return RemapNoteType(Utility2Mapping);
-                case NoteType.UtilitySkill3:
+                case NoteType.Utility3:
                     return RemapNoteType(Utility3Mapping);
                 default:
                     // No remapping for non-utility types
@@ -69,11 +69,11 @@ namespace DanceDanceRotationModule.Model
             switch (skillMapping)
             {
                 case UtilitySkillMapping.One:
-                    return NoteType.UtilitySkill1;
+                    return NoteType.Utility1;
                 case UtilitySkillMapping.Two:
-                    return NoteType.UtilitySkill2;
+                    return NoteType.Utility2;
                 case UtilitySkillMapping.Three:
-                    return NoteType.UtilitySkill3;
+                    return NoteType.Utility3;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(skillMapping), skillMapping, null);
             }
