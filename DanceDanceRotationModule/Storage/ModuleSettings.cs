@@ -70,7 +70,7 @@ namespace DanceDanceRotationModule.Storage
                 () => "If enabled, the next few ability icons will be shown.");
 
             ShowOnlyCharacterClassSongs = generalSettings.DefineSetting("ShowOnlyCharacterClassSongs",
-                false,
+                true,
                 () => "Only show current profession songs",
                 () => "If enabled, the song list will only show songs for the current profession");
         }
