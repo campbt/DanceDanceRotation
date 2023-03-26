@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
+using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
@@ -78,8 +79,19 @@ namespace DanceDanceRotationModule
             };
             _cornerIcon.Click += delegate
             {
+                Logger.Trace("CornerIcon Clicked");
                 ToggleNotesWindow();
             };
+
+            _cornerContextMenu = new ContextMenuStrip();
+            var reportIssueItem = _cornerContextMenu.AddMenuItem("Report Issue");
+            reportIssueItem.Click += delegate
+            {
+                Logger.Trace("ReportIssue Clicked");
+                UrlHelper.OpenUrl("https://github.com/campbt/DanceDanceRotation/issues");
+            };
+            _cornerIcon.Menu = _cornerContextMenu;
+
 
             // Base handler must be called
             base.OnModuleLoaded(e);
@@ -217,6 +229,7 @@ namespace DanceDanceRotationModule
         internal static SongRepo SongRepo { get; private set; }
 
         private CornerIcon _cornerIcon;
+        private ContextMenuStrip _cornerContextMenu;
 
         // Windows
         private NotesWindow _notesWindow;
