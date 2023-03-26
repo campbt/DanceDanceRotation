@@ -228,6 +228,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     Size = windowInfo.GetNewNoteSize(),
                     Location = _windowInfo.GetNewNoteLocation(lane),
+                    ZIndex = 2,
                     Opacity = 0.7f,
                     Parent = parent
                 };
@@ -239,6 +240,7 @@ namespace DanceDanceRotationModule.Views
                 if (isMiniIcon)
                 {
                     var oldSize = Image.Size;
+                    Image.ZIndex = 1;
                     Image.Size = _windowInfo.GetNewNoteSizeSmall();
                     Image.Location = new Point(
                         Image.Location.X + (oldSize.X - Image.Size.X) / 2,
