@@ -285,159 +285,6 @@ namespace DanceDanceRotationModule.Views
 
             };
 
-            // MARK: Utility Skills Remap
-
-            FlowPanel utilityRemap = new FlowPanel()
-            {
-                Width = childSectionWidth,
-                HeightSizingMode = SizingMode.AutoSize,
-                // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
-                OuterControlPadding = new Vector2(10, 10),
-                AutoSizePadding = new Point(10, 10),
-                ControlPadding = new Vector2(0, 10),
-                Title = "Remap Utility Skills",
-                CanCollapse = true,
-                Parent = rootPanel
-            };
-            _remapInstructionsText = new Label()
-            {
-                Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template",
-                Width = 280,
-                AutoSizeHeight = true,
-                WrapText = true,
-                Font = GameService.Content.DefaultFont14,
-                TextColor = Color.LightGray,
-                Parent = utilityRemap
-            };
-
-            FlowPanel remapIcons = new FlowPanel()
-            {
-                WidthSizingMode = SizingMode.Fill,
-                HeightSizingMode = SizingMode.AutoSize,
-                FlowDirection = ControlFlowDirection.SingleLeftToRight,
-                CanScroll = false,
-                Parent = utilityRemap
-            };
-            _remapUtilityImage1 = new Image(
-                Resources.Instance.UnknownAbilityIcon
-            )
-            {
-                Size = new Point(72, 72),
-                BasicTooltipText = "This should match in-game utility slot 1",
-                Parent = remapIcons
-            };
-            _remapUtilityImage2 = new Image(
-                Resources.Instance.UnknownAbilityIcon
-            )
-            {
-                Size = UtilityIconSize,
-                BasicTooltipText = "This should match in-game utility slot 2",
-                Parent = remapIcons
-            };
-            _remapUtilityImage3 = new Image(
-                Resources.Instance.UnknownAbilityIcon
-            )
-            {
-                Size = UtilityIconSize,
-                BasicTooltipText = "This should match in-game utility slot 3",
-                Parent = remapIcons
-            };
-            var rotateRemapButtonPanel = new Panel()
-            {
-                Size = UtilityIconSize,
-                Parent = remapIcons
-            };
-            _rotateRemapButton = new Image(
-                Resources.Instance.ButtonReload
-            )
-            {
-                Size = UtilityRemapIconSize,
-                Location = new Point(
-                    (UtilityIconSize.X - UtilityRemapIconSize.X) / 2,
-                    (UtilityIconSize.Y - UtilityRemapIconSize.Y) / 2
-                ),
-                BasicTooltipText = "Change the remapping ordering.",
-                Parent = rotateRemapButtonPanel
-            };
-            _rotateRemapButton.Click += delegate
-            {
-                Logger.Info("RotateRemapping Clicked");
-                if (_song == null)
-                    return;
-
-                DanceDanceRotationModule.SongRepo
-                    .UpdateData(
-                        _song.Id,
-                        songData =>
-                        {
-                            switch (songData.Utility1Mapping)
-                            {
-                                case SongData.UtilitySkillMapping.One:
-                                    switch (songData.Utility2Mapping)
-                                    {
-                                        case SongData.UtilitySkillMapping.Two:
-                                            // 1,2,3 => 1,3,2
-                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.One;
-                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Three;
-                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Two;
-                                            break;
-                                        case SongData.UtilitySkillMapping.Three:
-                                            // 1,3,2 => 2,1,3
-                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Two;
-                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.One;
-                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Three;
-                                            break;
-                                    }
-                                    break;
-                                case SongData.UtilitySkillMapping.Two:
-                                    switch (songData.Utility2Mapping)
-                                    {
-                                        case SongData.UtilitySkillMapping.One:
-                                            // 2,1,3 => 2,3,1
-                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Two;
-                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Three;
-                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.One;
-                                            break;
-                                        case SongData.UtilitySkillMapping.Three:
-                                            // 2,3,1 => 3,1,2
-                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Three;
-                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.One;
-                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Two;
-                                            break;
-                                    }
-                                    break;
-                                case SongData.UtilitySkillMapping.Three:
-                                    switch (songData.Utility2Mapping)
-                                    {
-                                        case SongData.UtilitySkillMapping.One:
-                                            // 3,1,2 => 3,2,1
-                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Three;
-                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Two;
-                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.One;
-                                            break;
-                                        case SongData.UtilitySkillMapping.Two:
-                                            // 3,2,1 => 1,2,3
-                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.One;
-                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Two;
-                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Three;
-                                            break;
-                                    }
-                                    break;
-                            }
-                            return songData;
-                        }
-                    );
-            };
-
-            // Spacer
-
-            new Label()
-            {
-                Text = "",
-                Height = 4,
-                Parent = descriptionPanel
-            };
-
             // MARK: Practice Settings
 
             FlowPanel practiceSettingsSection = new FlowPanel()
@@ -624,6 +471,159 @@ namespace DanceDanceRotationModule.Views
                     int seconds = (int)args.Value % 60;
                     _startAtLabel.Text = $"{minutes} : {seconds:00}";
                 };
+
+            // Spacer
+
+            new Label()
+            {
+                Text = "",
+                Height = 4,
+                Parent = descriptionPanel
+            };
+
+            // MARK: Utility Skills Remap
+
+            FlowPanel utilityRemap = new FlowPanel()
+            {
+                Width = childSectionWidth,
+                HeightSizingMode = SizingMode.AutoSize,
+                // OuterControlPadding+AutoSizePadding: effectively form the full 4 point padding of the parent view
+                OuterControlPadding = new Vector2(10, 10),
+                AutoSizePadding = new Point(10, 10),
+                ControlPadding = new Vector2(0, 10),
+                Title = "Remap Utility Skills",
+                CanCollapse = true,
+                Parent = rootPanel
+            };
+            _remapInstructionsText = new Label()
+            {
+                Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template",
+                Width = 280,
+                AutoSizeHeight = true,
+                WrapText = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Parent = utilityRemap
+            };
+
+            FlowPanel remapIcons = new FlowPanel()
+            {
+                WidthSizingMode = SizingMode.Fill,
+                HeightSizingMode = SizingMode.AutoSize,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                CanScroll = false,
+                Parent = utilityRemap
+            };
+            _remapUtilityImage1 = new Image(
+                Resources.Instance.UnknownAbilityIcon
+            )
+            {
+                Size = new Point(72, 72),
+                BasicTooltipText = "This should match in-game utility slot 1",
+                Parent = remapIcons
+            };
+            _remapUtilityImage2 = new Image(
+                Resources.Instance.UnknownAbilityIcon
+            )
+            {
+                Size = UtilityIconSize,
+                BasicTooltipText = "This should match in-game utility slot 2",
+                Parent = remapIcons
+            };
+            _remapUtilityImage3 = new Image(
+                Resources.Instance.UnknownAbilityIcon
+            )
+            {
+                Size = UtilityIconSize,
+                BasicTooltipText = "This should match in-game utility slot 3",
+                Parent = remapIcons
+            };
+            var rotateRemapButtonPanel = new Panel()
+            {
+                Size = UtilityIconSize,
+                Parent = remapIcons
+            };
+            _rotateRemapButton = new Image(
+                Resources.Instance.ButtonReload
+            )
+            {
+                Size = UtilityRemapIconSize,
+                Location = new Point(
+                    (UtilityIconSize.X - UtilityRemapIconSize.X) / 2,
+                    (UtilityIconSize.Y - UtilityRemapIconSize.Y) / 2
+                ),
+                BasicTooltipText = "Change the remapping ordering.",
+                Parent = rotateRemapButtonPanel
+            };
+            _rotateRemapButton.Click += delegate
+            {
+                Logger.Info("RotateRemapping Clicked");
+                if (_song == null)
+                    return;
+
+                DanceDanceRotationModule.SongRepo
+                    .UpdateData(
+                        _song.Id,
+                        songData =>
+                        {
+                            switch (songData.Utility1Mapping)
+                            {
+                                case SongData.UtilitySkillMapping.One:
+                                    switch (songData.Utility2Mapping)
+                                    {
+                                        case SongData.UtilitySkillMapping.Two:
+                                            // 1,2,3 => 1,3,2
+                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.One;
+                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Three;
+                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Two;
+                                            break;
+                                        case SongData.UtilitySkillMapping.Three:
+                                            // 1,3,2 => 2,1,3
+                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Two;
+                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.One;
+                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Three;
+                                            break;
+                                    }
+                                    break;
+                                case SongData.UtilitySkillMapping.Two:
+                                    switch (songData.Utility2Mapping)
+                                    {
+                                        case SongData.UtilitySkillMapping.One:
+                                            // 2,1,3 => 2,3,1
+                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Two;
+                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Three;
+                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.One;
+                                            break;
+                                        case SongData.UtilitySkillMapping.Three:
+                                            // 2,3,1 => 3,1,2
+                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Three;
+                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.One;
+                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Two;
+                                            break;
+                                    }
+                                    break;
+                                case SongData.UtilitySkillMapping.Three:
+                                    switch (songData.Utility2Mapping)
+                                    {
+                                        case SongData.UtilitySkillMapping.One:
+                                            // 3,1,2 => 3,2,1
+                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.Three;
+                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Two;
+                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.One;
+                                            break;
+                                        case SongData.UtilitySkillMapping.Two:
+                                            // 3,2,1 => 1,2,3
+                                            songData.Utility1Mapping = SongData.UtilitySkillMapping.One;
+                                            songData.Utility2Mapping = SongData.UtilitySkillMapping.Two;
+                                            songData.Utility3Mapping = SongData.UtilitySkillMapping.Three;
+                                            break;
+                                    }
+                                    break;
+                            }
+                            return songData;
+                        }
+                    );
+            };
 
             // MARK: View Created. Set up subscriptions
 
