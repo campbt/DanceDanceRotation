@@ -8,6 +8,7 @@ using Blish_HUD;
 using Blish_HUD.Controls;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Util;
+using Newtonsoft.Json;
 
 namespace DanceDanceRotationModule.Storage
 {
@@ -263,46 +264,31 @@ namespace DanceDanceRotationModule.Storage
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
         private void LoadDefaultSongFiles()
         {
-             // Not sure if there is a way to just search for resources in the directory,
-             // so all default songs have to be listed here.
-            var defaultSongFileNames = new List<String>();
-            defaultSongFileNames.Add("Button Mash Condi Weaver");
-            defaultSongFileNames.Add("Condi Alacrity Mirage (Staff) [Benchmark]");
-            defaultSongFileNames.Add("Condi Virtuoso [Benchmark]");
-            defaultSongFileNames.Add("Condi Weaver [Benchmark]");
-            defaultSongFileNames.Add("Lightning God Power Weaver");
-            defaultSongFileNames.Add("Power Button Mash Weaver");
-            defaultSongFileNames.Add("Power Catalyst [Benchmark]");
-            defaultSongFileNames.Add("Power Chronomancer [Benchmark]");
-            defaultSongFileNames.Add("Power Quickness Catalyst [Benchmark]");
-            defaultSongFileNames.Add("Power Virtuoso [Benchmark]");
-            defaultSongFileNames.Add("Power Weaver [Benchmark]");
-            defaultSongFileNames.Add("Power Weaver");
-            defaultSongFileNames.Add("The New Holosmith");
-            defaultSongFileNames.Add("The New Pistol Alac Mechanist");
+            // Not sure if there is a way to just search for resources in the directory,
+            // so all default songs have to be listed here.
 
-            var baseRefFolder = "defaultSongs";
-
-            Logger.Info($"Attempting to load in {defaultSongFileNames.Count} songs from ref/${baseRefFolder}.");
-            foreach (var rootName in defaultSongFileNames)
+            var defaultSongsFileName = "defaultSongs.json";
+            Logger.Info($"Attempting to load default songs from ref/${defaultSongsFileName}.");
+            try
             {
-                var fileName = Path.Combine(baseRefFolder, rootName + ".json");
-                try
+                var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(defaultSongsFileName);
+                using (StreamReader r = new StreamReader(fileStream))
                 {
-                    var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(fileName);
-                    using (StreamReader r = new StreamReader(fileStream))
+                    string json = r.ReadToEnd();
+                    List<Object> songsArray = JsonConvert.DeserializeObject<List<Object>>(json);
+                    foreach (var songJson in songsArray)
                     {
-                        string json = r.ReadToEnd();
+                        var rawJson = songJson.ToString();
                         AddSong(
-                            json,
+                            songJson.ToString(),
                             showNotification: false
                         );
                     }
                 }
-                catch (Exception exception)
-                {
-                    Logger.Warn(exception, "Failed to load song file: " + fileName);
-                }
+            }
+            catch (Exception exception)
+            {
+                Logger.Warn(exception, "Failed to load song file: " + defaultSongsFileName);
             }
             Logger.Info($"Successfully loaded {_songs.Count} songs.");
         }

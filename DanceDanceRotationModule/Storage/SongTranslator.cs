@@ -153,6 +153,7 @@ namespace DanceDanceRotationModule.Storage
                 case 69: return "Vindicator";
                 case 70: return "Mechanist";
                 case 71: return "Specter";
+                case 72: return "Untamed";
                 default:
                     // Not an elite spec. Just use the profession text
                     return ProfessionExtensions.GetProfessionDisplayText(profession);
