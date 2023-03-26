@@ -2,7 +2,7 @@
 
 Learn Guild Wars 2 Rotations to the Beat!
 
-This [Blish](https://blishhud.com/) module will add a window that can play Guild Wars 2 skill rotations as "songs" in a rythm game.
+This [Blish](https://blishhud.com/) module will add a window that can play Guild Wars 2 skill rotations as "songs" in a rhythm game.
 
 ![danceDanceRotation](https://user-images.githubusercontent.com/1414123/227801325-cb166989-11eb-4e59-965c-1b91457f31d9.gif)
 
