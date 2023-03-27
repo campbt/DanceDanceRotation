@@ -669,7 +669,7 @@ namespace DanceDanceRotationModule.Views
             _copyBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildTemplateCode);
 
             SetRemappingEnabled(
-                _song.Profession != Profession.Elementalist
+                _song.Profession != Profession.Revenant
             );
 
             GetRemappedAbilityTexture(_song.Utility1, _songData.Utility1Mapping);
