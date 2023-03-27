@@ -17,6 +17,7 @@ Download the latest [release](https://github.com/campbt/DanceDanceRotation/relea
 ```
 <My Documents>/Guild Wars 2/addons/blishhud/modules
 ```
+(Full instructions [here](https://new.blishhud.com/docs/user/installing-modules/#manually-installing-modules)
 
 In game, launch blish and go to the Blish settings and enable the module. 
 
