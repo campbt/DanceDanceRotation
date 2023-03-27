@@ -690,11 +690,17 @@ namespace DanceDanceRotationModule.Views
             {
                 _remapInstructionsText.Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template.";
                 _remapInstructionsText.TextColor = Color.LightGray;
+                _remapUtilityImage1.Visible = true;
+                _remapUtilityImage2.Visible = true;
+                _remapUtilityImage3.Visible = true;
             }
             else
             {
                 _remapInstructionsText.Text = "Remapping utilities is currently disabled for Revenant. Utility skills on both Legends must match the song's build.";
                 _remapInstructionsText.TextColor = Color.Tomato;
+                _remapUtilityImage1.Visible = false;
+                _remapUtilityImage2.Visible = false;
+                _remapUtilityImage3.Visible = false;
             }
         }
 
