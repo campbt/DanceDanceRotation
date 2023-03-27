@@ -7,6 +7,7 @@ using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
+using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using DanceDanceRotationModule.Views;
@@ -61,6 +62,10 @@ namespace DanceDanceRotationModule
             SongRepo = new SongRepo();
             SongRepo.StartDirectoryWatcher();
             await SongRepo.Load();
+
+            // Set up a listener so the ability icon cache in Resources only caches the current song
+            // It should also pre-fetch these icons as some may need to be downloaded
+            Resources.Instance.SetUpCurrentSongListener(SongRepo);
         }
 
         // Allows you to perform an action once your module has finished loading (once

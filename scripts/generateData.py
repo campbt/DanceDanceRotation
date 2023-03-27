@@ -12,7 +12,7 @@ ALL_SKILLS_FILENAME = "./allSkills.json"
 # PALETTE_SKILL_LOOKUP_FILENAME = "./paletteSkillLookup.json"
 
 # Output filename for generated info used by the module
-ABILITY_INFO_FILENAME = "../DanceDanceRotationModule/ref/abilityInfo.json"
+ABILITY_INFO_FILENAME = "../DanceDanceRotationModule/ref/abilityInfoApi.json"
 
 # Don't want to hammer the guild wars server, so sleep a bit between requests
 SLEEP_TIME = 5.0
@@ -115,7 +115,7 @@ def createAbilityInfoTable():
             if "icon" in info:
                 iconUrl = info["icon"]
                 imageName = getImageFileName(iconUrl)
-                abilityInfo["icon"] = imageName
+                abilityInfo["assetId"] = imageName
             if "name" in info:
                 abilityInfo["name"] = info["name"]
             abilityIdToImageId[abilityId] = abilityInfo
@@ -144,17 +144,14 @@ def createAbilityInfoTable():
 # MARK: Utility Functions
 
 #
-# Convert an icon url from the allSkills.json to a file name on disk
+# Convert an icon url from the allSkills.json to the ID used by the Blish
+# DatAssetCache
 #
 def getImageFileName(iconUrl):
-    startIndex = iconUrl.rindex(
-        "/",
-        0,
-        iconUrl.rindex("/")
-    ) + 1
-    return iconUrl[
+    startIndex = iconUrl.rindex("/") + 1
+    return int(iconUrl[
         startIndex:len(iconUrl)
-    ].replace("/","_")
+    ].replace("/","_").replace(".png",""))
 
 
 ###########################

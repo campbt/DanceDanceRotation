@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using Blish_HUD;
+using Blish_HUD.Content;
+using Blish_HUD.Gw2Mumble;
 using Blish_HUD.Modules.Managers;
 using DanceDanceRotationModule.Model;
+using DanceDanceRotationModule.Storage;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 
@@ -23,8 +27,23 @@ namespace DanceDanceRotationModule.Util
 
         private struct AbilityInfo
         {
-            public string icon { get; set; }
-            public string name { get; set; }
+            /** The asset ID of the icon. This is used to look up the asset in the DAC */
+            public int assetId { get; }
+            /** Path to a custom icon asset stored in ref/ */
+            public string icon { get; }
+            public string name { get; }
+
+            public AbilityInfo(int assetId, string icon, string name)
+            {
+                this.assetId = assetId;
+                this.icon = icon;
+                this.name = name;
+
+                if (name == null)
+                {
+                    throw new Exception($"AbilityInfo was read in wrong. Missing name! ${this}");
+                }
+            }
         }
 
         // MARK: Resource Loading
@@ -35,13 +54,9 @@ namespace DanceDanceRotationModule.Util
             ContentsManager = contentsManager;
 
             // Load the abilityIds lookup table for later abilityId -> image loading
-            // Note: All icons in this json need to be prefixed with "api/"
-            LoadAbilityInfoFile("abilityInfoApi.json", "api/");
-
+            LoadAbilityInfoFile("abilityInfoApi.json");
             // Load custom ones not provided by the API
-            // Note: No prefix is applied here because some custom ones are referring to special icons
-            //       while others refer to actual api ones
-            LoadAbilityInfoFile("abilityInfoCustom.json", "");
+            LoadAbilityInfoFile("abilityInfoCustom.json");
 
             // Load the PaletteId -> AbilityId table
             LoadPaletteIdLookup("paletteSkillLookup.json");
@@ -79,7 +94,7 @@ namespace DanceDanceRotationModule.Util
          * is referring to different sub-folders in abilityIcons/ for organizational purposes,
          * so the icon name needs to be prefixed with this
          */
-        private void LoadAbilityInfoFile(string fileName, string iconSubfolder)
+        private void LoadAbilityInfoFile(string fileName)
         {
             var fileStream = ContentsManager.GetFileStream(fileName);
             var streamReader = new StreamReader(fileStream, Encoding.UTF8);
@@ -94,7 +109,6 @@ namespace DanceDanceRotationModule.Util
                     var raw = int.Parse(entry.Key);
                     var abilityId = new AbilityId(raw);
                     var abilityInfo = entry.Value;
-                    abilityInfo.icon = iconSubfolder + abilityInfo.icon;
                     AbilityInfos[abilityId] = abilityInfo;
                 }
                 catch
@@ -147,7 +161,7 @@ namespace DanceDanceRotationModule.Util
             }
         }
 
-        public Texture2D GetAbilityIcon(PaletteId paletteId)
+        public AsyncTexture2D GetAbilityIcon(PaletteId paletteId)
         {
             AbilityId abilityId = GetAbilityIdForPaletteId(paletteId);
             return GetAbilityIcon(
@@ -155,31 +169,53 @@ namespace DanceDanceRotationModule.Util
             );
         }
 
-        public Texture2D GetAbilityIcon(AbilityId abilityId)
+        public AsyncTexture2D GetAbilityIcon(AbilityId abilityId)
         {
             if (AbilityInfos.ContainsKey(abilityId))
             {
-                var iconName = AbilityInfos[abilityId].icon;
-                if (AbilityIconTextureCache.ContainsKey(iconName))
+                var abilityInfo = AbilityInfos[abilityId];
+                string assetCacheKey =
+                    (string.IsNullOrEmpty(abilityInfo.icon))
+                        ? abilityInfo.assetId.ToString()
+                        : abilityInfo.icon;
+
+                if (AbilityIconTextureCache.ContainsKey(assetCacheKey))
                 {
                     // Already loaded this icon
-                    return AbilityIconTextureCache[iconName];
+                    return AbilityIconTextureCache[assetCacheKey];
                 }
                 else
                 {
                     // Load it
-                    string imageFileName = "abilityIcons/" + iconName;
-                    var icon = ContentsManager.GetTexture(imageFileName);
-                    if (icon == null)
+                    if (string.IsNullOrEmpty(abilityInfo.icon) == false)
                     {
-                        // Shouldn't happen if the lookup table is accurate
-                        Logger.Warn("Failed to load icon name from lookup table: " + imageFileName);
-                        return UnknownAbilityIcon;
+                        // This is a custom icon that is stored in ref
+                        string imageFileName = "abilityIcons/" + abilityInfo.icon;
+                        var texture = ContentsManager.GetTexture(imageFileName);
+                        if (texture == null)
+                        {
+                            // Shouldn't happen if the lookup table is accurate
+                            Logger.Warn("Failed to load icon name from lookup table: " + imageFileName);
+                            return UnknownAbilityIcon;
+                        }
+                        else
+                        {
+                            AbilityIconTextureCache[assetCacheKey] = texture;
+                            return texture;
+                        }
+                    } else if (GameService.Content.DatAssetCache.TryGetTextureFromAssetId(
+                        abilityInfo.assetId,
+                        out AsyncTexture2D texture
+                    ))
+                    {
+                        AbilityIconTextureCache[assetCacheKey] = texture;
+                        return texture;
                     }
                     else
                     {
-                        AbilityIconTextureCache[iconName] = icon;
-                        return icon;
+                        // Shouldn't happen if the lookup table is accurate
+                        Logger.Warn($"Failed to load icon name from lookup table: abilityId=${abilityId.Raw} assertId=${assetCacheKey}");
+                        return UnknownAbilityIcon;
                     }
                 }
             }
@@ -199,6 +235,57 @@ namespace DanceDanceRotationModule.Util
             }
             return "";
         }
+
+        // MARK: Ability Icon Cache Management
+
+        /**
+         * Sets up a listener so the ability icon cache in Resources only caches the current song
+         * It should also pre-fetch these icons as some may need to be downloaded
+         */
+        public void SetUpCurrentSongListener(SongRepo songRepo)
+        {
+            var lastSelectedSongId = new Song.ID();
+            songRepo.OnSelectedSongChanged +=
+                delegate(object sender, SelectedSongInfo info)
+                {
+                    if (info.Song != null && info.Song.Id.Equals(lastSelectedSongId) == false)
+                    {
+                        lastSelectedSongId = info.Song.Id;
+                        Logger.Info("Selected Song Changed. Updating ability icon cache to just this song.");
+                        PurgeAbilityIconCache();
+                        if (info.Song != null)
+                        {
+                            PreloadSongAbilityIcons(info.Song);
+                        }
+                    }
+                };
+        }
+
+        /**
+         * Purges the cached ability icons. Blish should clean up storage
+         */
+        public void PurgeAbilityIconCache()
+        {
+            AbilityIconTextureCache.Clear();
+        }
+
+        /**
+         * Helps avoid pop-in if the ability icon needs to be downloaded, or there is a slow disk read for some reason.
+         */
+        public void PreloadSongAbilityIcons(Song song)
+        {
+            var uniqueAbilityIds = new HashSet<AbilityId>();
+            foreach (var note in song.Notes)
+            {
+                uniqueAbilityIds.Add(note.AbilityId);
+            }
+            foreach (var abilityId in uniqueAbilityIds)
+            {
+                GetAbilityIcon(abilityId);
+            }
+        }
+
+        // MARK: Disposal
 
         public void Unload()
         {
@@ -243,7 +330,7 @@ namespace DanceDanceRotationModule.Util
         // Read in from a .json file at load, this provides a table to convert PaletteId -> AbilityId
         private IDictionary<PaletteId, AbilityId> PaletteIdLookup = new Dictionary<PaletteId, AbilityId>();
         // A cache of loaded Texture2Ds given an ability icon image name.
-        private IDictionary<string, Texture2D> AbilityIconTextureCache = new Dictionary<string, Texture2D>();
+        private IDictionary<string, AsyncTexture2D> AbilityIconTextureCache = new Dictionary<string, AsyncTexture2D>();
 
         public Texture2D WindowBackgroundEmptyTexture { get; private set; }
         public Texture2D WindowBackgroundTexture { get; private set; }

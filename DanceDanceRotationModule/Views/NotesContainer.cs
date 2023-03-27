@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Blish_HUD;
+using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Storage;
@@ -217,10 +218,10 @@ namespace DanceDanceRotationModule.Views
                 int lane = NoteTypeExtensions.NoteLane(note.NoteType);
 
                 // Respect "ShowAbilityIconsForNotes" preference
-                var noteBackground =
+                AsyncTexture2D noteBackground =
                     DanceDanceRotationModule.Settings.ShowAbilityIconsForNotes.Value
                         ? Resources.Instance.GetAbilityIcon(note.AbilityId)
-                        : NoteTypeExtensions.NoteImage(note.NoteType);
+                        : (AsyncTexture2D)NoteTypeExtensions.NoteImage(note.NoteType);
 
                 Image = new Image(
                     noteBackground
