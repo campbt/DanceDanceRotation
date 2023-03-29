@@ -342,6 +342,7 @@ namespace DanceDanceRotationModule.Views
                     _isHit == false &&
                     DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1 &&
+                    Note.OverrideAuto == false &&
                     XPosition <= _windowInfo.HitPerfect
                 )
                 {
