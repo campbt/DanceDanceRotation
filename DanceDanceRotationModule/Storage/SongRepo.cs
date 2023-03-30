@@ -26,7 +26,7 @@ namespace DanceDanceRotationModule.Storage
     {
         private static readonly Logger Logger = Logger.GetLogger<SongRepo>();
 
-        private const string SongsFolderName = "songs";
+        private const string SongsFolderName = "danceDanceRotation/songs";
         private static string SongsDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(SongsFolderName);
 
         private Song.ID _selectedSongId;
