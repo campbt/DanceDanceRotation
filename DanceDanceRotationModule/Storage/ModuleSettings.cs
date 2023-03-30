@@ -31,8 +31,8 @@ namespace DanceDanceRotationModule.Storage
         internal SettingEntry<bool> AutoHitWeapon1 { get; private set; }
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
         internal SettingEntry<bool> ShowHotkeys { get; private set; }
-        internal SettingEntry<bool> ShowNextAbilities { get; private set; }
         internal SettingEntry<bool> ShowOnlyCharacterClassSongs { get; private set; }
+        internal SettingEntry<int> ShowNextAbilitiesCount { get; private set; }
 
         private void InitGeneral(SettingCollection settings)
         {
@@ -64,15 +64,17 @@ namespace DanceDanceRotationModule.Storage
                 () => "Show ability hotkeys",
                 () => "If enabled, notes will have the hotkeys displayed on top of them.");
 
-            ShowNextAbilities = generalSettings.DefineSetting("ShowNextAbilities",
-                false,
-                () => "Show next abilities",
-                () => "If enabled, the next few ability icons will be shown.");
-
             ShowOnlyCharacterClassSongs = generalSettings.DefineSetting("ShowOnlyCharacterClassSongs",
                 true,
                 () => "Only show current profession songs",
                 () => "If enabled, the song list will only show songs for the current profession");
+
+            ShowNextAbilitiesCount = generalSettings.DefineSetting("ShowNextAbilitiesCount",
+                0,
+                () => "Show next abilities",
+                () => "If enabled, the next X ability icons will be shown above the notes section, with no animations.");
+            ShowNextAbilitiesCount.SetRange(0, 10);
+
         }
 
         #endregion

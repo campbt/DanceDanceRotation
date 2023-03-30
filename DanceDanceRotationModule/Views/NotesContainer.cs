@@ -104,7 +104,7 @@ namespace DanceDanceRotationModule.Views
 
                 VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
                     LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
-                if (DanceDanceRotationModule.Settings.ShowNextAbilities.Value)
+                if (DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.Value > 0)
                 {
                     // Show ability icons section as an extra "lane"
                     NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 7;
@@ -706,7 +706,7 @@ namespace DanceDanceRotationModule.Views
                         );
                     }
                 };
-            DanceDanceRotationModule.Settings.ShowNextAbilities.SettingChanged +=
+            DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.SettingChanged +=
                 delegate
                 {
                     Reset();
@@ -1160,9 +1160,10 @@ namespace DanceDanceRotationModule.Views
 
         private void AddInitialAbilityIcons()
         {
-            if (DanceDanceRotationModule.Settings.ShowNextAbilities.Value)
+            var totalAbilityIcons = DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.Value;
+            if (totalAbilityIcons > 0)
             {
-                for (int index = 0, size = Math.Min(3, _currentSequence.Count); index < size; index++)
+                for (int index = 0, size = Math.Min(totalAbilityIcons, _currentSequence.Count); index < size; index++)
                 {
                     AddAbilityIcon(_currentSequence[index]);
                     _info.AbilityIconIndex += 1;
