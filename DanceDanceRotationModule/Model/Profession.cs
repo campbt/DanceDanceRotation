@@ -9,6 +9,7 @@ namespace DanceDanceRotationModule.Model
      */
     public enum Profession
     {
+        Common,
         Guardian,
         Revenant,
         Warrior,
@@ -27,6 +28,8 @@ namespace DanceDanceRotationModule.Model
         {
             switch (buildTemplateCode)
             {
+                case 0:
+                    return Profession.Common;
                 case 1:
                     return Profession.Guardian;
                 case 2:
@@ -54,6 +57,8 @@ namespace DanceDanceRotationModule.Model
         {
             switch (profession)
             {
+                case Profession.Common:
+                    return "Common";
                 case Profession.Guardian:
                     return "Guardian";
                 case Profession.Warrior:
@@ -84,6 +89,9 @@ namespace DanceDanceRotationModule.Model
             string hexValue;
             switch (profession)
             {
+                case Profession.Common:
+                    hexValue = "#BBBBBB";
+                    break;
                 case Profession.Guardian:
                     hexValue = "#72C1D9";
                     break;

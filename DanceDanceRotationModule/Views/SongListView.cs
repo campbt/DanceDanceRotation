@@ -180,7 +180,11 @@ namespace DanceDanceRotationModule.Views
                 foreach (var song in songList)
                 {
                     //only add SongListRow for songs in the repo that match the current profession
-                    if (song.Profession == playerCurrentProfession)
+                    if (
+                        song.Profession == Profession.Common ||
+                        song.Profession == Profession.Unknown ||
+                        song.Profession == playerCurrentProfession
+                    )
                     {
                         filteredSongs.Add(song);
                     }

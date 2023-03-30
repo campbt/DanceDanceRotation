@@ -75,6 +75,7 @@ namespace DanceDanceRotationModule.Views
         private Label _descriptionLabel;
         private TextBox _buildUrlTextBox;
         private Image _openBuildUrlBuildTemplateButton;
+        private Label _buildTemplateLabel;
         private TextBox _buildTemplateTextBox;
         private Image _copyBuildTemplateButton;
         private Label _remapInstructionsText;
@@ -205,7 +206,7 @@ namespace DanceDanceRotationModule.Views
             _buildUrlTextBox.TextChanged += delegate
             {
                 // Prevent typing
-                _buildTemplateTextBox.Text = _song?.BuildUrl ?? "";
+                _buildUrlTextBox.Text = _song?.BuildUrl ?? "";
             };
             _openBuildUrlBuildTemplateButton = new Image(
                 Resources.Instance.ButtonOpenUrl
@@ -230,7 +231,7 @@ namespace DanceDanceRotationModule.Views
 
             // MARK: Build Template
 
-            new Label()
+            _buildTemplateLabel = new Label()
             {
                 Text = "Build Template",
                 AutoSizeWidth = true,
@@ -652,7 +653,7 @@ namespace DanceDanceRotationModule.Views
                 _remapUtilityImage1.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage2.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
-                SetRemappingEnabled(true);
+                SetRemappingEnabled();
                 _playbackRateTrackbar.Value = 100;
                 _startAtTrackbar.Value = 0;
                 _notePaceTrackBar.Value = SongData.DefaultNotePositionChangePerSecond;
@@ -664,13 +665,31 @@ namespace DanceDanceRotationModule.Views
             _professionLabel.Text = _song.EliteName;
             _professionLabel.TextColor = ProfessionExtensions.GetProfessionColor(_song.Profession);
             _buildUrlTextBox.Text = _song.BuildUrl ?? "--";
-            _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "--";
             _openBuildUrlBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildUrl);
+
+            _buildTemplateLabel.Visible = !string.IsNullOrEmpty(_song.BuildTemplateCode);
+            _buildTemplateTextBox.Visible = !string.IsNullOrEmpty(_song.BuildTemplateCode);
+            _buildTemplateTextBox.Text = _song.BuildTemplateCode ?? "--";
             _copyBuildTemplateButton.Visible = !string.IsNullOrEmpty(_song.BuildTemplateCode);
 
-            SetRemappingEnabled(
-                _song.Profession != Profession.Revenant
-            );
+            switch (_song.Profession)
+            {
+                case Profession.Common:
+                    DisableRemapping(
+                        "Utility remapping is disabled.",
+                        textColor: Color.LightGray
+                    );
+                    break;
+                case Profession.Revenant:
+                    DisableRemapping(
+                        "Remapping utilities is currently disabled for Revenant. Utility skills on both Legends must match the song's build.",
+                        textColor: Color.Tomato
+                    );
+                    break;
+                default:
+                    SetRemappingEnabled();
+                    break;
+            }
 
             GetRemappedAbilityTexture(_song.Utility1, _songData.Utility1Mapping);
             GetRemappedAbilityTexture(_song.Utility2, _songData.Utility2Mapping);
@@ -683,25 +702,27 @@ namespace DanceDanceRotationModule.Views
             _notePaceTrackBar.Value = _songData.NotePositionChangePerSecond;
         }
 
-        private void SetRemappingEnabled(bool isEnabled)
+        private void SetRemappingEnabled()
         {
-            _rotateRemapButton.Visible = isEnabled;
-            if (isEnabled)
-            {
-                _remapInstructionsText.Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template.";
-                _remapInstructionsText.TextColor = Color.LightGray;
-                _remapUtilityImage1.Visible = true;
-                _remapUtilityImage2.Visible = true;
-                _remapUtilityImage3.Visible = true;
-            }
-            else
-            {
-                _remapInstructionsText.Text = "Remapping utilities is currently disabled for Revenant. Utility skills on both Legends must match the song's build.";
-                _remapInstructionsText.TextColor = Color.Tomato;
-                _remapUtilityImage1.Visible = false;
-                _remapUtilityImage2.Visible = false;
-                _remapUtilityImage3.Visible = false;
-            }
+            _rotateRemapButton.Visible = true;
+            _remapInstructionsText.Text = "Set the utility icon positions you use if you prefer utility icons in different positions than the song's build template.";
+            _remapInstructionsText.TextColor = Color.LightGray;
+            _remapUtilityImage1.Visible = true;
+            _remapUtilityImage2.Visible = true;
+            _remapUtilityImage3.Visible = true;
+        }
+
+        private void DisableRemapping(
+            string reason,
+            Color textColor
+        )
+        {
+            _rotateRemapButton.Visible = false;
+            _remapInstructionsText.Text = reason;
+            _remapInstructionsText.TextColor = textColor;
+            _remapUtilityImage1.Visible = false;
+            _remapUtilityImage2.Visible = false;
+            _remapUtilityImage3.Visible = false;
         }
 
         private void GetRemappedAbilityTexture(
