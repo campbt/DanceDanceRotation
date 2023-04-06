@@ -508,7 +508,7 @@ namespace DanceDanceRotationModule.Views
                 }
 
                 string tooltip = String.Format(
-                    "{0}Time: {1:0.000}ms, Dur: {2:n0}ms",
+                    "{0}Time: {1:0.000}s, Dur: {2:n0}ms",
                     abilityName,
                     Note.TimeInRotation.TotalMilliseconds / 1000.0,
                     Note.Duration.TotalMilliseconds
@@ -949,6 +949,11 @@ namespace DanceDanceRotationModule.Views
          */
         public void OnHotkeyPressed(NoteType noteType)
         {
+            if (_info.IsStarted == false)
+            {
+                return;
+            }
+
             foreach (var activeNote in _info.ActiveNotes)
             {
                 if (activeNote.Note.NoteType == noteType)

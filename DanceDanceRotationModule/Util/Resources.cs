@@ -65,6 +65,7 @@ namespace DanceDanceRotationModule.Util
             ButtonDelete = contentsManager.GetTexture("buttons/deleteIcon.png");
             ButtonDownload = contentsManager.GetTexture("buttons/downloadIcon.png");
             ButtonList = contentsManager.GetTexture("buttons/menuIcon.png");
+            ButtonDetails = contentsManager.GetTexture("buttons/menuSettings.png");
             ButtonOpenUrl = contentsManager.GetTexture("buttons/openLinkIcon.png");
             ButtonPause = contentsManager.GetTexture("buttons/pauseIcon.png");
             ButtonPlay = contentsManager.GetTexture("buttons/playIcon.png");
@@ -303,6 +304,7 @@ namespace DanceDanceRotationModule.Util
             ButtonDelete?.Dispose();
             ButtonDownload?.Dispose();
             ButtonList?.Dispose();
+            ButtonDetails?.Dispose();
             ButtonOpenUrl?.Dispose();
             ButtonPause?.Dispose();
             ButtonPlay?.Dispose();
@@ -350,6 +352,7 @@ namespace DanceDanceRotationModule.Util
         public Texture2D ButtonDelete { get; private set; }
         public Texture2D ButtonDownload { get; private set; }
         public Texture2D ButtonList { get; private set; }
+        public Texture2D ButtonDetails { get; private set; }
         public Texture2D ButtonOpenUrl { get; private set; }
         public Texture2D ButtonPause { get; private set; }
         public Texture2D ButtonPlay { get; private set; }

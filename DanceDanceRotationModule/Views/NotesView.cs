@@ -80,6 +80,39 @@ namespace DanceDanceRotationModule.Views
                 topPanelBackground.Height = _topPanel.Height;
             };
 
+            // MARK: Song List Button
+
+            var songListButton = new Image(
+                Resources.Instance.ButtonList
+            )
+            {
+                Size = ControlExtensions.ImageButtonSmallSize,
+                Parent = _topPanel
+            };
+            ControlExtensions.ConvertToButton(songListButton);
+            songListButton.BasicTooltipText = "Song List";
+            songListButton.Click += delegate
+            {
+                DanceDanceRotationModule.Instance.ToggleSongList();
+            };
+
+            // MARK: Song Detail Button
+
+            var songInfoButton = new Image(
+                Resources.Instance.ButtonDetails
+            )
+            {
+                Size = ControlExtensions.ImageButtonSmallSize,
+                Parent = _topPanel
+            };
+            ControlExtensions.ConvertToButton(songInfoButton);
+            songInfoButton.BasicTooltipText = "Song Info";
+            songInfoButton.Click += delegate
+            {
+                DanceDanceRotationModule.Instance.ToggleSongInfo();
+            };
+
+
             // MARK: Stop Button
 
             var stopButton = new Image(
@@ -90,6 +123,7 @@ namespace DanceDanceRotationModule.Views
                 Parent = _topPanel
             };
             ControlExtensions.ConvertToButton(stopButton);
+            stopButton.BasicTooltipText = "Reset";
             stopButton.Click += delegate
             {
                 _notesContainer.Reset();
@@ -105,33 +139,21 @@ namespace DanceDanceRotationModule.Views
                 Parent = _topPanel
             };
             ControlExtensions.ConvertToButton(playPauseButton);
+            playPauseButton.BasicTooltipText = "Play";
             playPauseButton.Click += delegate
             {
                 if (_notesContainer.IsStarted() == false || _notesContainer.IsPaused())
                 {
                     _notesContainer.Play();
                     playPauseButton.Texture = Resources.Instance.ButtonPause;
+                    playPauseButton.BasicTooltipText = "Pause";
                 }
                 else
                 {
                     _notesContainer.Pause();
                     playPauseButton.Texture = Resources.Instance.ButtonPlay;
+                    playPauseButton.BasicTooltipText = "Play";
                 }
-            };
-
-            // MARK: Song List Button
-
-            var songListButton = new Image(
-                Resources.Instance.ButtonList
-            )
-            {
-                Size = ControlExtensions.ImageButtonSmallSize,
-                Parent = _topPanel
-            };
-            ControlExtensions.ConvertToButton(songListButton);
-            songListButton.Click += delegate
-            {
-                DanceDanceRotationModule.Instance.ToggleSongList();
             };
 
             // MARK: Song Title
