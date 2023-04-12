@@ -140,7 +140,9 @@ namespace DanceDanceRotationModule
          */
         private void LoadWindows()
         {
-            _notesWindow = new NotesWindow()
+            _notesWindow = new NotesWindow(
+                Settings.Orientation.Value
+            )
             {
                 // This is just the initial location on first load of the module
                 Location = new Point(
@@ -186,6 +188,29 @@ namespace DanceDanceRotationModule
                 _helpWindow.Show(new HelpView());
                 _helpWindow.CanResize = false; // Lets the background stayed resized
             }
+
+            // Notes window can be changed if the orientation changes
+            Settings.Orientation.SettingChanged +=
+                delegate(object sender, ValueChangedEventArgs<NotesOrientation> args)
+                {
+                    var isVisible = _notesWindow.Visible;
+                    _notesWindow.Dispose();
+                    _notesWindow = new NotesWindow(
+                        args.NewValue
+                    )
+                    {
+                        // This is just the initial location on first load of the module
+                        Location = new Point(
+                            (GameService.Graphics.SpriteScreen.Width / 2) - (NotesWindow.InitialWidth / 2),
+                            (GameService.Graphics.SpriteScreen.Height) - NotesWindow.InitialHeight - 180 /* 180 is trying to push this above the ability bar a bit */
+                        )
+                    };
+
+                    if (isVisible)
+                    {
+                        _notesWindow.Show(_notesView);
+                    }
+                };
         }
 
         public NotesContainer GetNotesContainer()

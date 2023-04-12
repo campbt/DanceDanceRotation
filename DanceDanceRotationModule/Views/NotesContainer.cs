@@ -19,6 +19,11 @@ namespace DanceDanceRotationModule.Views
     {
         private static readonly Logger Logger = Logger.GetLogger<NotesContainer>();
 
+        /** Position of Perfect location as a percentage of the total width/height (based on orientation) */
+        private const float PerfectPosition = 0.14f;
+        /** Width/Height of lane lines (depends on orientation) */
+        private const int LaneLineThickness = 2;
+
         // MARK: Inner Types
 
         internal class CurrentSequenceInfo
@@ -66,19 +71,21 @@ namespace DanceDanceRotationModule.Views
          */
         internal class WindowInfo
         {
+            internal NotesOrientation Orientation { get; private set; }
 
             internal int NoteWidth { get; private set; }
             internal int NoteHeight { get; private set; }
             internal int LaneSpacing { get; private set; }
             /** Spacing at the very top, mostly for the note hit text to have somewhere to go */
             internal int VerticalPadding { get; private set; }
+            internal int HorizontalPadding { get; private set; }
 
             /** Where to spawn new notes */
-            internal int NewNoteXPosition { get; private set; }
+            internal Point NewNotePosition { get; private set; }
             /** Where a note should be at when it is "perfect" */
 
-            internal int AbilityIconsHeight { get; private set; }
-            internal int AbilityIconsLocationY { get; private set; }
+            internal int NextAbilityIconsHeight { get; private set; }
+            internal Point NextAbilityIconsLocation { get; private set; }
             internal Point TargetLocation { get; private set; }
 
             internal int HitPerfect { get; private set; }
@@ -91,45 +98,187 @@ namespace DanceDanceRotationModule.Views
             internal double NotePositionChangePerSecond { get; private set; }
             internal double TimeToReachEnd { get; private set; }
 
-            public void Recalculate(int width, int height, SongData songData)
+            public void Recalculate(
+                int width, int height,
+                SongData songData,
+                NotesOrientation orientation
+            )
             {
-                // How long a note moves before hitting the "perfect" position
-                int perfectPosition = (int)(0.14 * width);
+                Orientation = orientation;
 
-                NotePositionChangePerSecond = Math.Max(
-                    songData.NotePositionChangePerSecond,
-                    SongData.MinimumNotePositionChangePerSecond
-                );
-                TimeToReachEnd = (NewNoteXPosition - perfectPosition) / NotePositionChangePerSecond;
 
-                VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
+                if (IsVerticalOrientation())
+                {
+                    // Still need more vertical padding in this orientation, mostly for the Hit text
+                    VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
+                    HorizontalPadding = 10;
+                    LaneSpacing = (height - (HorizontalPadding * 2)) / 100; // 5% of available space should be spacing
+                }
+                else
+                {
+                    VerticalPadding = (int)(HitText.MovePerSecond * (HitText.TotalLifeTimeMs / 1000.0));
+                    HorizontalPadding = 0;
                     LaneSpacing = (height - (VerticalPadding * 2)) / 100; // 5% of available space should be spacing
-                if (DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.Value > 0)
+                }
+
+                var nextAbilitiesCount = DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.Value;
+                if (nextAbilitiesCount > 0)
                 {
                     // Show ability icons section as an extra "lane"
                     NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 7;
-                    AbilityIconsLocationY = 0;
-                    AbilityIconsHeight = NoteHeight;
+                    NextAbilityIconsHeight = NoteHeight;
+
+                    switch (Orientation)
+                    {
+                        case NotesOrientation.RightToLeft:
+                            NextAbilityIconsLocation = new Point(
+                                (int)(width * PerfectPosition) - (NoteWidth / 2),
+                                0
+                            );
+                            break;
+                        case NotesOrientation.LeftToRight:
+                            NextAbilityIconsLocation = new Point(
+                                (int)(width * (1-PerfectPosition)) - (NoteWidth / 2) - ((nextAbilitiesCount-1) * NoteWidth),
+                                0
+                            );
+                            break;
+                        case NotesOrientation.TopToBottom:
+                            NextAbilityIconsLocation = new Point(
+                                HorizontalPadding,
+                                height - NoteHeight
+                            );
+                            break;
+                        case NotesOrientation.BottomToTop:
+                            NextAbilityIconsLocation = new Point(
+                                HorizontalPadding,
+                                0
+                            );
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
                 else
                 {
                     // Hide ability icons section
                     NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5) / 6;
-                    AbilityIconsLocationY = 0;
-                    AbilityIconsHeight = 0;
+                    NextAbilityIconsLocation = new Point(0, 0);
+                    NextAbilityIconsHeight = 0;
                 }
-                NoteWidth = NoteHeight;
 
-                double perfectCenter = (HitRangePerfect.Max + HitRangePerfect.Min) / 2.0;
-                TargetLocation = new Point(
-                    (int)(perfectCenter - (NoteWidth / 2.0)),
-                    VerticalPadding + AbilityIconsHeight
+                if (IsVerticalOrientation())
+                {
+                    NoteWidth = (width - (2*HorizontalPadding) - LaneSpacing * 5) / 6;
+                    NoteHeight = NoteWidth;
+                }
+                else
+                {
+                    // If next abilities are shown, count that as an extra "lane"
+                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * 5)
+                         / (NextAbilityIconsHeight > 0 ? 7 : 6);
+                    NoteWidth = NoteHeight;
+                }
+
+                // How long a note moves before hitting the "perfect" position
+                int perfectPosition;
+
+                NotePositionChangePerSecond = Math.Max(
+                    songData.NotePositionChangePerSecond,
+                    SongData.MinimumNotePositionChangePerSecond
                 );
 
-                DestroyNotePosition = 0;
+                switch (Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                        // New notes spawn at the edge of the window on the Right
+                        NewNotePosition = new Point(
+                            width,
+                            0 // Calculated later based on lane
+                        );
 
-                // New notes spawn right at the edge of the window
-                NewNoteXPosition = width;
+                        perfectPosition = (int)Math.Max(
+                            PerfectPosition * width,
+                            NoteWidth * 1.5
+                        );
+
+                        TimeToReachEnd = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond;
+
+                        TargetLocation = new Point(
+                            (int)(perfectPosition - (NoteWidth / 2.0)),
+                            VerticalPadding + NextAbilityIconsHeight
+                        );
+
+                        DestroyNotePosition = 0 - NoteWidth;
+
+                        break;
+                    case NotesOrientation.LeftToRight:
+                        // New notes spawn at the edge of the window on the Left
+                        NewNotePosition = new Point(
+                            0 - NoteWidth,
+                            0 // Calculated later based on lane
+                        );
+
+                        perfectPosition = (int)Math.Min(
+                            (1-PerfectPosition) * width,
+                            width - (NoteWidth * 1.5)
+                        );
+                        TimeToReachEnd = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond;
+
+                        TargetLocation = new Point(
+                            (int)(perfectPosition - (NoteWidth / 2.0)),
+                            VerticalPadding + NextAbilityIconsHeight
+                        );
+
+                        DestroyNotePosition = width;
+
+                        break;
+                    case NotesOrientation.TopToBottom:
+                        // New notes spawn at the edge of the window on the Top
+                        // NextAbility are at the bottom
+                        NewNotePosition = new Point(
+                            0, // Calculated later based on lane
+                            0 - NoteHeight
+                        );
+
+                        perfectPosition = (int)Math.Min(
+                            (1-PerfectPosition) * (height - NextAbilityIconsHeight),
+                            height - (NoteHeight * 1.5) - NextAbilityIconsHeight
+                        );
+                        TimeToReachEnd = (NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond;
+
+                        TargetLocation = new Point(
+                            HorizontalPadding,
+                            (int)(perfectPosition - (NoteHeight / 2.0))
+                        );
+
+                        DestroyNotePosition = height - NextAbilityIconsHeight;
+
+                        break;
+                    case NotesOrientation.BottomToTop:
+                        // New notes spawn at the edge of the window on the Bottom
+                        // NextAbility are at the top
+                        NewNotePosition = new Point(
+                            0, // Calculated later based on lane
+                            height
+                        );
+
+                        perfectPosition = (int)Math.Max(
+                            NextAbilityIconsHeight + (PerfectPosition * (height - NextAbilityIconsHeight)),
+                            NextAbilityIconsHeight + (NoteHeight * 1.5)
+                        );
+                        TimeToReachEnd = (NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond;
+
+                        TargetLocation = new Point(
+                            HorizontalPadding,
+                            (int)(perfectPosition - (NoteHeight / 2.0))
+                        );
+
+                        DestroyNotePosition = NextAbilityIconsHeight;
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
                 // Define the ranges for the other's
                 HitPerfect = perfectPosition;
@@ -161,9 +310,77 @@ namespace DanceDanceRotationModule.Views
             }
             public Point GetNewNoteLocation(int lane)
             {
-                var yPos = VerticalPadding + AbilityIconsHeight + (lane * (NoteHeight + LaneSpacing));
-                return new Point(NewNoteXPosition, yPos);
+                switch (Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                        // Spawns on Right side
+                        return new Point(
+                            NewNotePosition.X,
+                            VerticalPadding + NextAbilityIconsHeight + (lane * (NoteHeight + LaneSpacing))
+                        );
+                    case NotesOrientation.LeftToRight:
+                        // Spawns on Left side
+                        return new Point(
+                            NewNotePosition.X,
+                            VerticalPadding + NextAbilityIconsHeight + (lane * (NoteHeight + LaneSpacing))
+                        );
+                    case NotesOrientation.TopToBottom:
+                        // Spawns on Top side
+                        return new Point(
+                            HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
+                            NewNotePosition.Y
+                        );
+                    case NotesOrientation.BottomToTop:
+                        // Spawns on Top side
+                        return new Point(
+                            HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
+                            NewNotePosition.Y
+                        );
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
+
+            /** Returns the amount a note should move given an update */
+            public Vector2 GetNoteChangeLocation(
+                GameTime gameTime
+            )
+            {
+                float moveAmount = (float)(NotePositionChangePerSecond * (gameTime.ElapsedGameTime.Milliseconds) / 1000.0);
+
+                switch (Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                        return new Vector2(
+                            -1 * moveAmount,
+                            0
+                        );
+                    case NotesOrientation.LeftToRight:
+                        return new Vector2(
+                            moveAmount,
+                            0
+                        );
+                    case NotesOrientation.TopToBottom:
+                        return new Vector2(
+                            0,
+                            moveAmount
+                        );
+                    case NotesOrientation.BottomToTop:
+                        // Spawns on Top side
+                        return new Vector2(
+                            0,
+                            -1 * moveAmount
+                        );
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            public bool IsVerticalOrientation()
+            {
+                return OrientationExtensions.IsVertical(Orientation);
+            }
+
         }
 
         internal enum HitType
@@ -188,10 +405,11 @@ namespace DanceDanceRotationModule.Views
             internal Note Note { get; set; }
             internal Image Image { get; set; }
             internal Label Label { get; set; }
-            // XPosition is stored here as a double instead of only using the Image,
+            // XPosition/YPosition is stored here as a double instead of only using the Image,
             // because Image can only be in int positions, and the GameTime may need to
             // be more granular than that
             internal double XPosition { get; set; }
+            internal double YPosition { get; set; }
 
             private bool _isHit;
             private bool _allowMovement = true;
@@ -307,7 +525,9 @@ namespace DanceDanceRotationModule.Views
                     Image.Location.Y + ((Image.Height - Label.Height) / 2)
                 );
 
-                this.XPosition = Image.Location.X;
+                // The center of the note should be at (XPosition,YPosition), but the Image point is the top left corner
+                this.XPosition = Image.Location.X + Image.Width / 2;
+                this.YPosition = Image.Location.Y + Image.Height / 2;
 
                 _isHit = false;
                 this.ShouldRemove = false;
@@ -335,15 +555,18 @@ namespace DanceDanceRotationModule.Views
                 }
             }
 
-            public void Update(GameTime gameTime, double moveAmount)
+            public void Update(
+                Vector2 positionChange
+            )
             {
-                XPosition -= moveAmount;
+                XPosition += positionChange.X;
+                YPosition += positionChange.Y;
                 if (
                     _isHit == false &&
                     DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1 &&
                     Note.OverrideAuto == false &&
-                    XPosition <= _windowInfo.HitPerfect
+                    IsPastPerfect()
                 )
                 {
                     // Special Case: If AutoHitWeapon1 is enabled, remove the note in perfect
@@ -351,13 +574,13 @@ namespace DanceDanceRotationModule.Views
                     _isHit = true;
                     PlayHitAnimation();
                 }
-                else if (XPosition <= _windowInfo.DestroyNotePosition)
+                else if (IsPastDestroy())
                 {
                     ShouldRemove = true;
                 }
                 else
                 {
-                    if (_isHit == false && XPosition <= _windowInfo.HitRangeBoo.Min)
+                    if (_isHit == false && IsPastMiss())
                     {
                         SetHit(HitType.Miss);
                         PlayMissAnimation();
@@ -368,12 +591,12 @@ namespace DanceDanceRotationModule.Views
                         // Move it
                         Image.Location = new Point(
                             // Center Image over X position
-                            (int)(XPosition) - (Image.Width / 2),
-                            Image.Location.Y
+                            (int)(XPosition) - Image.Width / 2,
+                            (int)(YPosition) - Image.Height / 2
                         );
                         Label.Location = new Point(
                             Image.Location.X + ((Image.Width - Label.Width) / 2),
-                            Label.Location.Y
+                            Image.Location.Y + ((Image.Height - Label.Height) / 2)
                         );
                     }
                 }
@@ -404,22 +627,26 @@ namespace DanceDanceRotationModule.Views
                 }
 
                 HitType hitType;
-                if (_windowInfo.HitRangePerfect.IsInBetween(XPosition))
+                var axisToCheck =
+                    _windowInfo.IsVerticalOrientation()
+                        ? YPosition
+                        : XPosition;
+                if (_windowInfo.HitRangePerfect.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Perfect;
                     ScreenNotification.ShowNotification("Perfect");
                 }
-                else if (_windowInfo.HitRangeGreat.IsInBetween(XPosition))
+                else if (_windowInfo.HitRangeGreat.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Great;
                     ScreenNotification.ShowNotification("Great");
                 }
-                else if (_windowInfo.HitRangeGood.IsInBetween(XPosition))
+                else if (_windowInfo.HitRangeGood.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Good;
                     ScreenNotification.ShowNotification("Good");
                 }
-                else if (_windowInfo.HitRangeBoo.IsInBetween(XPosition))
+                else if (_windowInfo.HitRangeBoo.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Boo;
                     ScreenNotification.ShowNotification("Boo");
@@ -526,6 +753,60 @@ namespace DanceDanceRotationModule.Views
                 Label.BasicTooltipText = "";
             }
 
+            /** Returns true if this active note is at or past the "Perfect" position, depending on orientation */
+            private bool IsPastPerfect()
+            {
+                switch (_windowInfo.Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                        return XPosition <= _windowInfo.HitPerfect;
+                    case NotesOrientation.LeftToRight:
+                        return XPosition >= _windowInfo.HitPerfect;
+                    case NotesOrientation.TopToBottom:
+                        return YPosition >= _windowInfo.HitPerfect;
+                    case NotesOrientation.BottomToTop:
+                        return YPosition <= _windowInfo.HitPerfect;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            /** Returns true if this active note is at or past the "Boo" position, and therefor a Miss, depending on orientation */
+            private bool IsPastMiss()
+            {
+                switch (_windowInfo.Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                        return XPosition <= _windowInfo.HitRangeBoo.Min;
+                    case NotesOrientation.LeftToRight:
+                        return XPosition >= _windowInfo.HitRangeBoo.Max;
+                    case NotesOrientation.TopToBottom:
+                        return YPosition >= _windowInfo.HitRangeBoo.Max;
+                    case NotesOrientation.BottomToTop:
+                        return YPosition <= _windowInfo.HitRangeBoo.Min;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            /** Returns true if this active note is at or past the "destroy" position, and therefor should be removed */
+            private bool IsPastDestroy()
+            {
+                switch (_windowInfo.Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                        return XPosition <= _windowInfo.DestroyNotePosition;
+                    case NotesOrientation.LeftToRight:
+                        return XPosition >= _windowInfo.DestroyNotePosition;
+                    case NotesOrientation.TopToBottom:
+                        return YPosition >= _windowInfo.DestroyNotePosition;
+                    case NotesOrientation.BottomToTop:
+                        return YPosition <= _windowInfo.DestroyNotePosition;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
         }
 
         // MARK: HitText
@@ -584,8 +865,13 @@ namespace DanceDanceRotationModule.Views
                     Location = location,
                     Parent = parent
                 };
+                // Center text on passed in location
+                _label.Location = new Point(
+                    location.X - (_label.Width / 2),
+                    location.Y - (_label.Height / 2)
+                );
                 _remainLifeMs = TotalLifeTimeMs;
-                _yPos = location.Y;
+                _yPos = _label.Location.Y;
             }
 
             public void Update(GameTime gameTime)
@@ -675,7 +961,11 @@ namespace DanceDanceRotationModule.Views
 
         public NotesContainer()
         {
-            _windowInfo.Recalculate(Width, Height, _songData);
+            _windowInfo.Recalculate(
+                Width, Height,
+                _songData,
+                DanceDanceRotationModule.Settings.Orientation.Value
+            );
 
             CreateTarget();
             UpdateTarget();
@@ -712,6 +1002,15 @@ namespace DanceDanceRotationModule.Views
                     Reset();
                     RecalculateLayout();
                 };
+            DanceDanceRotationModule.Settings.Orientation.SettingChanged +=
+                delegate(object sender, ValueChangedEventArgs<NotesOrientation> args)
+                {
+                    Logger.Trace("Orientation Updated. Resetting and recalculating layout and creating new target and lines");
+                    Reset();
+                    RecalculateLayout();
+                    CreateTarget();
+                    UpdateTarget();
+                };
         }
 
         public override void RecalculateLayout()
@@ -725,7 +1024,11 @@ namespace DanceDanceRotationModule.Views
                 return;
             }
 
-            _windowInfo.Recalculate(Width, Height, _songData);
+            _windowInfo.Recalculate(
+                Width, Height,
+                _songData,
+                DanceDanceRotationModule.Settings.Orientation.Value
+            );
             UpdateTarget();
             UpdateBackgroundLines();
             RecalculateLayoutAbilityIcons();
@@ -747,7 +1050,11 @@ namespace DanceDanceRotationModule.Views
             _currentSequence.Clear();
             _currentSequence.AddRange(notes);
             _songData = songData;
-            _windowInfo.Recalculate(Width, Height, _songData);
+            _windowInfo.Recalculate(
+                Width, Height,
+                _songData,
+                DanceDanceRotationModule.Settings.Orientation.Value
+            );
         }
 
         public void ToggleStart()
@@ -896,11 +1203,11 @@ namespace DanceDanceRotationModule.Views
             }
 
             // Update Active Notes and remove any that want to be destroyed
-            double moveAmount = (_windowInfo.NotePositionChangePerSecond * (gameTime.ElapsedGameTime.Milliseconds) / 1000.0);
+            Vector2 moveAmount = _windowInfo.GetNoteChangeLocation(gameTime);
             for (int index = _info.ActiveNotes.Count - 1; index >= 0; index--)
             {
                 ActiveNote activeNote = _info.ActiveNotes[index];
-                activeNote.Update(gameTime, moveAmount);
+                activeNote.Update(moveAmount);
                 if (activeNote.ShouldRemove)
                 {
                     activeNote.Dispose();
@@ -997,8 +1304,8 @@ namespace DanceDanceRotationModule.Views
                 this,
                 hitType,
                 new Point(
-                    note.Image.Location.X,
-                    note.Image.Location.Y
+                    note.Image.Location.X + (note.Image.Width / 2),
+                    note.Image.Location.Y + (note.Image.Height / 2)
                 )
             );
             _info.HitTexts.Add(hitText);
@@ -1041,7 +1348,7 @@ namespace DanceDanceRotationModule.Views
                         new Image()
                         {
                             BackgroundColor = Color.White,
-                            Height = 2,
+                            Height = LaneLineThickness,
                             Width = Width,
                             Opacity = 0.1f,
                             Parent = this,
@@ -1058,14 +1365,45 @@ namespace DanceDanceRotationModule.Views
                 return;
             }
 
+            int staticPosition;
+            switch (_windowInfo.Orientation)
+            {
+                case NotesOrientation.RightToLeft:
+                    staticPosition = _windowInfo.TargetLocation.X + _windowInfo.NoteWidth;
+                    break;
+                case NotesOrientation.LeftToRight:
+                    staticPosition = _windowInfo.TargetLocation.X - Width;
+                    break;
+                case NotesOrientation.TopToBottom:
+                    staticPosition = _windowInfo.TargetLocation.Y - Height;
+                    break;
+                case NotesOrientation.BottomToTop:
+                    staticPosition = _windowInfo.TargetLocation.Y + _windowInfo.NoteHeight;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             for (int lane = 0; lane < 6; lane++)
             {
                 // Find the location of middle of the lane
                 var location = _windowInfo.GetNewNoteLocation(lane);
-                location.X = _windowInfo.TargetLocation.X + _windowInfo.NoteWidth;
-                location.Y += (_windowInfo.GetNewNoteSize().Y / 2) - 1;
+                if (_windowInfo.IsVerticalOrientation())
+                {
+                    location.X += (_windowInfo.GetNewNoteSize().X / 2) - 1;
+                    location.Y = staticPosition;
+                    _laneLines[lane].Height = Height;
+                    _laneLines[lane].Width = LaneLineThickness;
+                }
+                else
+                {
+                    location.X = staticPosition;
+                    location.Y += (_windowInfo.GetNewNoteSize().Y / 2) - 1;
+                    _laneLines[lane].Height = LaneLineThickness;
+                    _laneLines[lane].Width = Width;
+                }
+
                 _laneLines[lane].Location = location;
-                _laneLines[lane].Width = Width;
             }
         }
 
@@ -1074,49 +1412,112 @@ namespace DanceDanceRotationModule.Views
         private void CreateTarget()
         {
             const float targetOpacity = 0.5f;
-            _targetTop = new Image(Resources.Instance.DdrTargetTop)
+
+            _targetTop?.Dispose();
+            _targetBottom?.Dispose();
+            foreach (var target in _targetCircles)
             {
-                Width = 64,
-                Height = 24,
-                Location = new Point(0, 0),
-                Opacity = targetOpacity,
-                Parent = this
-            };
-            _targetBottom = new Image(Resources.Instance.DdrTargetBottom)
-            {
-                Width = 64,
-                Height = 24,
-                Location = new Point(0, 0),
-                Opacity = targetOpacity,
-                Parent = this
-            };
-            _targetCircles = new List<Image>(6);
-            for (int i = 0; i < 6; i++)
-            {
-                _targetCircles.Add(
-                new Image(Resources.Instance.DdrTargetCircle)
-                    {
-                        Width = 64,
-                        Height = 64,
-                        Location = new Point(0, 0),
-                        Opacity = targetOpacity,
-                        Parent = this
-                    }
-                );
+                target.Dispose();
             }
-            _targetSpacers = new List<Image>(5);
-            for (int i = 0; i < 5; i++)
+            _targetCircles.Clear();
+            foreach (var target in _targetSpacers)
             {
-                _targetSpacers.Add(
-                new Image(Resources.Instance.DdrTargetSpacer)
-                    {
-                        Width = 64,
-                        Height = 24,
-                        Location = new Point(0, 0),
-                        Opacity = targetOpacity,
-                        Parent = this
-                    }
-                );
+                target.Dispose();
+            }
+            _targetSpacers.Clear();
+
+            if (_windowInfo.IsVerticalOrientation())
+            {
+                // Target is horizontal (using left/right end pieces)
+                _targetTop = new Image(Resources.Instance.DdrTargetLeft)
+                {
+                    Width = 24,
+                    Height = 64,
+                    Location = new Point(0, 0),
+                    Opacity = targetOpacity,
+                    Parent = this
+                };
+                _targetBottom = new Image(Resources.Instance.DdrTargetRight)
+                {
+                    Width = 24,
+                    Height = 64,
+                    Location = new Point(0, 0),
+                    Opacity = targetOpacity,
+                    Parent = this
+                };
+                for (int i = 0; i < 6; i++)
+                {
+                    _targetCircles.Add(
+                    new Image(Resources.Instance.DdrTargetCircle)
+                        {
+                            Width = 64,
+                            Height = 64,
+                            Location = new Point(0, 0),
+                            Opacity = targetOpacity,
+                            Parent = this
+                        }
+                    );
+                }
+                for (int i = 0; i < 5; i++)
+                {
+                    _targetSpacers.Add(
+                    new Image(Resources.Instance.DdrTargetSpacer)
+                        {
+                            Width = 24,
+                            Height = 64,
+                            Location = new Point(0, 0),
+                            Opacity = targetOpacity,
+                            Parent = this
+                        }
+                    );
+                }
+            }
+            else
+            {
+                _targetTop = new Image(Resources.Instance.DdrTargetTop)
+                {
+                    Width = 64,
+                    Height = 24,
+                    Location = new Point(0, 0),
+                    Opacity = targetOpacity,
+                    Parent = this
+                };
+                _targetBottom = new Image(Resources.Instance.DdrTargetBottom)
+                {
+                    Width = 64,
+                    Height = 24,
+                    Location = new Point(0, 0),
+                    Opacity = targetOpacity,
+                    Parent = this
+                };
+                _targetCircles = new List<Image>(6);
+                for (int i = 0; i < 6; i++)
+                {
+                    _targetCircles.Add(
+                    new Image(Resources.Instance.DdrTargetCircle)
+                        {
+                            Width = 64,
+                            Height = 64,
+                            Location = new Point(0, 0),
+                            Opacity = targetOpacity,
+                            Parent = this
+                        }
+                    );
+                }
+                _targetSpacers = new List<Image>(5);
+                for (int i = 0; i < 5; i++)
+                {
+                    _targetSpacers.Add(
+                    new Image(Resources.Instance.DdrTargetSpacer)
+                        {
+                            Width = 64,
+                            Height = 24,
+                            Location = new Point(0, 0),
+                            Opacity = targetOpacity,
+                            Parent = this
+                        }
+                    );
+                }
             }
 
             _targetCreated = true;
@@ -1124,41 +1525,78 @@ namespace DanceDanceRotationModule.Views
 
         private void UpdateTarget()
         {
-            int targetWidth = _windowInfo.NoteWidth;
 
-            int xPos = _windowInfo.TargetLocation.X;
-            int yPos = _windowInfo.TargetLocation.Y - _targetTop.Height;
-
-            int roundEdgesHeight = (int)Math.Min(
-                _windowInfo.VerticalPadding - 4,
-                targetWidth * 0.375
-            );
-
-            _targetTop.Height = roundEdgesHeight;
-            _targetTop.Width = targetWidth;
-            _targetTop.Location = new Point(xPos, yPos);
-            yPos += _targetTop.Height;
-
-            for (int index = 0; index < _targetCircles.Count; index++)
+            if (_windowInfo.IsVerticalOrientation())
             {
-                _targetCircles[index].Height = _windowInfo.NoteHeight;
-                _targetCircles[index].Width = targetWidth;
-                _targetCircles[index].Location = new Point(xPos, yPos);
-                yPos += _targetCircles[index].Height;
+                int targetHeight = _windowInfo.NoteHeight;
+                int xPos = _windowInfo.TargetLocation.X - _targetTop.Width;
+                int yPos = _windowInfo.TargetLocation.Y;
 
-                if (index < _targetSpacers.Count)
+                int roundEdgesWidth = _windowInfo.HorizontalPadding;
+
+                _targetTop.Width =  roundEdgesWidth;
+                _targetTop.Height = targetHeight;
+                _targetTop.Location = new Point(xPos, yPos);
+                xPos += _targetTop.Width;
+
+                for (int index = 0; index < _targetCircles.Count; index++)
                 {
-                    // Add a little bit of overlap to prevent gaps
-                    _targetSpacers[index].Height = _windowInfo.LaneSpacing;
-                    _targetSpacers[index].Width = targetWidth;
-                    _targetSpacers[index].Location = new Point(xPos, yPos);
-                    yPos += _windowInfo.LaneSpacing;
-                }
-            }
+                    _targetCircles[index].Width = _windowInfo.NoteWidth;
+                    _targetCircles[index].Height =  targetHeight;
+                    _targetCircles[index].Location = new Point(xPos, yPos);
+                    xPos += _targetCircles[index].Width;
 
-            _targetBottom.Height = roundEdgesHeight;
-            _targetBottom.Width = targetWidth;
-            _targetBottom.Location = new Point(xPos, yPos);
+                    if (index < _targetSpacers.Count)
+                    {
+                        // Add a little bit of overlap to prevent gaps
+                        _targetSpacers[index].Width = _windowInfo.LaneSpacing;
+                        _targetSpacers[index].Height =  targetHeight;
+                        _targetSpacers[index].Location = new Point(xPos, yPos);
+                        xPos += _targetSpacers[index].Width;
+                    }
+                }
+
+                _targetBottom.Width = roundEdgesWidth;
+                _targetBottom.Height =  targetHeight;
+                _targetBottom.Location = new Point(xPos, yPos);
+            }
+            else
+            {
+                int targetWidth = _windowInfo.NoteWidth;
+                int xPos = _windowInfo.TargetLocation.X;
+                int yPos = _windowInfo.TargetLocation.Y - _targetTop.Height;
+
+                int roundEdgesHeight = (int)Math.Min(
+                    _windowInfo.VerticalPadding - 4,
+                    targetWidth * 0.375
+                );
+
+                _targetTop.Height = roundEdgesHeight;
+                _targetTop.Width = targetWidth;
+                _targetTop.Location = new Point(xPos, yPos);
+                yPos += _targetTop.Height;
+
+                for (int index = 0; index < _targetCircles.Count; index++)
+                {
+                    _targetCircles[index].Height = _windowInfo.NoteHeight;
+                    _targetCircles[index].Width = targetWidth;
+                    _targetCircles[index].Location = new Point(xPos, yPos);
+                    yPos += _targetCircles[index].Height;
+
+                    if (index < _targetSpacers.Count)
+                    {
+                        // Add a little bit of overlap to prevent gaps
+                        _targetSpacers[index].Height = _windowInfo.LaneSpacing;
+                        _targetSpacers[index].Width = targetWidth;
+                        _targetSpacers[index].Location = new Point(xPos, yPos);
+                        yPos += _targetSpacers[index].Height;
+                    }
+                }
+
+                _targetBottom.Height = roundEdgesHeight;
+                _targetBottom.Width = targetWidth;
+                _targetBottom.Location = new Point(xPos, yPos);
+            }
         }
 
         // MARK: Ability Icon Stuff
@@ -1192,8 +1630,8 @@ namespace DanceDanceRotationModule.Views
         {
             // Update AbilityIcons
             var size = _windowInfo.NoteWidth;
-            var xPos = _windowInfo.HitPerfect - (size/2);
-            var yPos = _windowInfo.AbilityIconsLocationY;
+            var xPos = _windowInfo.NextAbilityIconsLocation.X;
+            var yPos = _windowInfo.NextAbilityIconsLocation.Y;
             for (int index = 0; index < _info.AbilityIcons.Count; index++)
             {
                 AbilityIcon abilityIconImage = _info.AbilityIcons[index];
@@ -1227,8 +1665,8 @@ namespace DanceDanceRotationModule.Views
         private bool _targetCreated;
         private Image _targetTop;
         private Image _targetBottom;
-        private List<Image> _targetCircles;
-        private List<Image> _targetSpacers;
+        private List<Image> _targetCircles = new List<Image>(6);
+        private List<Image> _targetSpacers = new List<Image>(5);
         private List<Control> _laneLines;
     }
 

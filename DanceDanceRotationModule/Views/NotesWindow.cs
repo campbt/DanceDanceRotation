@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
+using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Util;
 // ReSharper disable All
 
@@ -26,7 +27,11 @@ namespace DanceDanceRotationModule.Views
         public const int InitialWidth = 800;
         public const int InitialHeight = 400;
 
-        public NotesWindow() :
+        public NotesOrientation Orientation { get; private set; }
+
+        public NotesWindow(
+          NotesOrientation orientation
+        ) :
           this(
                 Resources.Instance.WindowBackgroundEmptyTexture,
                 new Rectangle(40, 26, 913, 691),
@@ -44,7 +49,8 @@ namespace DanceDanceRotationModule.Views
             );
             SavesPosition = true;
             SavesSize = true;
-            Id = "DDR_MainView_ID";
+            Id = "DDR_MainView_ID_" + orientation;
+            Orientation = orientation;
         }
 
         public NotesWindow(
@@ -52,7 +58,7 @@ namespace DanceDanceRotationModule.Views
           Rectangle windowRegion,
           Rectangle contentRegion)
         {
-          this.ConstructWindow(background, windowRegion, contentRegion);
+            this.ConstructWindow(background, windowRegion, contentRegion);
         }
 
         public NotesWindow(Texture2D background, Rectangle windowRegion, Rectangle contentRegion)
@@ -61,28 +67,28 @@ namespace DanceDanceRotationModule.Views
         }
 
         public NotesWindow(
-          AsyncTexture2D background,
-          Rectangle windowRegion,
-          Rectangle contentRegion,
-          Point windowSize)
+            AsyncTexture2D background,
+            Rectangle windowRegion,
+            Rectangle contentRegion,
+            Point windowSize)
         {
           this.ConstructWindow(background, windowRegion, contentRegion, windowSize);
         }
 
         public NotesWindow(
-          Texture2D background,
-          Rectangle windowRegion,
-          Rectangle contentRegion,
-          Point windowSize)
-          : this((AsyncTexture2D) background, windowRegion, contentRegion, windowSize)
+            Texture2D background,
+            Rectangle windowRegion,
+            Rectangle contentRegion,
+            Point windowSize)
+            : this((AsyncTexture2D) background, windowRegion, contentRegion, windowSize)
         {
         }
 
         /// <summary>Shows the window with the provided view.</summary>
         public void Show(IView view)
         {
-          this.ShowView(view);
-          this.Show();
+            this.ShowView(view);
+            this.Show();
         }
 
         /// <summary>
@@ -91,21 +97,50 @@ namespace DanceDanceRotationModule.Views
         /// </summary>
         public void ToggleWindow(IView view)
         {
-          if (this.Visible)
-            this.Hide();
-          else
-            this.Show(view);
+            if (this.Visible)
+                this.Hide();
+            else
+                this.Show(view);
         }
 
         /**
          * Overrides min/max allowed for the window, mostly allowing more Width than default, and constraining Height better.
          */
         override protected Point HandleWindowResize(Point newSize) =>
-          new Point(
-            MathHelper.Clamp(newSize.X, 400, 2048),
-            MathHelper.Clamp(newSize.Y, 280, 800)
-          );
+            new Point(
+                MathHelper.Clamp(
+                  newSize.X,
+                  (OrientationExtensions.IsVertical(Orientation))
+                      ? 280
+                      : 400,
+                    (OrientationExtensions.IsVertical(Orientation))
+                        ? 800
+                        : 2048
+                  ),
+                MathHelper.Clamp(
+                  newSize.Y,
+                  (OrientationExtensions.IsVertical(Orientation))
+                      ? 460
+                      : 280,
+                    (OrientationExtensions.IsVertical(Orientation))
+                        ? 2048
+                        : 800
+                  )
+            );
 
+        private Rectangle GetInitialWindowSize(NotesOrientation orientation)
+        {
+            switch (orientation)
+            {
+                case NotesOrientation.RightToLeft:
+                case NotesOrientation.LeftToRight:
+                    return new Rectangle(40, 26, 913, 691);
+                case NotesOrientation.TopToBottom:
+                case NotesOrientation.BottomToTop:
+                default:
+                    return new Rectangle(40, 26, 691, 913);
+            }
+        }
     }
 
     /**

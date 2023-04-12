@@ -76,10 +76,12 @@ namespace DanceDanceRotationModule.Util
             DdrNoteGreenTexture = contentsManager.GetTexture("ddr_note_green.png");
             DdrNotePurpleTexture = contentsManager.GetTexture("notes/ddr_note_purple.png");
             DdrNoteRedTexture = contentsManager.GetTexture("notes/ddr_note_red.png");
-            DdrTargetBottom = contentsManager.GetTexture("notes/ddr_target_bottom.png");
             DdrTargetCircle = contentsManager.GetTexture("notes/ddr_target_circle.png");
             DdrTargetSpacer = contentsManager.GetTexture("notes/ddr_target_spacer.png");
             DdrTargetTop = contentsManager.GetTexture("notes/ddr_target_top.png");
+            DdrTargetBottom = contentsManager.GetTexture("notes/ddr_target_bottom.png");
+            DdrTargetLeft = contentsManager.GetTexture("notes/ddr_target_left.png");
+            DdrTargetRight = contentsManager.GetTexture("notes/ddr_target_right.png");
             NotesControlsBg = contentsManager.GetTexture("notes/notesControlsBg.png");
             NotesBg = contentsManager.GetTexture("notes/notesBg.png");
             SongInfoBackground = contentsManager.GetTexture("windows/songInfoBg.png");
@@ -315,10 +317,12 @@ namespace DanceDanceRotationModule.Util
             DdrNoteGreenTexture?.Dispose();
             DdrNotePurpleTexture?.Dispose();
             DdrNoteRedTexture?.Dispose();
-            DdrTargetBottom?.Dispose();
             DdrTargetCircle?.Dispose();
             DdrTargetSpacer?.Dispose();
             DdrTargetTop?.Dispose();
+            DdrTargetBottom?.Dispose();
+            DdrTargetLeft?.Dispose();
+            DdrTargetRight?.Dispose();
             NotesControlsBg?.Dispose();
             NotesBg?.Dispose();
             SongInfoBackground?.Dispose();
@@ -343,10 +347,12 @@ namespace DanceDanceRotationModule.Util
         public Texture2D DdrNotePurpleTexture { get; private set; }
         public Texture2D DdrNoteRedTexture { get; private set; }
         public Texture2D DdrNoteGreenTexture { get; private set; }
-        public Texture2D DdrTargetBottom { get; private set; }
         public Texture2D DdrTargetCircle { get; private set; }
         public Texture2D DdrTargetSpacer { get; private set; }
         public Texture2D DdrTargetTop { get; private set; }
+        public Texture2D DdrTargetBottom { get; private set; }
+        public Texture2D DdrTargetLeft { get; private set; }
+        public Texture2D DdrTargetRight { get; private set; }
         // Buttons in the app
         public Texture2D ButtonCopy { get; private set; }
         public Texture2D ButtonDelete { get; private set; }

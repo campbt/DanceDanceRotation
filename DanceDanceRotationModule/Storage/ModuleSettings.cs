@@ -27,6 +27,7 @@ namespace DanceDanceRotationModule.Storage
 
         // MARK: Settings - General
 
+        internal SettingEntry<NotesOrientation> Orientation { get; private set; }
         internal SettingEntry<float> BackgroundOpacity { get; private set; }
         internal SettingEntry<bool> AutoHitWeapon1 { get; private set; }
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
@@ -42,6 +43,11 @@ namespace DanceDanceRotationModule.Storage
                 displayNameFunc: () => "General",
                 lazyLoaded: false
             );
+
+            Orientation = generalSettings.DefineSetting("NotesOrientation",
+                NotesOrientation.RightToLeft,
+                () => "Notes Orientation".PadRight(34),
+                () => "Sets the direction notes will travel while playing.");
 
             BackgroundOpacity = generalSettings.DefineSetting("BackgroundOpacity",
                 0.9f,
