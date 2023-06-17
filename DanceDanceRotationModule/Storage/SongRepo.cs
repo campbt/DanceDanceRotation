@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blish_HUD;
 using Blish_HUD.Controls;
+using Blish_HUD.Modules;
 using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Util;
 using Newtonsoft.Json;
@@ -17,6 +18,11 @@ namespace DanceDanceRotationModule.Storage
         /** @Nullable */
         public Song Song { get; set; }
         public SongData Data { get; set; }
+    }
+
+    public struct DefaultSongsInfo
+    {
+        public string version { get; set; }
     }
 
     /**
@@ -76,7 +82,8 @@ namespace DanceDanceRotationModule.Storage
 
         public Song AddSong(
             string json,
-            bool showNotification
+            bool showNotification,
+            bool alertListeners = true
         )
         {
             Song song = null;
@@ -93,7 +100,11 @@ namespace DanceDanceRotationModule.Storage
                 );
 
                 _songs[song.Id] = song;
-                OnSongsChanged?.Invoke(sender: this, null);
+                if (alertListeners)
+                {
+                    OnSongsChanged?.Invoke(sender: this, null);
+                }
+
                 if (_selectedSongId.Equals(song.Id))
                 {
                     // If the added song has the same ID of the selected song, it overwrites it,
@@ -202,12 +213,7 @@ namespace DanceDanceRotationModule.Storage
         {
             // Load all .json files in songs directory
             LoadSongFiles();
-
-            if (_songs.Count == 0)
-            {
-                Logger.Info($"No songs were found in {SongsDir}! Loading default songs");
-                LoadDefaultSongFiles();
-            }
+            LoadDefaultSongFiles();
 
             // Load song specific settings for every song
             var songDatas = DanceDanceRotationModule.Settings.SongDatas.Value;
@@ -267,22 +273,67 @@ namespace DanceDanceRotationModule.Storage
             // Not sure if there is a way to just search for resources in the directory,
             // so all default songs have to be listed here.
 
-            var defaultSongsFileName = "defaultSongs.json";
+            const string defaultSongsInfoFileName = "defaultSongsInfo.json";
+            DefaultSongsInfo? defaultSongsInfo = null;
+            try
+            {
+                var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(defaultSongsInfoFileName);
+                using (StreamReader r = new StreamReader(fileStream))
+                {
+                    var json = r.ReadToEnd();
+                    defaultSongsInfo = JsonConvert.DeserializeObject<DefaultSongsInfo>(json);
+                }
+            }
+            catch (Exception exception)
+            {
+                Logger.Warn(exception, "Failed to load default songs info file: " + defaultSongsInfoFileName);
+            }
+
+            if (defaultSongsInfo == null)
+            {
+                Logger.Warn("Failed to load default songs info file: " + defaultSongsInfoFileName);
+                return;
+            }
+
+            const string defaultSongsFileName = "defaultSongs.json";
             Logger.Info($"Attempting to load default songs from ref/${defaultSongsFileName}.");
             try
             {
                 var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(defaultSongsFileName);
                 using (StreamReader r = new StreamReader(fileStream))
                 {
-                    string json = r.ReadToEnd();
-                    List<Object> songsArray = JsonConvert.DeserializeObject<List<Object>>(json);
-                    foreach (var songJson in songsArray)
+                    string lastDefaultSongsLoadedVersion =
+                        DanceDanceRotationModule.Settings.LastDefaultSongsLoadedVersion.Value;
+                    string version = defaultSongsInfo?.version ?? "(unknown)";
+
+                    bool shouldLoadDefaultSongs = false;
+                    if (lastDefaultSongsLoadedVersion.Equals(version) == false)
                     {
-                        var rawJson = songJson.ToString();
-                        AddSong(
-                            songJson.ToString(),
-                            showNotification: false
-                        );
+                        Logger.Info(
+                            $"Module version has changed ({lastDefaultSongsLoadedVersion} -> {version})! Loading default songs");
+                        shouldLoadDefaultSongs = true;
+                    }
+                    else if (_songs.Count == 0)
+                    {
+                        Logger.Info($"No songs were found in {SongsDir}! Loading default songs");
+                        shouldLoadDefaultSongs = true;
+                    }
+
+                    if (shouldLoadDefaultSongs)
+                    {
+                        DanceDanceRotationModule.Settings.LastDefaultSongsLoadedVersion.Value = version;
+                        string json = r.ReadToEnd();
+                        List<Object> songsArray = JsonConvert.DeserializeObject<List<Object>>(json);
+                        foreach (var songJson in songsArray)
+                        {
+                            AddSong(
+                                songJson.ToString(),
+                                showNotification: false,
+                                alertListeners: false
+                            );
+                        }
+                        Logger.Info($"Successfully loaded {_songs.Count} songs.");
+                        OnSongsChanged?.Invoke(sender: this, null);
                     }
                 }
             }
@@ -290,7 +341,6 @@ namespace DanceDanceRotationModule.Storage
             {
                 Logger.Warn(exception, "Failed to load song file: " + defaultSongsFileName);
             }
-            Logger.Info($"Successfully loaded {_songs.Count} songs.");
         }
 
         /**

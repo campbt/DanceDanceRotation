@@ -26,6 +26,7 @@ namespace DanceDanceRotationModule.Storage
             InitWindowVisibilityHotkeys(settings);
             InitSongRepoSettings(settings);
             InitHelpSettings(settings);
+            InitHiddenSettings(settings);
         }
 
         #region General
@@ -321,6 +322,20 @@ namespace DanceDanceRotationModule.Storage
 
         #endregion
 
+        #region Hidden Settings
+
+        // MARK: Settings - Hidden Settings (for initial runs)
+
+        internal SettingEntry<string> LastDefaultSongsLoadedVersion { get; private set; }
+
+        private void InitHiddenSettings(SettingCollection settings)
+        {
+            var hiddenSettings = settings.AddSubCollection("hidden_settings");
+            LastDefaultSongsLoadedVersion = hiddenSettings.DefineSetting("LastDefaultSongsLoadedVersion", "0.0.0");
+        }
+
+        #endregion
+
         // MARK: Settings - Dispose Settings
 
         public void Dispose()
@@ -353,6 +368,7 @@ namespace DanceDanceRotationModule.Storage
             ClearSettingChanged(SelectedSong);
             ClearSettingChanged(HasShownHelpWindow);
             ClearSettingChanged(HasShownInitialSongInfo);
+            ClearSettingChanged(LastDefaultSongsLoadedVersion);
         }
 
         /**
