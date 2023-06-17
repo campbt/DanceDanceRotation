@@ -21,7 +21,7 @@ namespace DanceDanceRotationModule.Util
 
         private static readonly Logger Logger = Logger.GetLogger<Resources>();
 
-        public static Resources Instance = new Resources();
+        public static Resources Instance;
 
         // MARK: Inner Types
 

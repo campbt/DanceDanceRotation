@@ -56,6 +56,7 @@ namespace DanceDanceRotationModule
         protected override async Task LoadAsync()
         {
             // Load content from the ref directory in the module.bhm automatically with the ContentsManager
+            Resources.Instance = new Resources();
             Resources.Instance.LoadResources(ContentsManager);
 
             // Load songs from settings
@@ -118,6 +119,7 @@ namespace DanceDanceRotationModule
         protected override void Unload()
         {
             Resources.Instance.Unload();
+            Resources.Instance = null;
 
             _notesWindow?.Dispose();
             _cornerIcon?.Dispose();
@@ -130,6 +132,7 @@ namespace DanceDanceRotationModule
             // Static members are not automatically cleared and will keep a reference to your,
             // module unless manually unset.
             Instance = null;
+            Settings.Dispose();
             Settings = null;
             SongRepo = null;
         }

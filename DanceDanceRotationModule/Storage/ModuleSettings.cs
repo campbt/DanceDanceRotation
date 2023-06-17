@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 using Blish_HUD;
+using Blish_HUD.Controls;
 using Blish_HUD.Input;
 using Blish_HUD.Settings;
 using DanceDanceRotationModule.Model;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1;
 
 namespace DanceDanceRotationModule.Storage
 {
@@ -146,11 +151,18 @@ namespace DanceDanceRotationModule.Storage
             retval.Value.Enabled = true;
             retval.Value.Activated += delegate
             {
-                DanceDanceRotationModule.Instance
-                    .GetNotesContainer()
-                    ?.OnHotkeyPressed(
-                        noteType
-                    );
+                if (DanceDanceRotationModule.Instance == null)
+                {
+                    Logger.GetLogger<ModuleSettings>().Error("NULL: " + noteType);
+                }
+                else
+                {
+                    DanceDanceRotationModule.Instance
+                        .GetNotesContainer()
+                        ?.OnHotkeyPressed(
+                            noteType
+                        );
+                }
             };
             return retval;
         }
@@ -308,5 +320,85 @@ namespace DanceDanceRotationModule.Storage
         }
 
         #endregion
+
+        // MARK: Settings - Dispose Settings
+
+        public void Dispose()
+        {
+            ClearSettingChanged(Orientation);
+            ClearSettingChanged(BackgroundOpacity);
+            ClearSettingChanged(AutoHitWeapon1);
+            ClearSettingChanged(ShowAbilityIconsForNotes);
+            ClearSettingChanged(ShowHotkeys);
+            ClearSettingChanged(ShowOnlyCharacterClassSongs);
+            ClearSettingChanged(ShowNextAbilitiesCount);
+            ClearSettingChanged(Dodge);
+            ClearSettingChanged(Weapon1);
+            ClearSettingChanged(Weapon2);
+            ClearSettingChanged(Weapon3);
+            ClearSettingChanged(Weapon4);
+            ClearSettingChanged(Weapon5);
+            ClearSettingChanged(HealingSkill);
+            ClearSettingChanged(UtilitySkill1);
+            ClearSettingChanged(UtilitySkill2);
+            ClearSettingChanged(UtilitySkill3);
+            ClearSettingChanged(EliteSkill);
+            ClearSettingChanged(ProfessionSkill1);
+            ClearSettingChanged(ProfessionSkill2);
+            ClearSettingChanged(ProfessionSkill3);
+            ClearSettingChanged(ProfessionSkill4);
+            ClearSettingChanged(ProfessionSkill5);
+            ClearSettingChanged(WeaponStow);
+            ClearSettingChanged(SongDatas);
+            ClearSettingChanged(SelectedSong);
+            ClearSettingChanged(HasShownHelpWindow);
+            ClearSettingChanged(HasShownInitialSongInfo);
+        }
+
+        /**
+         * A bit hacky, but this will go find any delegates set up on SettingsChanged and remove them.
+         *
+         * The settings are stored in the main Blish module, not in the DDR module, which means when DDR
+         * gets disabled and tries to clean itself up, there may still be references held by the Blish settings
+         * system. This reaches into that area of blish and removes them. As this only touches settings defined
+         * by DDR, this shouldn't have any effect on other modules the user is running.
+         */
+        private static void ClearSettingChanged<T>(SettingEntry<T> entry)
+        {
+            FieldInfo f1 = GetEventField(entry.GetType(), "SettingChanged");
+            if (f1 == null) return;
+
+            object obj = f1.GetValue(entry);
+            if (obj == null) return;
+
+            EventHandler<ValueChangedEventArgs<T>> handler = (EventHandler<ValueChangedEventArgs<T>>)obj;
+            Delegate[] dary = handler.GetInvocationList();
+            foreach (Delegate del in dary)
+            {
+                entry.SettingChanged -= (EventHandler<ValueChangedEventArgs<T>>)del;
+            }
+        }
+
+        private static FieldInfo GetEventField(Type type, string eventName)
+        {
+            FieldInfo field = null;
+            while (type != null)
+            {
+                /* Find events defined as field */
+                field = type.GetField(eventName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
+                if (field != null && (field.FieldType == typeof(MulticastDelegate) ||
+                                      field.FieldType.IsSubclassOf(typeof(MulticastDelegate))))
+                    break;
+
+                /* Find events defined as property { add; remove; } */
+                field = type.GetField("EVENT_" + eventName.ToUpper(),
+                    BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
+                if (field != null)
+                    break;
+                type = type.BaseType;
+            }
+
+            return field;
+        }
     }
 }
