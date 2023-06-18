@@ -152,6 +152,8 @@ namespace DanceDanceRotationModule.Views
                 Logger.Trace("PlayerCharacter.NameChanged - Rebuilding Song List");
                 BuildSongList();
             };
+
+            BuildSongList();
         }
 
         private void BuildSongList()
@@ -163,9 +165,7 @@ namespace DanceDanceRotationModule.Views
             var songList = DanceDanceRotationModule.SongRepo.GetAllSongs();
 
             // Get the profession of currently logged in character
-            Profession playerCurrentProfession = ProfessionExtensions.ProfessionFromBuildTemplate(
-                (int)GameService.Gw2Mumble.PlayerCharacter.Profession
-            );
+            Profession playerCurrentProfession = ProfessionExtensions.CurrentProfessionOfPlayer();
 
             var showOnlyCharacterClassSongs =
                 DanceDanceRotationModule.Settings.ShowOnlyCharacterClassSongs.Value;

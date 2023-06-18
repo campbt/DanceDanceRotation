@@ -1,4 +1,5 @@
 ﻿using System;
+using Blish_HUD;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace DanceDanceRotationModule.Model
@@ -30,6 +31,41 @@ namespace DanceDanceRotationModule.Model
             {
                 case 0:
                     return Profession.Common;
+                case 1:
+                    return Profession.Guardian;
+                case 2:
+                    return Profession.Warrior;
+                case 3:
+                    return Profession.Engineer;
+                case 4:
+                    return Profession.Ranger;
+                case 5:
+                    return Profession.Thief;
+                case 6:
+                    return Profession.Elementalist;
+                case 7:
+                    return Profession.Mesmer;
+                case 8:
+                    return Profession.Necromancer;
+                case 9:
+                    return Profession.Revenant;
+                default:
+                    return Profession.Unknown;
+            }
+        }
+
+        /**
+         * Looks up the current profession of the player using the Gw2Mumble API
+         * and returns a [Profession] case for it. Unknown could mean gw2 is not running,
+         * or that the player is on the initial character creation screen.
+         */
+        public static Profession CurrentProfessionOfPlayer()
+        {
+            var serviceCode = (int)GameService.Gw2Mumble.PlayerCharacter.Profession;
+            switch (serviceCode)
+            {
+                case 0:
+                    return Profession.Unknown;
                 case 1:
                     return Profession.Guardian;
                 case 2:
