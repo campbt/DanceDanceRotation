@@ -32,8 +32,11 @@ namespace DanceDanceRotationModule.Storage
     {
         private static readonly Logger Logger = Logger.GetLogger<SongRepo>();
 
-        private const string SongsFolderName = "danceDanceRotation/songs";
-        private static string SongsDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(SongsFolderName);
+        private const string DdrDirectoryName = "danceDanceRotation"; // This *must match the value in the manifest*
+        private const string SongsFolderName = "songs";
+
+        private static string DdrDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(DdrDirectoryName);
+        private static string SongsDir => Path.Combine(DdrDir, SongsFolderName);
 
         private Song.ID _selectedSongId;
         private Dictionary<Song.ID, Song> _songs;
@@ -63,6 +66,14 @@ namespace DanceDanceRotationModule.Storage
 
         public SongRepo()
         {
+            if (Directory.Exists(SongsDir) == false)
+            {
+                Logger.Info($"Creating {SongsDir}");
+                Directory.CreateDirectory(
+                    SongsDir
+                );
+            }
+
             _songs = new Dictionary<Song.ID, Song>();
             _songDatas = new Dictionary<Song.ID, SongData>();
         }
@@ -466,7 +477,7 @@ namespace DanceDanceRotationModule.Storage
 
         private string GetSongPath(Song song)
         {
-            return Path.Combine(SongsDir, $"{song.Name}.json");
+            return Path.Combine(DdrDir, SongsDir, $"{song.Name}.json");
         }
     }
 }
