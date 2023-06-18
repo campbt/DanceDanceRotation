@@ -1,6 +1,6 @@
 {
   "name": "Dance Dance Rotation",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "namespace": "com.shooper.ddr",
   "package": "DanceDanceRotationModule.dll",
   "manifest_version": 1,
@@ -20,8 +20,5 @@
   "directories": [
     "danceDanceRotation/songs"
   ],
-  "enabled_without_gw2": false,
-
-  "api_permissions": {
-  }
+  "enabled_without_gw2": false
 }
