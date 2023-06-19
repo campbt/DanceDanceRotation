@@ -281,56 +281,33 @@ namespace DanceDanceRotationModule.Storage
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
         private void LoadDefaultSongFiles()
         {
-            // Not sure if there is a way to just search for resources in the directory,
-            // so all default songs have to be listed here.
+            // There is no way to just search for resources in the ref/ directory,
 
-            const string defaultSongsInfoFileName = "defaultSongsInfo.json";
-            DefaultSongsInfo? defaultSongsInfo = null;
-            try
+            string lastDefaultSongsLoadedVersion =
+                DanceDanceRotationModule.Settings.LastDefaultSongsLoadedVersion.Value;
+            string version = DanceDanceRotationModule.Instance.Version.ToString();
+
+            bool shouldLoadDefaultSongs = false;
+            if (lastDefaultSongsLoadedVersion.Equals(version) == false)
             {
-                var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(defaultSongsInfoFileName);
-                using (StreamReader r = new StreamReader(fileStream))
+                Logger.Info(
+                    $"Module version has changed ({lastDefaultSongsLoadedVersion} -> {version})! Loading default songs");
+                shouldLoadDefaultSongs = true;
+            }
+            else if (_songs.Count == 0)
+            {
+                Logger.Info($"No songs were found in {SongsDir}! Loading default songs");
+                shouldLoadDefaultSongs = true;
+            }
+
+            if (shouldLoadDefaultSongs)
+            {
+                const string defaultSongsFileName = "defaultSongs.json";
+                try
                 {
-                    var json = r.ReadToEnd();
-                    defaultSongsInfo = JsonConvert.DeserializeObject<DefaultSongsInfo>(json);
-                }
-            }
-            catch (Exception exception)
-            {
-                Logger.Warn(exception, "Failed to load default songs info file: " + defaultSongsInfoFileName);
-            }
-
-            if (defaultSongsInfo == null)
-            {
-                Logger.Warn("Failed to load default songs info file: " + defaultSongsInfoFileName);
-                return;
-            }
-
-            const string defaultSongsFileName = "defaultSongs.json";
-            Logger.Info($"Attempting to load default songs from ref/${defaultSongsFileName}.");
-            try
-            {
-                var fileStream = DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(defaultSongsFileName);
-                using (StreamReader r = new StreamReader(fileStream))
-                {
-                    string lastDefaultSongsLoadedVersion =
-                        DanceDanceRotationModule.Settings.LastDefaultSongsLoadedVersion.Value;
-                    string version = defaultSongsInfo?.version ?? "(unknown)";
-
-                    bool shouldLoadDefaultSongs = false;
-                    if (lastDefaultSongsLoadedVersion.Equals(version) == false)
-                    {
-                        Logger.Info(
-                            $"Module version has changed ({lastDefaultSongsLoadedVersion} -> {version})! Loading default songs");
-                        shouldLoadDefaultSongs = true;
-                    }
-                    else if (_songs.Count == 0)
-                    {
-                        Logger.Info($"No songs were found in {SongsDir}! Loading default songs");
-                        shouldLoadDefaultSongs = true;
-                    }
-
-                    if (shouldLoadDefaultSongs)
+                    var fileStream =
+                        DanceDanceRotationModule.Instance.ContentsManager.GetFileStream(defaultSongsFileName);
+                    using (StreamReader r = new StreamReader(fileStream))
                     {
                         DanceDanceRotationModule.Settings.LastDefaultSongsLoadedVersion.Value = version;
                         string json = r.ReadToEnd();
@@ -343,14 +320,15 @@ namespace DanceDanceRotationModule.Storage
                                 alertListeners: false
                             );
                         }
+
                         Logger.Info($"Successfully loaded {_songs.Count} songs.");
                         OnSongsChanged?.Invoke(sender: this, null);
                     }
                 }
-            }
-            catch (Exception exception)
-            {
-                Logger.Warn(exception, "Failed to load song file: " + defaultSongsFileName);
+                catch (Exception exception)
+                {
+                    Logger.Warn(exception, "Failed to load song file: " + defaultSongsFileName);
+                }
             }
         }
 
