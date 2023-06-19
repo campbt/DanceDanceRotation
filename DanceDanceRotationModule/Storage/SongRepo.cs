@@ -33,10 +33,12 @@ namespace DanceDanceRotationModule.Storage
         private static readonly Logger Logger = Logger.GetLogger<SongRepo>();
 
         private const string DdrDirectoryName = "danceDanceRotation"; // This *must match the value in the manifest*
-        private const string SongsFolderName = "songs";
+        private const string CustomSongsFolderName = "customSongs";
+        private const string DefaultSongsFolderName = "defaultSongs";
 
         private static string DdrDir => DanceDanceRotationModule.Instance.DirectoriesManager.GetFullDirectoryPath(DdrDirectoryName);
-        private static string SongsDir => Path.Combine(DdrDir, SongsFolderName);
+        private static string DefaultSongsDir => Path.Combine(DdrDir, DefaultSongsFolderName);
+        private static string CustomSongsDir => Path.Combine(DdrDir, CustomSongsFolderName);
 
         private Song.ID _selectedSongId;
         private Dictionary<Song.ID, Song> _songs;
@@ -66,11 +68,18 @@ namespace DanceDanceRotationModule.Storage
 
         public SongRepo()
         {
-            if (Directory.Exists(SongsDir) == false)
+            if (Directory.Exists(CustomSongsDir) == false)
             {
-                Logger.Info($"Creating {SongsDir}");
+                Logger.Info($"Creating {CustomSongsDir}");
                 Directory.CreateDirectory(
-                    SongsDir
+                    CustomSongsDir
+                );
+            }
+            if (Directory.Exists(DefaultSongsDir) == false)
+            {
+                Logger.Info($"Creating {DefaultSongsDir}");
+                Directory.CreateDirectory(
+                    DefaultSongsDir
                 );
             }
 
@@ -94,7 +103,7 @@ namespace DanceDanceRotationModule.Storage
         public Song AddSong(
             string json,
             bool showNotification,
-            bool alertListeners = true
+            bool isDefaultSong = false
         )
         {
             Song song = null;
@@ -111,7 +120,7 @@ namespace DanceDanceRotationModule.Storage
                 );
 
                 _songs[song.Id] = song;
-                if (alertListeners)
+                if (isDefaultSong == false)
                 {
                     OnSongsChanged?.Invoke(sender: this, null);
                 }
@@ -123,7 +132,10 @@ namespace DanceDanceRotationModule.Storage
                     InvokeSelectedSongInfo();
                 }
 
-                var fullFilePath = GetSongPath(song);
+                var fullFilePath =
+                    isDefaultSong
+                        ? GetSongPath(DefaultSongsDir, song)
+                        : GetSongPath(CustomSongsDir, song);
                 Logger.Info($"Attempting to save song file {fullFilePath}");
 
                 // Disable watcher, or it can infinite loop
@@ -206,9 +218,17 @@ namespace DanceDanceRotationModule.Storage
                 _songDatas.Remove(songId);
 
                 // Attempt to delete file with this song's name
-                var fullFilePath = GetSongPath(song);
-                Logger.Info($"Attempting to delete song file {fullFilePath}");
-                File.Delete(fullFilePath);
+                // (Custom is checked first, because if there are collisions, it is the one shown)
+                var songFilePath = GetSongPath(CustomSongsDir, song);
+                if (File.Exists(songFilePath) == false)
+                {
+                    songFilePath = GetSongPath(DefaultSongsDir, song);
+                }
+                Logger.Info($"Attempting to delete song file {songFilePath}");
+                // Disable watcher
+                _fileSystemWatcher.EnableRaisingEvents = false;
+                File.Delete(songFilePath);
+                _fileSystemWatcher.EnableRaisingEvents = true;
 
                 OnSongsChanged?.Invoke(sender: this, null);
                 if (_selectedSongId.Equals(songId))
@@ -222,9 +242,8 @@ namespace DanceDanceRotationModule.Storage
 
         public Task Load()
         {
-            // Load all .json files in songs directory
-            LoadSongFiles();
-            LoadDefaultSongFiles();
+            LoadAllSongFiles();
+            MaybeLoadDefaultSongFiles();
 
             // Load song specific settings for every song
             var songDatas = DanceDanceRotationModule.Settings.SongDatas.Value;
@@ -243,12 +262,23 @@ namespace DanceDanceRotationModule.Storage
             return Task.CompletedTask;
         }
 
-        private void LoadSongFiles()
+        private void LoadAllSongFiles()
+        {
+            _songs.Clear();
+            // Load all .json files in defaultSongs directory
+            LoadSongFiles(DefaultSongsDir);
+            // Load all .json files in customSongs directory, overwrite default ones if necessary
+            LoadSongFiles(CustomSongsDir);
+
+            OnSongsChanged?.Invoke(sender: this, null);
+        }
+
+        private void LoadSongFiles(string directory)
         {
             // Load all .json files in songs directory
             List<Song> loadedSongs = new List<Song>();
-            Logger.Info($"Loading song .json files in {SongsDir}");
-            foreach (string fileName in Directory.GetFiles(SongsDir, "*.json"))
+            Logger.Info($"Loading song .json files in {directory}");
+            foreach (string fileName in Directory.GetFiles(directory, "*.json"))
             {
                 try
                 {
@@ -267,19 +297,17 @@ namespace DanceDanceRotationModule.Storage
             }
             Logger.Info($"Successfully loaded {loadedSongs.Count} songs.");
 
-            _songs.Clear();
             foreach (var song in loadedSongs)
             {
                 _songs[song.Id] = song;
             }
-            OnSongsChanged?.Invoke(sender: this, null);
         }
 
         /**
          * Loads the songs in the defaultSongs/ directory
          */
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
-        private void LoadDefaultSongFiles()
+        private void MaybeLoadDefaultSongFiles()
         {
             // There is no way to just search for resources in the ref/ directory,
 
@@ -296,12 +324,19 @@ namespace DanceDanceRotationModule.Storage
             }
             else if (_songs.Count == 0)
             {
-                Logger.Info($"No songs were found in {SongsDir}! Loading default songs");
+                Logger.Info($"No songs were found in {DefaultSongsDir}! Loading default songs");
                 shouldLoadDefaultSongs = true;
             }
 
             if (shouldLoadDefaultSongs)
             {
+                // Delete all existing default songs files
+                var files = Directory.GetFiles(DefaultSongsDir);
+                foreach (var file in files)
+                {
+                    File.Delete(file);
+                }
+
                 const string defaultSongsFileName = "defaultSongs.json";
                 try
                 {
@@ -317,7 +352,7 @@ namespace DanceDanceRotationModule.Storage
                             AddSong(
                                 songJson.ToString(),
                                 showNotification: false,
-                                alertListeners: false
+                                isDefaultSong: true
                             );
                         }
 
@@ -342,10 +377,14 @@ namespace DanceDanceRotationModule.Storage
             Logger.Info("Saved SongRepo");
         }
 
+        /**
+         * Sets a directory watcher on the custom songs. It doesn't need to set one up on the default folder as users shouldn't
+         * directory modify it.
+         */
         public void StartDirectoryWatcher()
         {
             _fileSystemWatcher = new FileSystemWatcher();
-            _fileSystemWatcher.Path = SongsDir;
+            _fileSystemWatcher.Path = CustomSongsDir;
 
             // Only care about Write changes for Changed. FileName is used to observe Created/Deleted
             _fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
@@ -396,7 +435,7 @@ namespace DanceDanceRotationModule.Storage
                 case WatcherChangeTypes.Deleted:
                 default:
                     // No easy way to know which song was
-                    DanceDanceRotationModule.SongRepo.LoadSongFiles();
+                    DanceDanceRotationModule.SongRepo.LoadAllSongFiles();
                     break;
             }
         }
@@ -453,9 +492,9 @@ namespace DanceDanceRotationModule.Storage
             );
         }
 
-        private string GetSongPath(Song song)
+        private string GetSongPath(string dir, Song song)
         {
-            return Path.Combine(DdrDir, SongsDir, $"{song.Name}.json");
+            return Path.Combine(DdrDir, dir, $"{song.Name}.json");
         }
     }
 }
