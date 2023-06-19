@@ -1,6 +1,8 @@
-﻿using DanceDanceRotationModule.Util;
+﻿using System;
+using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1;
 
 namespace DanceDanceRotationModule.Model
 {
@@ -131,39 +133,88 @@ namespace DanceDanceRotationModule.Model
         }
 
         /**
-         * Returns the lane this note type will be put in
+         * Returns the lane this note type will be put in, based on the notes orientation
          */
-        public static int NoteLane(NoteType noteType)
+        public static int NoteLane(
+            NotesOrientation orientation,
+            NoteType noteType
+        )
         {
-            switch (noteType)
+            switch (orientation)
             {
-                case NoteType.Weapon1:
-                case NoteType.Heal:
-                case NoteType.Profession1:
-                    return 0;
-                case NoteType.Weapon2:
-                case NoteType.Utility1:
-                case NoteType.Profession2:
-                    return 1;
-                case NoteType.Weapon3:
-                case NoteType.Utility2:
-                case NoteType.Profession3:
-                    return 2;
-                case NoteType.Weapon4:
-                case NoteType.Utility3:
-                case NoteType.Profession4:
-                    return 3;
-                case NoteType.Weapon5:
-                case NoteType.Elite:
-                case NoteType.Profession5:
-                    return 4;
-                case NoteType.Dodge:
-                case NoteType.WeaponSwap:
-                case NoteType.WeaponStow:
-                case NoteType.Unknown:
-                    return 5;
+                case NotesOrientation.RightToLeft:
+                case NotesOrientation.LeftToRight:
+                case NotesOrientation.TopToBottom:
+                case NotesOrientation.BottomToTop:
+                    // Standard 6 lane style
+                    switch (noteType)
+                    {
+                        case NoteType.Weapon1:
+                        case NoteType.Heal:
+                        case NoteType.Profession1:
+                            return 0;
+                        case NoteType.Weapon2:
+                        case NoteType.Utility1:
+                        case NoteType.Profession2:
+                            return 1;
+                        case NoteType.Weapon3:
+                        case NoteType.Utility2:
+                        case NoteType.Profession3:
+                            return 2;
+                        case NoteType.Weapon4:
+                        case NoteType.Utility3:
+                        case NoteType.Profession4:
+                            return 3;
+                        case NoteType.Weapon5:
+                        case NoteType.Elite:
+                        case NoteType.Profession5:
+                            return 4;
+                        case NoteType.Dodge:
+                        case NoteType.WeaponSwap:
+                        case NoteType.WeaponStow:
+                        case NoteType.Unknown:
+                            return 5;
+                        default:
+                            return 0;
+                    }
+                case NotesOrientation.AbilityBarStyle:
+                    // 10 lane style
+                    switch (noteType)
+                    {
+                        case NoteType.Weapon1:
+                        case NoteType.Profession1:
+                            return 0;
+                        case NoteType.Weapon2:
+                        case NoteType.Profession2:
+                            return 1;
+                        case NoteType.Weapon3:
+                        case NoteType.Profession3:
+                            return 2;
+                        case NoteType.Weapon4:
+                        case NoteType.Profession4:
+                            return 3;
+                        case NoteType.Weapon5:
+                        case NoteType.Profession5:
+                            return 4;
+                        case NoteType.Heal:
+                            return 5;
+                        case NoteType.Utility1:
+                        case NoteType.Dodge:
+                            return 6;
+                        case NoteType.Utility2:
+                        case NoteType.WeaponSwap:
+                            return 7;
+                        case NoteType.Utility3:
+                        case NoteType.WeaponStow:
+                            return 8;
+                        case NoteType.Elite:
+                        case NoteType.Unknown:
+                            return 9;
+                        default:
+                            return 0;
+                    }
                 default:
-                    return 0;
+                    throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null);
             }
         }
 

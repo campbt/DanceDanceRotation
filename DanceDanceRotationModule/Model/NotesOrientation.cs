@@ -8,7 +8,10 @@
         RightToLeft,
         LeftToRight,
         TopToBottom,
-        BottomToTop
+        BottomToTop,
+        // Special: This is basically TopToBottom, but with 10 lanes and spaced out in the center. Intended to be
+        //          overlaid on top of the 10 ability icons themselves
+        AbilityBarStyle
     }
 
     public static class OrientationExtensions
@@ -19,6 +22,7 @@
             {
                 case NotesOrientation.TopToBottom:
                 case NotesOrientation.BottomToTop:
+                case NotesOrientation.AbilityBarStyle:
                     return true;
                 case NotesOrientation.RightToLeft:
                 case NotesOrientation.LeftToRight:

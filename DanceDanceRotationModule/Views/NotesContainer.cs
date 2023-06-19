@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
@@ -73,12 +74,14 @@ namespace DanceDanceRotationModule.Views
         {
             internal NotesOrientation Orientation { get; private set; }
 
+            internal int LaneCount { get; private set; }
             internal int NoteWidth { get; private set; }
             internal int NoteHeight { get; private set; }
             internal int LaneSpacing { get; private set; }
             /** Spacing at the very top, mostly for the note hit text to have somewhere to go */
             internal int VerticalPadding { get; private set; }
             internal int HorizontalPadding { get; private set; }
+            internal int CenterPadding { get; private set; }
 
             /** Where to spawn new notes */
             internal Point NewNotePosition { get; private set; }
@@ -104,9 +107,21 @@ namespace DanceDanceRotationModule.Views
                 NotesOrientation orientation
             )
             {
-                // Orientation = orientation;
-                Orientation = NotesOrientation.TopToBottom;
+                Orientation = orientation;
 
+                switch (Orientation)
+                {
+                    case NotesOrientation.AbilityBarStyle:
+                        LaneCount = 10;
+                        break;
+                    case NotesOrientation.RightToLeft:
+                    case NotesOrientation.LeftToRight:
+                    case NotesOrientation.TopToBottom:
+                    case NotesOrientation.BottomToTop:
+                    default:
+                        LaneCount = 6;
+                        break;
+                }
 
                 if (IsVerticalOrientation())
                 {
@@ -126,7 +141,7 @@ namespace DanceDanceRotationModule.Views
                 if (nextAbilitiesCount > 0)
                 {
                     // Show ability icons section as an extra "lane"
-                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LANE_COUNT - 1)) / (LANE_COUNT + 1);
+                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1)) / (LaneCount + 1);
                     NextAbilityIconsHeight = NoteHeight;
 
                     switch (Orientation)
@@ -144,6 +159,7 @@ namespace DanceDanceRotationModule.Views
                             );
                             break;
                         case NotesOrientation.TopToBottom:
+                        case NotesOrientation.AbilityBarStyle:
                             NextAbilityIconsLocation = new Point(
                                 HorizontalPadding,
                                 height - NoteHeight
@@ -162,22 +178,31 @@ namespace DanceDanceRotationModule.Views
                 else
                 {
                     // Hide ability icons section
-                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LANE_COUNT - 1)) / LANE_COUNT;
+                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1)) / LaneCount;
                     NextAbilityIconsLocation = new Point(0, 0);
                     NextAbilityIconsHeight = 0;
                 }
 
-                if (IsVerticalOrientation())
+                if (Orientation == NotesOrientation.AbilityBarStyle)
                 {
-                    NoteWidth = (width - (2*HorizontalPadding) - LaneSpacing * (LANE_COUNT - 1)) / LANE_COUNT;
+                    // Ability Bar Style has a "center" area for the health bar, treated as the size of 2 lanes
+                    NoteWidth = (width - (2*HorizontalPadding) - LaneSpacing * (LaneCount - 1)) / (LaneCount + 2);
                     NoteHeight = NoteWidth;
+                    CenterPadding = NoteWidth * 2;
+                }
+                else if (IsVerticalOrientation())
+                {
+                    NoteWidth = (width - (2*HorizontalPadding) - LaneSpacing * (LaneCount - 1)) / LaneCount;
+                    NoteHeight = NoteWidth;
+                    CenterPadding = 0;
                 }
                 else
                 {
                     // If next abilities are shown, count that as an extra "lane"
-                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LANE_COUNT - 1))
-                         / ( LANE_COUNT + (NextAbilityIconsHeight > 0 ? 1 : 0));
+                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1))
+                                 / ( LaneCount + (NextAbilityIconsHeight > 0 ? 1 : 0));
                     NoteWidth = NoteHeight;
+                    CenterPadding = 0;
                 }
 
                 // How long a note moves before hitting the "perfect" position
@@ -234,6 +259,7 @@ namespace DanceDanceRotationModule.Views
 
                         break;
                     case NotesOrientation.TopToBottom:
+                    case NotesOrientation.AbilityBarStyle:
                         // New notes spawn at the edge of the window on the Top
                         // NextAbility are at the bottom
                         NewNotePosition = new Point(
@@ -331,6 +357,14 @@ namespace DanceDanceRotationModule.Views
                             HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
                             NewNotePosition.Y
                         );
+                    case NotesOrientation.AbilityBarStyle:
+                        // Spawns on Top side, but has later 5 abilities shifted
+                        return new Point(
+                            (lane >= LaneCount / 2)
+                                ? HorizontalPadding + CenterPadding + (lane * (NoteWidth + LaneSpacing))
+                                : HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
+                            NewNotePosition.Y
+                        );
                     case NotesOrientation.BottomToTop:
                         // Spawns on Top side
                         return new Point(
@@ -362,6 +396,7 @@ namespace DanceDanceRotationModule.Views
                             0
                         );
                     case NotesOrientation.TopToBottom:
+                    case NotesOrientation.AbilityBarStyle:
                         return new Vector2(
                             0,
                             moveAmount
@@ -434,7 +469,10 @@ namespace DanceDanceRotationModule.Views
                         : "?";
 
                 // string text = keyBinding.Value.GetBindingDisplayText();
-                int lane = NoteTypeExtensions.NoteLane(note.NoteType);
+                int lane = NoteTypeExtensions.NoteLane(
+                    _windowInfo.Orientation,
+                    note.NoteType
+                );
 
                 // Respect "ShowAbilityIconsForNotes" preference
                 AsyncTexture2D noteBackground =
@@ -764,6 +802,7 @@ namespace DanceDanceRotationModule.Views
                     case NotesOrientation.LeftToRight:
                         return XPosition >= _windowInfo.HitPerfect;
                     case NotesOrientation.TopToBottom:
+                    case NotesOrientation.AbilityBarStyle:
                         return YPosition >= _windowInfo.HitPerfect;
                     case NotesOrientation.BottomToTop:
                         return YPosition <= _windowInfo.HitPerfect;
@@ -782,6 +821,7 @@ namespace DanceDanceRotationModule.Views
                     case NotesOrientation.LeftToRight:
                         return XPosition >= _windowInfo.HitRangeBoo.Max;
                     case NotesOrientation.TopToBottom:
+                    case NotesOrientation.AbilityBarStyle:
                         return YPosition >= _windowInfo.HitRangeBoo.Max;
                     case NotesOrientation.BottomToTop:
                         return YPosition <= _windowInfo.HitRangeBoo.Min;
@@ -800,6 +840,7 @@ namespace DanceDanceRotationModule.Views
                     case NotesOrientation.LeftToRight:
                         return XPosition >= _windowInfo.DestroyNotePosition;
                     case NotesOrientation.TopToBottom:
+                    case NotesOrientation.AbilityBarStyle:
                         return YPosition >= _windowInfo.DestroyNotePosition;
                     case NotesOrientation.BottomToTop:
                         return YPosition <= _windowInfo.DestroyNotePosition;
@@ -969,8 +1010,8 @@ namespace DanceDanceRotationModule.Views
             );
 
             CreateTarget();
-            UpdateTarget();
             CreateBackgroundLines();
+            UpdateTarget();
             UpdateBackgroundLines();
 
             _timeLabel = new Label()
@@ -1009,8 +1050,6 @@ namespace DanceDanceRotationModule.Views
                     Logger.Trace("Orientation Updated. Resetting and recalculating layout and creating new target and lines");
                     Reset();
                     RecalculateLayout();
-                    CreateTarget();
-                    UpdateTarget();
                 };
         }
 
@@ -1340,10 +1379,10 @@ namespace DanceDanceRotationModule.Views
 
         private void CreateBackgroundLines()
         {
-            if (_laneLines == null || _laneLines.Count < LANE_COUNT)
+            if (_laneLines == null || _laneLines.Count < _windowInfo.LaneCount)
             {
                 _laneLines = new List<Control>();
-                for (int lane = 0; lane < LANE_COUNT; lane++)
+                for (int lane = 0; lane < _windowInfo.LaneCount; lane++)
                 {
                     _laneLines.Add(
                         new Image()
@@ -1361,7 +1400,7 @@ namespace DanceDanceRotationModule.Views
 
         private void UpdateBackgroundLines()
         {
-            if (_laneLines == null || _laneLines.Count < LANE_COUNT)
+            if (_laneLines == null || _laneLines.Count < _windowInfo.LaneCount)
             {
                 return;
             }
@@ -1376,6 +1415,7 @@ namespace DanceDanceRotationModule.Views
                     staticPosition = _windowInfo.TargetLocation.X - Width;
                     break;
                 case NotesOrientation.TopToBottom:
+                case NotesOrientation.AbilityBarStyle:
                     staticPosition = _windowInfo.TargetLocation.Y - Height;
                     break;
                 case NotesOrientation.BottomToTop:
@@ -1385,7 +1425,7 @@ namespace DanceDanceRotationModule.Views
                     throw new ArgumentOutOfRangeException();
             }
 
-            for (int lane = 0; lane < LANE_COUNT; lane++)
+            for (int lane = 0; lane < _windowInfo.LaneCount; lane++)
             {
                 // Find the location of middle of the lane
                 var location = _windowInfo.GetNewNoteLocation(lane);
@@ -1412,7 +1452,6 @@ namespace DanceDanceRotationModule.Views
 
         private void CreateTarget()
         {
-            const float targetOpacity = 0.5f;
 
             _targetTop?.Dispose();
             _targetBottom?.Dispose();
@@ -1435,7 +1474,7 @@ namespace DanceDanceRotationModule.Views
                     Width = 24,
                     Height = 64,
                     Location = new Point(0, 0),
-                    Opacity = targetOpacity,
+                    Opacity = TargetOpacity,
                     Parent = this
                 };
                 _targetBottom = new Image(Resources.Instance.DdrTargetRight)
@@ -1443,31 +1482,31 @@ namespace DanceDanceRotationModule.Views
                     Width = 24,
                     Height = 64,
                     Location = new Point(0, 0),
-                    Opacity = targetOpacity,
+                    Opacity = TargetOpacity,
                     Parent = this
                 };
-                for (int i = 0; i < LANE_COUNT; i++)
+                for (int i = 0; i < _windowInfo.LaneCount; i++)
                 {
                     _targetCircles.Add(
-                    new Image(Resources.Instance.DdrTargetCircle)
+                        new Image(Resources.Instance.DdrTargetCircle)
                         {
                             Width = 64,
                             Height = 64,
                             Location = new Point(0, 0),
-                            Opacity = targetOpacity,
+                            Opacity = TargetOpacity,
                             Parent = this
                         }
                     );
                 }
-                for (int i = 0; i < LANE_COUNT - 1; i++)
+                for (int i = 0; i < _windowInfo.LaneCount - 1; i++)
                 {
                     _targetSpacers.Add(
-                    new Image(Resources.Instance.DdrTargetSpacer)
+                        new Image(Resources.Instance.DdrTargetSpacer)
                         {
                             Width = 24,
                             Height = 64,
                             Location = new Point(0, 0),
-                            Opacity = targetOpacity,
+                            Opacity = TargetOpacity,
                             Parent = this
                         }
                     );
@@ -1480,7 +1519,7 @@ namespace DanceDanceRotationModule.Views
                     Width = 64,
                     Height = 24,
                     Location = new Point(0, 0),
-                    Opacity = targetOpacity,
+                    Opacity = TargetOpacity,
                     Parent = this
                 };
                 _targetBottom = new Image(Resources.Instance.DdrTargetBottom)
@@ -1488,33 +1527,33 @@ namespace DanceDanceRotationModule.Views
                     Width = 64,
                     Height = 24,
                     Location = new Point(0, 0),
-                    Opacity = targetOpacity,
+                    Opacity = TargetOpacity,
                     Parent = this
                 };
-                _targetCircles = new List<Image>(LANE_COUNT);
-                for (int i = 0; i < LANE_COUNT; i++)
+                _targetCircles = new List<Image>(_windowInfo.LaneCount);
+                for (int i = 0; i < _windowInfo.LaneCount; i++)
                 {
                     _targetCircles.Add(
-                    new Image(Resources.Instance.DdrTargetCircle)
+                        new Image(Resources.Instance.DdrTargetCircle)
                         {
                             Width = 64,
                             Height = 64,
                             Location = new Point(0, 0),
-                            Opacity = targetOpacity,
+                            Opacity = TargetOpacity,
                             Parent = this
                         }
                     );
                 }
-                _targetSpacers = new List<Image>(LANE_COUNT - 1);
-                for (int i = 0; i < LANE_COUNT - 1; i++)
+                _targetSpacers = new List<Image>(_windowInfo.LaneCount - 1);
+                for (int i = 0; i < _windowInfo.LaneCount - 1; i++)
                 {
                     _targetSpacers.Add(
-                    new Image(Resources.Instance.DdrTargetSpacer)
+                        new Image(Resources.Instance.DdrTargetSpacer)
                         {
                             Width = 64,
                             Height = 24,
                             Location = new Point(0, 0),
-                            Opacity = targetOpacity,
+                            Opacity = TargetOpacity,
                             Parent = this
                         }
                     );
@@ -1542,19 +1581,32 @@ namespace DanceDanceRotationModule.Views
 
                 for (int index = 0; index < _targetCircles.Count; index++)
                 {
+                    if (index == (_targetCircles.Count / 2))
+                    {
+                        // Shifts the later lanes over to make room for the health bar
+                        xPos += _windowInfo.CenterPadding;
+                    }
+
                     _targetCircles[index].Width = _windowInfo.NoteWidth;
                     _targetCircles[index].Height =  targetHeight;
                     _targetCircles[index].Location = new Point(xPos, yPos);
                     xPos += _targetCircles[index].Width;
 
-                    if (index < _targetSpacers.Count)
+                    if (index == (_targetCircles.Count / 2 - 1) && _windowInfo.CenterPadding > 0)
+                    {
+                        // Do NOT create a spacer at this point
+                        _targetSpacers[index].Opacity = 0.01f;
+                    }
+                    else if (index < _targetSpacers.Count)
                     {
                         // Add a little bit of overlap to prevent gaps
                         _targetSpacers[index].Width = _windowInfo.LaneSpacing;
                         _targetSpacers[index].Height =  targetHeight;
                         _targetSpacers[index].Location = new Point(xPos, yPos);
+                        _targetSpacers[index].Opacity = TargetOpacity;
                         xPos += _targetSpacers[index].Width;
                     }
+
                 }
 
                 _targetBottom.Width = roundEdgesWidth;
@@ -1661,15 +1713,15 @@ namespace DanceDanceRotationModule.Views
             }
         }
 
-        // MARK: Properties
+        const float TargetOpacity = 0.5f;
 
-        private static int LANE_COUNT = 6;
+        // MARK: Properties
 
         private bool _targetCreated;
         private Image _targetTop;
         private Image _targetBottom;
-        private List<Image> _targetCircles = new List<Image>(LANE_COUNT);
-        private List<Image> _targetSpacers = new List<Image>(LANE_COUNT - 1);
+        private List<Image> _targetCircles = new List<Image>();
+        private List<Image> _targetSpacers = new List<Image>();
         private List<Control> _laneLines;
     }
 
