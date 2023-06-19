@@ -71,9 +71,9 @@ namespace DanceDanceRotationModule.Util
             ButtonPlay = contentsManager.GetTexture("buttons/playIcon.png");
             ButtonReload = contentsManager.GetTexture("buttons/reloadIcon.png");
             ButtonStop = contentsManager.GetTexture("buttons/stopIcon.png");
-            DdrLogoTexture = contentsManager.GetTexture("notes/ddr_logo.png");
+            DdrLogoTexture = contentsManager.GetTexture("ddr_logo.png");
             DdrLogoEmblemTexture = contentsManager.GetTexture("ddr_logo_emblem.png");
-            DdrNoteGreenTexture = contentsManager.GetTexture("ddr_note_green.png");
+            DdrNoteGreenTexture = contentsManager.GetTexture("notes/ddr_note_green.png");
             DdrNotePurpleTexture = contentsManager.GetTexture("notes/ddr_note_purple.png");
             DdrNoteRedTexture = contentsManager.GetTexture("notes/ddr_note_red.png");
             DdrTargetCircle = contentsManager.GetTexture("notes/ddr_target_circle.png");
@@ -85,7 +85,7 @@ namespace DanceDanceRotationModule.Util
             NotesControlsBg = contentsManager.GetTexture("notes/notesControlsBg.png");
             NotesBg = contentsManager.GetTexture("notes/notesBg.png");
             SongInfoBackground = contentsManager.GetTexture("windows/songInfoBg.png");
-            UnknownAbilityIcon = contentsManager.GetTexture("abilityIcons/special/unknownAbilityIcon.png");
+            UnknownAbilityIcon = contentsManager.GetTexture("abilityIcons/custom/unknownAbilityIcon.png");
             WindowBackgroundEmptyTexture = contentsManager.GetTexture("windows/windowBgEmpty.png");
             WindowBackgroundTexture = contentsManager.GetTexture("windows/windowBg.png");
             WindowBackground2Texture = contentsManager.GetTexture("windows/windowBg2.png");
