@@ -1155,7 +1155,7 @@ namespace DanceDanceRotationModule.Views
                 OnStartStop?.Invoke(this, _info.IsStarted);
                 AddInitialAbilityIcons();
             }
-            else
+            else if (_info.IsPaused)
             {
                 // Resume from paused
                 Logger.Trace("Resuming Notes");
