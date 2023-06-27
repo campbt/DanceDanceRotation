@@ -90,6 +90,12 @@ namespace DanceDanceRotationModule
             };
 
             _cornerContextMenu = new ContextMenuStrip();
+            var helpItem = _cornerContextMenu.AddMenuItem("Help");
+            helpItem.Click += delegate
+            {
+                Logger.Trace("Help Clicked");
+                UrlHelper.OpenUrl("https://github.com/campbt/DanceDanceRotation#setup-and-usage");
+            };
             var reportIssueItem = _cornerContextMenu.AddMenuItem("Report Issue");
             reportIssueItem.Click += delegate
             {
