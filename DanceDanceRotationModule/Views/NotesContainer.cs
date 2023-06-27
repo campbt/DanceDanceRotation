@@ -993,6 +993,7 @@ namespace DanceDanceRotationModule.Views
         private CurrentSequenceInfo _info = new CurrentSequenceInfo();
         private WindowInfo _windowInfo = new WindowInfo();
         private Label _timeLabel;
+        private object _lock = new Object();
 
         // MARK: Events
 
@@ -1064,14 +1065,17 @@ namespace DanceDanceRotationModule.Views
                 return;
             }
 
-            _windowInfo.Recalculate(
-                Width, Height,
-                _songData,
-                DanceDanceRotationModule.Settings.Orientation.Value
-            );
-            UpdateTarget();
-            UpdateBackgroundLines();
-            RecalculateLayoutAbilityIcons();
+            lock(_lock)
+            {
+                _windowInfo.Recalculate(
+                    Width, Height,
+                    _songData,
+                    DanceDanceRotationModule.Settings.Orientation.Value
+                );
+                UpdateTarget();
+                UpdateBackgroundLines();
+                RecalculateLayoutAbilityIcons();
+            }
         }
 
         protected override void OnResized(ResizedEventArgs e)
@@ -1085,16 +1089,19 @@ namespace DanceDanceRotationModule.Views
             SongData songData
         )
         {
-            Logger.Trace($"Setting Notes Sequence");
-            Reset();
-            _currentSequence.Clear();
-            _currentSequence.AddRange(notes);
-            _songData = songData;
-            _windowInfo.Recalculate(
-                Width, Height,
-                _songData,
-                DanceDanceRotationModule.Settings.Orientation.Value
-            );
+            lock(_lock)
+            {
+                Logger.Trace($"Setting Notes Sequence");
+                Reset();
+                _currentSequence.Clear();
+                _currentSequence = new List<Note>(notes);
+                _songData = songData;
+                _windowInfo.Recalculate(
+                    Width, Height,
+                    _songData,
+                    DanceDanceRotationModule.Settings.Orientation.Value
+                );
+            }
         }
 
         public void ToggleStart()

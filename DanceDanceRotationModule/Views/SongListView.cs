@@ -225,7 +225,7 @@ namespace DanceDanceRotationModule.Views
         }
 
         private FlowPanel _songsListPanel;
-        private List<SongListRow> _rows;
+        private List<SongListRow> _rows = new List<SongListRow>();
     }
 
     public class SongListRow : Panel

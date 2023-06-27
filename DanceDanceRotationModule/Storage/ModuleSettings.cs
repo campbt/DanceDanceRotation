@@ -154,7 +154,8 @@ namespace DanceDanceRotationModule.Storage
             {
                 if (DanceDanceRotationModule.Instance == null)
                 {
-                    Logger.GetLogger<ModuleSettings>().Error("NULL: " + noteType);
+                    // It's possible a hotkey could be triggered after the module is disabled.
+                    Logger.GetLogger<ModuleSettings>().Debug("Settings Hotkey was triggered byt the DDR Module Instance is null. This note press will be ignored : " + noteType);
                 }
                 else
                 {
@@ -347,6 +348,7 @@ namespace DanceDanceRotationModule.Storage
             ClearSettingChanged(ShowHotkeys);
             ClearSettingChanged(ShowOnlyCharacterClassSongs);
             ClearSettingChanged(ShowNextAbilitiesCount);
+            ClearSettingChanged(SwapWeapons);
             ClearSettingChanged(Dodge);
             ClearSettingChanged(Weapon1);
             ClearSettingChanged(Weapon2);

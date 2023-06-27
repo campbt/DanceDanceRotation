@@ -417,7 +417,7 @@ namespace DanceDanceRotationModule.Storage
                     }
                     catch (Exception e)
                     {
-                        Logger.Error(e, "Failed to load newly created or changed file!");
+                        Logger.Warn(e, "Failed to load newly created or changed file!");
                     }
 
                     if (json.Length > 0)
