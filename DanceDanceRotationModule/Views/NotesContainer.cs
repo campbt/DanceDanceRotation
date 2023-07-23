@@ -693,11 +693,17 @@ namespace DanceDanceRotationModule.Views
                 else
                 {
                     hitType = HitType.Miss;
-                    ScreenNotification.ShowNotification("Miss");
+                    // ScreenNotification.ShowNotification("Miss");
                 }
 
-                SetHit(hitType);
-                PlayHitAnimation();
+                // Misses are IGNORED. If the user is too late, the Miss is automatic (the note traveled too far).
+                // If the user is so early that it would be a Miss, then it's most likely a "spam" hit from an earlier copy
+                // of the same hotkey.
+                if (hitType != HitType.Miss)
+                {
+                    SetHit(hitType);
+                    PlayHitAnimation();
+                }
                 return true;
             }
 
