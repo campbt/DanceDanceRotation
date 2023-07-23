@@ -1,0 +1,1114 @@
+{
+  "name": "Power Daredevil [SC]",
+  "description": "Build and rotation created by Snow Crows.\n\nPublished Sep 28, 2022\nUpdated Jul 8, 2023\nJuly 2023 Balance",
+  "logUrl": "https://www.dps.report/lo1Z-20230629-124023_golem",
+  "buildChatCode": "[&DQUcPSMbBzsMAQAAKRMAADMBAACwEgAADgEAAAAAAAAAAAAAAAAAAAAAAAA=]",
+  "buildUrl": "https://snowcrows.com/builds/thief/daredevil/power-daredevil",
+  "decodedBuildTemplate": {
+    "profession": 5,
+    "specializations": [
+      {
+        "id": 28,
+        "traits": [
+          1,
+          3,
+          3
+        ]
+      },
+      {
+        "id": 35,
+        "traits": [
+          3,
+          2,
+          1
+        ]
+      },
+      {
+        "id": 7,
+        "traits": [
+          3,
+          2,
+          3
+        ]
+      }
+    ],
+    "skills": {
+      "terrestrial": {
+        "heal": 268,
+        "utilities": [
+          4905,
+          307,
+          4784
+        ],
+        "elite": 270
+      },
+      "aquatic": {
+        "heal": 0,
+        "utilities": [
+          0,
+          0,
+          0
+        ],
+        "elite": 0
+      }
+    },
+    "specific": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "notes": [
+    {
+      "time": 0,
+      "duration": 767,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 767,
+      "duration": 591,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 967,
+      "duration": 680,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 1682,
+      "duration": 717,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 2362,
+      "duration": 399,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 3278,
+      "duration": 803,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 4081,
+      "duration": 598,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 4281,
+      "duration": 726,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 4997,
+      "duration": 474,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 5997,
+      "duration": 806,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 6803,
+      "duration": 617,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 7003,
+      "duration": 721,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 8241,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 8598,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 8958,
+      "duration": 764,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 9722,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 10082,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 10442,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 11281,
+      "duration": 760,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 12041,
+      "duration": 600,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 12760,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 13121,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 13480,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 14241,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 14601,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 14961,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 15719,
+      "duration": 683,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 15919,
+      "duration": 441,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 16843,
+      "duration": 798,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 17641,
+      "duration": 602,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 17841,
+      "duration": 483,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 18557,
+      "duration": 719,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 19559,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 19919,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 20280,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 21038,
+      "duration": 362,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 21400,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 21760,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 22603,
+      "duration": 756,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 23359,
+      "duration": 602,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 23559,
+      "duration": 718,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 24798,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 25159,
+      "duration": 364,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 25523,
+      "duration": 756,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 26321,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 26682,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 27039,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 27802,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 28162,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 28519,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 29319,
+      "duration": 802,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 30000,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 13046
+    },
+    {
+      "time": 30121,
+      "duration": 599,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 30321,
+      "duration": 682,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 31037,
+      "duration": 723,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 31719,
+      "duration": 439,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 32681,
+      "duration": 798,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 33479,
+      "duration": 602,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 33679,
+      "duration": 722,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 34397,
+      "duration": 482,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 35401,
+      "duration": 798,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 36199,
+      "duration": 364,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 36563,
+      "duration": 355,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 36918,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 37679,
+      "duration": 723,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 38402,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 38759,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 39119,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 39882,
+      "duration": 358,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 40240,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 40600,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 41403,
+      "duration": 797,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 42200,
+      "duration": 602,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 42924,
+      "duration": 358,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 43282,
+      "duration": 358,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 43640,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 44402,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 44759,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 45118,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 45881,
+      "duration": 680,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 46081,
+      "duration": 444,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 47005,
+      "duration": 757,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 47762,
+      "duration": 601,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 47962,
+      "duration": 482,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 48681,
+      "duration": 717,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 49680,
+      "duration": 362,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 50042,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 50403,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 51162,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 51519,
+      "duration": 363,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 51882,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 52681,
+      "duration": 802,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 53483,
+      "duration": 597,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 54203,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 54562,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 54921,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 55761,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 56122,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 56483,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 57241,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 57600,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 57961,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 58759,
+      "duration": 803,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 59443,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 13046
+    },
+    {
+      "time": 59562,
+      "duration": 600,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 59762,
+      "duration": 681,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 60480,
+      "duration": 722,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 61161,
+      "duration": 439,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 62122,
+      "duration": 798,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 62920,
+      "duration": 599,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 63120,
+      "duration": 721,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 63842,
+      "duration": 518,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 64881,
+      "duration": 800,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 65681,
+      "duration": 599,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 66401,
+      "duration": 362,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 66763,
+      "duration": 356,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 67119,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 67881,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 68240,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 68601,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 69402,
+      "duration": 801,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 70203,
+      "duration": 598,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 70920,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 71280,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 71641,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 72441,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 72801,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 73162,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 73922,
+      "duration": 680,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 74122,
+      "duration": 439,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 75041,
+      "duration": 799,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 75840,
+      "duration": 602,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 76040,
+      "duration": 722,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 76762,
+      "duration": 477,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 77761,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 78121,
+      "duration": 362,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 78483,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 79282,
+      "duration": 362,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 79644,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 80001,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 80800,
+      "duration": 803,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 81603,
+      "duration": 717,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 82320,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 82681,
+      "duration": 361,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 83042,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 83802,
+      "duration": 718,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 84002,
+      "duration": 720,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 85240,
+      "duration": 363,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 85603,
+      "duration": 357,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 85960,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 86762,
+      "duration": 358,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 87120,
+      "duration": 364,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 87484,
+      "duration": 798,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 88282,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 89044,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 89404,
+      "duration": 356,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 89760,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 90562,
+      "duration": 801,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 91282,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 13046
+    },
+    {
+      "time": 91363,
+      "duration": 598,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 91563,
+      "duration": 679,
+      "noteType": "Utility3",
+      "abilityId": 30868
+    },
+    {
+      "time": 92281,
+      "duration": 719,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 92960,
+      "duration": 444,
+      "noteType": "Utility3",
+      "abilityId": 30693
+    },
+    {
+      "time": 93923,
+      "duration": 799,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 94722,
+      "duration": 600,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 94922,
+      "duration": 719,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 95640,
+      "duration": 479,
+      "noteType": "Utility1",
+      "abilityId": 30369
+    },
+    {
+      "time": 96638,
+      "duration": 366,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    },
+    {
+      "time": 97004,
+      "duration": 359,
+      "noteType": "Weapon1",
+      "abilityId": 30135
+    },
+    {
+      "time": 97363,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 30434
+    },
+    {
+      "time": 98162,
+      "duration": 800,
+      "noteType": "Dodge",
+      "abilityId": 23275
+    },
+    {
+      "time": 98962,
+      "duration": 598,
+      "noteType": "Weapon2",
+      "abilityId": 29911
+    },
+    {
+      "time": 99680,
+      "duration": 484,
+      "noteType": "Weapon1",
+      "abilityId": 30614
+    }
+  ]
+}
