@@ -10,8 +10,10 @@ using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
+using SharpDX.Direct2D1;
 using Color = Microsoft.Xna.Framework.Color;
 using BlishContainer = Blish_HUD.Controls.Container;
+using Image = Blish_HUD.Controls.Image;
 
 
 namespace DanceDanceRotationModule.Views
@@ -100,6 +102,8 @@ namespace DanceDanceRotationModule.Views
             /** How fast the note should move per note change. Determined by SongData. */
             internal double NotePositionChangePerSecond { get; private set; }
             internal double TimeToReachEnd { get; private set; }
+            /** NoteCollisionCheck is defined as the duration it takes a note to move a distance equal to its width/height (based on orientation) */
+            internal TimeSpan NoteCollisionCheck { get; private set; }
 
             public void Recalculate(
                 int width, int height,
@@ -119,7 +123,14 @@ namespace DanceDanceRotationModule.Views
                     case NotesOrientation.TopToBottom:
                     case NotesOrientation.BottomToTop:
                     default:
-                        LaneCount = 6;
+                        if (DanceDanceRotationModule.Settings.CompactMode.Value)
+                        {
+                            LaneCount = 3;
+                        }
+                        else
+                        {
+                            LaneCount = 6;
+                        }
                         break;
                 }
 
@@ -313,6 +324,22 @@ namespace DanceDanceRotationModule.Views
                 HitRangeGreat = ConstructHitRange(perfectPosition, NotePositionChangePerSecond, 92);
                 HitRangeGood = ConstructHitRange(perfectPosition, NotePositionChangePerSecond, 142);
                 HitRangeBoo = ConstructHitRange(perfectPosition, NotePositionChangePerSecond, 225);
+
+                // Note collision check
+                switch (Orientation)
+                {
+                    case NotesOrientation.RightToLeft:
+                    case NotesOrientation.LeftToRight:
+                        NoteCollisionCheck = TimeSpan.FromMilliseconds(NoteWidth / NotePositionChangePerSecond * 1000);
+                        break;
+                    case NotesOrientation.TopToBottom:
+                    case NotesOrientation.BottomToTop:
+                    case NotesOrientation.AbilityBarStyle:
+                        NoteCollisionCheck = TimeSpan.FromMilliseconds(NoteHeight / NotePositionChangePerSecond * 1000);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
 
             /** Returns a range with min/max for a range. windowMs is the tolerance around the perfect position allowed for the range. */
@@ -454,7 +481,12 @@ namespace DanceDanceRotationModule.Views
 
             public event EventHandler<HitType> OnHit;
 
-            public ActiveNote(WindowInfo windowInfo, Note note, BlishContainer parent)
+            public ActiveNote(
+                WindowInfo windowInfo,
+                Note note,
+                int lane,
+                BlishContainer parent
+            )
             {
                 _windowInfo = windowInfo;
                 this.Note = note;
@@ -469,10 +501,6 @@ namespace DanceDanceRotationModule.Views
                         : "?";
 
                 // string text = keyBinding.Value.GetBindingDisplayText();
-                int lane = NoteTypeExtensions.NoteLane(
-                    _windowInfo.Orientation,
-                    note.NoteType
-                );
 
                 // Respect "ShowAbilityIconsForNotes" preference
                 AsyncTexture2D noteBackground =
@@ -1058,6 +1086,37 @@ namespace DanceDanceRotationModule.Views
                     Reset();
                     RecalculateLayout();
                 };
+            DanceDanceRotationModule.Settings.CompactMode.SettingChanged +=
+                delegate(object sender, ValueChangedEventArgs<bool> args)
+                {
+                    switch (DanceDanceRotationModule.Settings.Orientation.Value)
+                    {
+                        case NotesOrientation.RightToLeft:
+                        case NotesOrientation.LeftToRight:
+                        case NotesOrientation.TopToBottom:
+                        case NotesOrientation.BottomToTop:
+                            Logger.Trace("CompactMode Updated. Resetting and recalculating layout and creating new target and lines");
+                            Reset();
+                            lock (_lock)
+                            {
+                                _windowInfo.Recalculate(
+                                    Width, Height,
+                                    _songData,
+                                    DanceDanceRotationModule.Settings.Orientation.Value
+                                );
+                                CreateTarget();
+                                CreateBackgroundLines();
+                            }
+
+                            RecalculateLayout();
+                            break;
+                        case NotesOrientation.AbilityBarStyle:
+                            Logger.Trace($"CompactMode Updated, but the orientation is {DanceDanceRotationModule.Settings.Orientation.Value}, which is not supported");
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                };
         }
 
         public override void RecalculateLayout()
@@ -1241,7 +1300,7 @@ namespace DanceDanceRotationModule.Views
                 Note nextNote = _currentSequence[_info.SequenceIndex];
                 if (nextNote.TimeInRotation < timeInRotation)
                 {
-                    AddNote(nextNote);
+                    AddNote(nextNote, _info.SequenceIndex);
                     _info.SequenceIndex += 1;
                 }
             }
@@ -1328,14 +1387,35 @@ namespace DanceDanceRotationModule.Views
 
         // MARK: Adding things
 
-        private void AddNote(Note note)
+        private void AddNote(
+            Note note,
+            int index
+        )
         {
             // Special: Remap utility ability notes based on settings
             note.NoteType = _songData.RemapNoteType(note.NoteType);
 
+            int lane;
+            if (
+                DanceDanceRotationModule.Settings.CompactMode.Value &&
+                _windowInfo.Orientation != NotesOrientation.AbilityBarStyle
+            )
+            {
+                // See method for more details on how CompactMode is implemented.
+                lane = GetCompactModeLane(note, index);
+            }
+            else
+            {
+                lane = NoteTypeExtensions.NoteLane(
+                    _windowInfo.Orientation,
+                    note.NoteType
+                );
+            }
+
             var activeNote = new ActiveNote(
                 _windowInfo,
                 note,
+                lane,
                 this
             );
             activeNote.OnHit += delegate(object sender, HitType hitType)
@@ -1362,6 +1442,50 @@ namespace DanceDanceRotationModule.Views
                 )
             );
             _info.HitTexts.Add(hitText);
+        }
+
+        /**
+         * CompactMode implementation
+         * Try to put all notes on lane 0, but move them down if they would collide with other notes
+         * Special: If AutoHitWeapon1 is enabled, all Weapon1 should be on lane 0 and other notes should not worry about collision
+         */
+        private int GetCompactModeLane(
+            Note note,
+            int index
+        )
+        {
+            int lane = 0;
+
+            if (DanceDanceRotationModule.Settings.AutoHitWeapon1.Value == false || note.NoteType != NoteType.Weapon1)
+            {
+                for (int i = index - 1; i >= 0; i--)
+                {
+                    Note previousNote = _currentSequence[i];
+                    if (DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
+                        previousNote.NoteType == NoteType.Weapon1)
+                    {
+                        continue;
+                    }
+
+                    // Current == 1, previous = 0.9
+                    if (previousNote.TimeInRotation + _windowInfo.NoteCollisionCheck > note.TimeInRotation)
+                    {
+                        int laneForPreviousNote = GetCompactModeLane(
+                            previousNote,
+                            i
+                        );
+
+                        lane += (laneForPreviousNote + 1);
+                        if (lane >= _windowInfo.LaneCount)
+                        {
+                            lane %= _windowInfo.LaneCount;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return lane;
         }
 
         // MARK: Tooltips
@@ -1392,8 +1516,15 @@ namespace DanceDanceRotationModule.Views
 
         private void CreateBackgroundLines()
         {
-            if (_laneLines == null || _laneLines.Count < _windowInfo.LaneCount)
+            if (_laneLines == null || _laneLines.Count != _windowInfo.LaneCount)
             {
+                if (_laneLines != null)
+                {
+                    foreach (var laneLine in _laneLines)
+                    {
+                        laneLine.Dispose();
+                    }
+                }
                 _laneLines = new List<Control>();
                 for (int lane = 0; lane < _windowInfo.LaneCount; lane++)
                 {

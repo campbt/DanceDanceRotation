@@ -39,6 +39,7 @@ namespace DanceDanceRotationModule.Storage
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
         internal SettingEntry<bool> ShowHotkeys { get; private set; }
         internal SettingEntry<bool> ShowOnlyCharacterClassSongs { get; private set; }
+        internal SettingEntry<bool> CompactMode { get; private set; }
         internal SettingEntry<int> ShowNextAbilitiesCount { get; private set; }
 
         private void InitGeneral(SettingCollection settings)
@@ -81,12 +82,16 @@ namespace DanceDanceRotationModule.Storage
                 () => "Only show current profession songs",
                 () => "If enabled, the song list will only show songs for the current profession");
 
+            CompactMode = generalSettings.DefineSetting("CompactMode",
+                false,
+                () => "Compact Mode",
+                () => "If enabled, notes will try to be in a single lane and only shifted to other lanes to avoid collisions. Does NOT work with Ability Bar orientation.");
+
             ShowNextAbilitiesCount = generalSettings.DefineSetting("ShowNextAbilitiesCount",
                 0,
                 () => "Show next abilities",
                 () => "If enabled, the next X ability icons will be shown above the notes section, with no animations.");
             ShowNextAbilitiesCount.SetRange(0, 10);
-
         }
 
         #endregion
