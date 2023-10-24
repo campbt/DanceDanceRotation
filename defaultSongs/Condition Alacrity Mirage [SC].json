@@ -1,20 +1,12 @@
 {
   "name": "Condition Alacrity Mirage [SC]",
-  "description": "Build and rotation created by Snow Crows.\n\nPublished May 23, 2021\nUpdated May 10, 2023\nMay 2023 Balance",
-  "logUrl": "https://dps.report/nECF-20230503-161902_golem",
-  "buildChatCode": "[&DQcBJS09OxfuFQAA4BUAAIEBAACDAQAARhcAAAAAAAAAAAAAAAAAAAAAAAA=]",
+  "description": "Build and rotation created by Snow Crows.\n\nPublished May 23, 2021\nUpdated Oct 4, 2023\nSecrets of the Obscure",
+  "logUrl": "https://dps.report/xC5s-20231003-215812_golem",
+  "buildChatCode": "[&DQctPQElOxvuFQAA4BUAAIMBAACBAQAARhcAAAAAAAAAAAAAAAAAAAAAAAABWQAA]",
   "buildUrl": "https://snowcrows.com/en/builds/mesmer/mirage/condition-alacrity-mirage",
   "decodedBuildTemplate": {
     "profession": 7,
     "specializations": [
-      {
-        "id": 1,
-        "traits": [
-          1,
-          1,
-          2
-        ]
-      },
       {
         "id": 45,
         "traits": [
@@ -24,10 +16,18 @@
         ]
       },
       {
+        "id": 1,
+        "traits": [
+          1,
+          1,
+          2
+        ]
+      },
+      {
         "id": 59,
         "traits": [
           3,
-          1,
+          2,
           1
         ]
       }
@@ -37,8 +37,8 @@
         "heal": 5614,
         "utilities": [
           5600,
-          385,
-          387
+          387,
+          385
         ],
         "elite": 5958
       },
@@ -68,6 +68,10 @@
       0,
       0,
       0,
+      0,
+      1,
+      89,
+      0,
       0
     ]
   },
@@ -80,69 +84,56 @@
     },
     {
       "time": 560,
-      "duration": 763,
+      "duration": 82,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 643,
+      "time": 642,
+      "duration": 964,
+      "noteType": "Heal",
+      "abilityId": 40200
+    },
+    {
+      "time": 844,
       "duration": 0,
       "noteType": "Elite",
       "abilityId": 45449
     },
     {
-      "time": 760,
+      "time": 1605,
+      "duration": 397,
+      "noteType": "Utility1",
+      "abilityId": 41065
+    },
+    {
+      "time": 1817,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 1323,
-      "duration": 721,
+      "time": 2003,
+      "duration": 749,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 2044,
-      "duration": 119,
+      "time": 2752,
+      "duration": 729,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 2163,
-      "duration": 960,
-      "noteType": "Heal",
-      "abilityId": 40200
-    },
-    {
-      "time": 2760,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 3123,
-      "duration": 721,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 3844,
-      "duration": 118,
+      "time": 3481,
+      "duration": 761,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 3962,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 4199,
-      "duration": 766,
+      "time": 4242,
+      "duration": 759,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
@@ -159,1543 +150,1479 @@
       "abilityId": -17
     },
     {
-      "time": 4965,
+      "time": 5001,
       "duration": 718,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 5683,
-      "duration": 755,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 6438,
-      "duration": 765,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 7003,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 7203,
-      "duration": 719,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 7922,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 8682,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 9443,
-      "duration": 798,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 9962,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 10241,
-      "duration": 718,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 10959,
-      "duration": 767,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 11726,
-      "duration": 876,
-      "noteType": "Weapon3",
-      "abilityId": 10216
-    },
-    {
-      "time": 12561,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 12602,
-      "duration": 722,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 13324,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 14085,
-      "duration": 754,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 14839,
-      "duration": 765,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 15364,
-      "duration": 0,
-      "noteType": "Profession2",
-      "abilityId": 10190
-    },
-    {
-      "time": 15604,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 16363,
-      "duration": 756,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 16847,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 17119,
-      "duration": 723,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 17842,
-      "duration": 41,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 17882,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 18042,
-      "duration": 403,
-      "noteType": "Utility1",
-      "abilityId": 41065
-    },
-    {
-      "time": 18445,
-      "duration": 756,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 19201,
+      "time": 5719,
       "duration": 762,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 19285,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 19963,
-      "duration": 756,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 20719,
-      "duration": 721,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 21440,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 22200,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 22241,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 22960,
-      "duration": 765,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 23725,
-      "duration": 956,
-      "noteType": "Heal",
-      "abilityId": 40200
-    },
-    {
-      "time": 24681,
+      "time": 6481,
       "duration": 761,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 25403,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 25404,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 25442,
-      "duration": 744,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 26186,
-      "duration": 733,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 26919,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 27680,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 28164,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 28442,
-      "duration": 718,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 29160,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 29919,
-      "duration": 766,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 30685,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 30962,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 31444,
-      "duration": 717,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 32161,
-      "duration": 39,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 32200,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 32366,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 33125,
-      "duration": 876,
-      "noteType": "Weapon3",
-      "abilityId": 10216
-    },
-    {
-      "time": 33325,
-      "duration": 745,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 34001,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 34746,
-      "duration": 733,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 35479,
-      "duration": 405,
-      "noteType": "Utility1",
-      "abilityId": 41065
-    },
-    {
-      "time": 35884,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 36641,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 37401,
-      "duration": 0,
-      "noteType": "Profession2",
-      "abilityId": 10190
-    },
-    {
-      "time": 37402,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 38161,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 38406,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 38922,
-      "duration": 723,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 39645,
-      "duration": 755,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 40400,
-      "duration": 764,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 40959,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 40959,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 41164,
-      "duration": 719,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 41883,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 42645,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 43406,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 43763,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 44163,
-      "duration": 717,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 44879,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 44920,
-      "duration": 201,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 45121,
-      "duration": 963,
-      "noteType": "Heal",
-      "abilityId": 40200
-    },
-    {
-      "time": 46084,
-      "duration": 756,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 46759,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 46840,
-      "duration": 739,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 47579,
-      "duration": 742,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 48321,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 49083,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 49722,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 49722,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 49840,
-      "duration": 722,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 50562,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 51324,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 52081,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 52646,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 52841,
-      "duration": 720,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 53561,
-      "duration": 84,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 53645,
-      "duration": 396,
-      "noteType": "Utility1",
-      "abilityId": 41065
-    },
-    {
-      "time": 54041,
-      "duration": 764,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 54805,
-      "duration": 118,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 54923,
-      "duration": 838,
-      "noteType": "Weapon3",
-      "abilityId": 10216
-    },
-    {
-      "time": 55606,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 55761,
-      "duration": 719,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 56480,
-      "duration": 765,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 57246,
-      "duration": 755,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 58001,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 58681,
-      "duration": 0,
-      "noteType": "Profession2",
-      "abilityId": 10190
-    },
-    {
-      "time": 58760,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 59521,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 60164,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 60278,
-      "duration": 725,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 61003,
-      "duration": 80,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 61083,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 61245,
-      "duration": 754,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 61999,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 62759,
-      "duration": 763,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 62880,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 63522,
-      "duration": 719,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 64241,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 65001,
+      "time": 7242,
       "duration": 758,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 65718,
+      "time": 7281,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 65760,
-      "duration": 720,
+      "time": 8000,
+      "duration": 721,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 66480,
-      "duration": 81,
+      "time": 8720,
+      "duration": 758,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 66561,
-      "duration": 958,
-      "noteType": "Heal",
-      "abilityId": 40200
-    },
-    {
-      "time": 67519,
-      "duration": 763,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 68282,
-      "duration": 768,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 68848,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 69050,
-      "duration": 756,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 69806,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 69806,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 70565,
-      "duration": 718,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 71283,
-      "duration": 81,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 71364,
-      "duration": 407,
-      "noteType": "Utility1",
-      "abilityId": 41065
-    },
-    {
-      "time": 71771,
-      "duration": 748,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 72519,
-      "duration": 773,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 72686,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 73292,
-      "duration": 707,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 73999,
-      "duration": 85,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 74083,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 74278,
-      "duration": 764,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 75042,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 75802,
-      "duration": 878,
-      "noteType": "Weapon3",
-      "abilityId": 10216
-    },
-    {
-      "time": 76322,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 76680,
-      "duration": 722,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 77402,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 78163,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 78920,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 79558,
-      "duration": 0,
-      "noteType": "Profession2",
-      "abilityId": 10190
-    },
-    {
-      "time": 79679,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 80438,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 80961,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 81200,
-      "duration": 718,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 81918,
-      "duration": 764,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 82682,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 83439,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 83484,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 84198,
-      "duration": 722,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 84920,
-      "duration": 84,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 85004,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 85198,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 85960,
-      "duration": 765,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 86442,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 86725,
-      "duration": 716,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 87441,
-      "duration": 281,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 87722,
-      "duration": 959,
-      "noteType": "Heal",
-      "abilityId": 40200
-    },
-    {
-      "time": 88681,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 89202,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 89443,
-      "duration": 755,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 89643,
-      "duration": 405,
-      "noteType": "Utility1",
-      "abilityId": 41065
-    },
-    {
-      "time": 90603,
-      "duration": 756,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 91359,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 92047,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 92047,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 92119,
-      "duration": 720,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 92839,
-      "duration": 764,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 93603,
-      "duration": 755,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 94358,
-      "duration": 764,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 94681,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 94681,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 95122,
-      "duration": 718,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 95840,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 96601,
+      "time": 9479,
       "duration": 881,
       "noteType": "Weapon3",
       "abilityId": 10216
     },
     {
-      "time": 97482,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 97598,
+      "time": 10133,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 98243,
-      "duration": 717,
+      "time": 10360,
+      "duration": 720,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 98960,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 99000,
-      "duration": 763,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 99763,
+      "time": 11080,
       "duration": 761,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 100524,
-      "duration": 754,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 100842,
-      "duration": 0,
-      "noteType": "Profession2",
-      "abilityId": 10190
-    },
-    {
-      "time": 101278,
-      "duration": 763,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 101878,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 102041,
-      "duration": 721,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 102762,
-      "duration": 758,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 103520,
-      "duration": 763,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 104283,
+      "time": 11841,
       "duration": 760,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 104480,
+      "time": 12601,
+      "duration": 764,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 13200,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 13321,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 13365,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 13482,
+      "duration": 0,
+      "noteType": "Profession1",
+      "abilityId": 10191
+    },
+    {
+      "time": 13760,
+      "duration": 0,
+      "noteType": "Weapon2",
+      "abilityId": 10310
+    },
+    {
+      "time": 14123,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 14239,
       "duration": 0,
       "noteType": "Elite",
       "abilityId": 45449
     },
     {
-      "time": 104724,
+      "time": 14566,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 14842,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 14862,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 105043,
+      "time": 14880,
       "duration": 722,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 105765,
-      "duration": 756,
+      "time": 15602,
+      "duration": 556,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 106521,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 107278,
-      "duration": 405,
-      "noteType": "Utility1",
-      "abilityId": 41065
-    },
-    {
-      "time": 107683,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 108443,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 108443,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 109200,
-      "duration": 724,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 109924,
-      "duration": 78,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 110002,
-      "duration": 957,
-      "noteType": "Heal",
-      "abilityId": 40200
-    },
-    {
-      "time": 110959,
-      "duration": 479,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 111279,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 111438,
-      "duration": 723,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 112161,
-      "duration": 158,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 112319,
+      "time": 16158,
       "duration": 0,
       "noteType": "WeaponSwap",
       "abilityId": -2
     },
     {
-      "time": 112524,
-      "duration": 755,
+      "time": 16358,
+      "duration": 762,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 113279,
-      "duration": 760,
+      "time": 17120,
+      "duration": 763,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 114039,
-      "duration": 723,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 114039,
+      "time": 17453,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 114762,
-      "duration": 760,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 115522,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 116279,
-      "duration": 759,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 116961,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 116961,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 117038,
-      "duration": 724,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 117762,
-      "duration": 157,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 117919,
-      "duration": 886,
-      "noteType": "Weapon3",
-      "abilityId": 10216
-    },
-    {
-      "time": 118805,
-      "duration": 758,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 119563,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 119922,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 120320,
+      "time": 17883,
       "duration": 721,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 121041,
-      "duration": 761,
+      "time": 18604,
+      "duration": 156,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 121802,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 122563,
-      "duration": 757,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 122681,
-      "duration": 0,
-      "noteType": "Profession2",
-      "abilityId": 10190
-    },
-    {
-      "time": 123320,
-      "duration": 761,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 123518,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 124081,
-      "duration": 765,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 124281,
-      "duration": 556,
+      "time": 18760,
+      "duration": 398,
       "noteType": "Utility1",
       "abilityId": 41065
     },
     {
-      "time": 125402,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 125685,
-      "duration": 756,
+      "time": 19158,
+      "duration": 759,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 126042,
-      "duration": 0,
-      "noteType": "Dodge",
-      "abilityId": -17
-    },
-    {
-      "time": 126441,
-      "duration": 730,
-      "noteType": "Weapon1",
-      "abilityId": 40184,
-      "overrideAuto": true
-    },
-    {
-      "time": 127171,
-      "duration": 751,
+      "time": 19917,
+      "duration": 778,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 127922,
-      "duration": 762,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 128684,
-      "duration": 752,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 128925,
+      "time": 20319,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 129436,
-      "duration": 729,
+      "time": 20695,
+      "duration": 704,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 130164,
-      "duration": 756,
+      "time": 21399,
+      "duration": 720,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 130524,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 45449
-    },
-    {
-      "time": 130920,
-      "duration": 758,
-      "noteType": "Weapon1",
-      "abilityId": 10273
-    },
-    {
-      "time": 131679,
-      "duration": 959,
+      "time": 22119,
+      "duration": 961,
       "noteType": "Heal",
       "abilityId": 40200
     },
     {
-      "time": 131924,
+      "time": 23080,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 23212,
       "duration": 0,
       "noteType": "Dodge",
       "abilityId": -17
     },
     {
-      "time": 132638,
+      "time": 23839,
       "duration": 723,
       "noteType": "Weapon1",
       "abilityId": 40184,
       "overrideAuto": true
     },
     {
-      "time": 133361,
+      "time": 24562,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 25319,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 26078,
+      "duration": 601,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 26678,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 26842,
+      "duration": 155,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 26849,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 26997,
+      "duration": 726,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 27723,
       "duration": 758,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 134119,
-      "duration": 1041,
+      "time": 28481,
+      "duration": 762,
       "noteType": "Weapon1",
       "abilityId": 10273
     },
     {
-      "time": 134240,
+      "time": 29243,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 29399,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 30000,
+      "duration": 720,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 30720,
+      "duration": 79,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 30799,
+      "duration": 879,
+      "noteType": "Weapon3",
+      "abilityId": 10216
+    },
+    {
+      "time": 31678,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 32172,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 32438,
+      "duration": 721,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 33159,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 33921,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 34680,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 35179,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 35283,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 35360,
+      "duration": 0,
+      "noteType": "Weapon2",
+      "abilityId": 10310
+    },
+    {
+      "time": 35437,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 36081,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 36198,
+      "duration": 401,
+      "noteType": "Utility1",
+      "abilityId": 41065
+    },
+    {
+      "time": 36292,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 36599,
+      "duration": 721,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 37319,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 37363,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 38120,
+      "duration": 764,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 38884,
+      "duration": 754,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 38884,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 38884,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 39638,
+      "duration": 722,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 40360,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 41119,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 41782,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 41879,
+      "duration": 718,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 42597,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 43360,
+      "duration": 962,
+      "noteType": "Heal",
+      "abilityId": 40200
+    },
+    {
+      "time": 44322,
+      "duration": 754,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 44792,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 45076,
+      "duration": 722,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 45798,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 46559,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 47318,
+      "duration": 604,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 47922,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 48070,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 48077,
+      "duration": 720,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 48797,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 49558,
+      "duration": 786,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 50344,
+      "duration": 736,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 50976,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 50977,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 51080,
+      "duration": 720,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 51800,
+      "duration": 158,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 51958,
+      "duration": 879,
+      "noteType": "Weapon3",
+      "abilityId": 10216
+    },
+    {
+      "time": 52837,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 53596,
+      "duration": 401,
+      "noteType": "Utility1",
+      "abilityId": 41065
+    },
+    {
+      "time": 53802,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 53997,
+      "duration": 726,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 54723,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 55480,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 56240,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 56518,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 56639,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 56640,
+      "duration": 0,
+      "noteType": "Weapon2",
+      "abilityId": 10310
+    },
+    {
+      "time": 56841,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 57003,
+      "duration": 754,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 57161,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 57181,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 57757,
+      "duration": 720,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 58477,
+      "duration": 125,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 58601,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 58675,
+      "duration": 765,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 59440,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 59600,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 59600,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 60199,
+      "duration": 718,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 60917,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 61678,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 62439,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 62460,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 63198,
+      "duration": 721,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 63919,
+      "duration": 723,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 64642,
+      "duration": 958,
+      "noteType": "Heal",
+      "abilityId": 40200
+    },
+    {
+      "time": 65400,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 65599,
+      "duration": 719,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 66319,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 67079,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 67838,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 68359,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 68598,
+      "duration": 718,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 69316,
+      "duration": 766,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 70082,
+      "duration": 714,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 70796,
+      "duration": 403,
+      "noteType": "Utility1",
+      "abilityId": 41065
+    },
+    {
+      "time": 71199,
+      "duration": 122,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 71229,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 71321,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 71437,
+      "duration": 718,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 72155,
+      "duration": 724,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 72879,
+      "duration": 879,
+      "noteType": "Weapon3",
+      "abilityId": 10216
+    },
+    {
+      "time": 73758,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 74041,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 74042,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 74521,
+      "duration": 727,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 75248,
+      "duration": 746,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 75994,
+      "duration": 765,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 76759,
+      "duration": 755,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 76916,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 76999,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 77242,
+      "duration": 0,
+      "noteType": "Weapon2",
+      "abilityId": 10310
+    },
+    {
+      "time": 77280,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 77514,
+      "duration": 764,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 78141,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 78278,
+      "duration": 719,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 78997,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 79755,
+      "duration": 765,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 80520,
+      "duration": 772,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 80975,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 81292,
+      "duration": 705,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 81997,
+      "duration": 41,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 82037,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 82156,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 82916,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 83675,
+      "duration": 777,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 83856,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 84452,
+      "duration": 705,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 85157,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 85919,
+      "duration": 961,
+      "noteType": "Heal",
+      "abilityId": 40200
+    },
+    {
+      "time": 86880,
+      "duration": 756,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 87336,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 87636,
+      "duration": 721,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 88357,
+      "duration": 80,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 88437,
+      "duration": 399,
+      "noteType": "Utility1",
+      "abilityId": 41065
+    },
+    {
+      "time": 88836,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 89596,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 90001,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 90001,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 90356,
+      "duration": 719,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 91075,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 91835,
+      "duration": 763,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 92598,
+      "duration": 654,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 93148,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 93252,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 93356,
+      "duration": 718,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 94074,
+      "duration": 127,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 94201,
+      "duration": 875,
+      "noteType": "Weapon3",
+      "abilityId": 10216
+    },
+    {
+      "time": 95076,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 95836,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 95995,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 96598,
+      "duration": 719,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 97317,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 98076,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 98799,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 98838,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 98915,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 98957,
+      "duration": 0,
+      "noteType": "Weapon2",
+      "abilityId": 10310
+    },
+    {
+      "time": 99552,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 99596,
+      "duration": 721,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 99999,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 100119,
+      "duration": 0,
+      "noteType": "Profession2",
+      "abilityId": 10190
+    },
+    {
+      "time": 100317,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 101077,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 101836,
+      "duration": 762,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 102357,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 102598,
+      "duration": 718,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 103316,
+      "duration": 602,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 103918,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 104076,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 104834,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 105484,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 105595,
+      "duration": 401,
+      "noteType": "Utility1",
+      "abilityId": 41065
+    },
+    {
+      "time": 105795,
+      "duration": 722,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 106718,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 107478,
+      "duration": 955,
+      "noteType": "Heal",
+      "abilityId": 40200
+    },
+    {
+      "time": 108235,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 108235,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 108433,
+      "duration": 723,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 109156,
+      "duration": 761,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 109917,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 110677,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 111097,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 111437,
+      "duration": 722,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 112159,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 112918,
+      "duration": 760,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 113035,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 45449
+    },
+    {
+      "time": 113678,
+      "duration": 757,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 113997,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 114435,
+      "duration": 768,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 115203,
+      "duration": 34,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 115237,
+      "duration": 877,
+      "noteType": "Weapon3",
+      "abilityId": 10216
+    },
+    {
+      "time": 116114,
+      "duration": 759,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 116606,
+      "duration": 0,
+      "noteType": "Dodge",
+      "abilityId": -17
+    },
+    {
+      "time": 116873,
+      "duration": 723,
+      "noteType": "Weapon1",
+      "abilityId": 40184,
+      "overrideAuto": true
+    },
+    {
+      "time": 117596,
+      "duration": 758,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 118354,
+      "duration": 1044,
+      "noteType": "Weapon1",
+      "abilityId": 10273
+    },
+    {
+      "time": 118474,
       "duration": 0,
       "noteType": "Profession1",
       "abilityId": 10191
