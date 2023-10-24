@@ -183,6 +183,8 @@ namespace DanceDanceRotationModule.Model
                     {
                         case NoteType.Weapon1:
                         case NoteType.Profession1:
+                        case NoteType.WeaponSwap:
+                        case NoteType.WeaponStow:
                             return 0;
                         case NoteType.Weapon2:
                         case NoteType.Profession2:
@@ -202,10 +204,8 @@ namespace DanceDanceRotationModule.Model
                         case NoteType.Dodge:
                             return 6;
                         case NoteType.Utility2:
-                        case NoteType.WeaponSwap:
                             return 7;
                         case NoteType.Utility3:
-                        case NoteType.WeaponStow:
                             return 8;
                         case NoteType.Elite:
                         case NoteType.Unknown:
