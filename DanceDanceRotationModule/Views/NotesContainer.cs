@@ -101,7 +101,7 @@ namespace DanceDanceRotationModule.Views
             internal int DestroyNotePosition { get; private set; }
             /** How fast the note should move per note change. Determined by SongData. */
             internal double NotePositionChangePerSecond { get; private set; }
-            internal double TimeToReachEnd { get; private set; }
+            internal double TimeToReachEndMs { get; private set; }
             /** NoteCollisionCheck is defined as the duration it takes a note to move a distance equal to its width/height (based on orientation) */
             internal TimeSpan NoteCollisionCheck { get; private set; }
 
@@ -238,7 +238,7 @@ namespace DanceDanceRotationModule.Views
                             NoteWidth * 1.5
                         );
 
-                        TimeToReachEnd = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond;
+                        TimeToReachEndMs = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
                             (int)(perfectPosition - (NoteWidth / 2.0)),
@@ -259,7 +259,7 @@ namespace DanceDanceRotationModule.Views
                             (1-PerfectPosition) * width,
                             width - (NoteWidth * 1.5)
                         );
-                        TimeToReachEnd = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond;
+                        TimeToReachEndMs = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
                             (int)(perfectPosition - (NoteWidth / 2.0)),
@@ -282,7 +282,7 @@ namespace DanceDanceRotationModule.Views
                             (1-PerfectPosition) * (height - NextAbilityIconsHeight),
                             height - (NoteHeight * 1.5) - NextAbilityIconsHeight
                         );
-                        TimeToReachEnd = (NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond;
+                        TimeToReachEndMs = (NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
                             HorizontalPadding,
@@ -304,7 +304,7 @@ namespace DanceDanceRotationModule.Views
                             NextAbilityIconsHeight + (PerfectPosition * (height - NextAbilityIconsHeight)),
                             NextAbilityIconsHeight + (NoteHeight * 1.5)
                         );
-                        TimeToReachEnd = (NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond;
+                        TimeToReachEndMs = ((NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond * 1000);
 
                         TargetLocation = new Point(
                             HorizontalPadding,
@@ -981,10 +981,12 @@ namespace DanceDanceRotationModule.Views
             internal bool ShouldDispose { get; private set; }
 
             private WindowInfo _windowInfo;
+            private double TimeToDisposeAt;
 
             public AbilityIcon(
                 WindowInfo windowInfo,
                 Note note,
+                SongData songData,
                 BlishContainer parent
             )
             {
@@ -1002,12 +1004,19 @@ namespace DanceDanceRotationModule.Views
                 };
 
                 ShouldDispose = false;
+
+                // Note: The time to dispose at is when the timeInRotation reaches this note +
+                //       the time it takes to move to the end. BUT, because the timeInRotation is
+                //       potentially slowed time by the PlaybackRate being < 1.0, this means the
+                //       timeToReachEndMs needs to be changed to match the.
+                TimeToDisposeAt = Note.TimeInRotation.TotalMilliseconds
+                                  + _windowInfo.TimeToReachEndMs * songData.PlaybackRate;
             }
 
             public void Update(GameTime gameTime, TimeSpan timeInRotation)
             {
                 // TODO: Animation here
-                if (timeInRotation.TotalMilliseconds > Note.TimeInRotation.TotalMilliseconds + (_windowInfo.TimeToReachEnd*1000))
+                if (timeInRotation.TotalMilliseconds > TimeToDisposeAt)
                 {
                     ShouldDispose = true;
                 }
@@ -1817,6 +1826,7 @@ namespace DanceDanceRotationModule.Views
             var icon = new AbilityIcon(
                 _windowInfo,
                 note,
+                _songData,
                 this
             );
             _info.AbilityIcons.Add(
