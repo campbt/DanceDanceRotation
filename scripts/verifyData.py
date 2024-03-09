@@ -56,8 +56,8 @@ def printBadNote(note, notes):
     print("        total # : ", note["count"])
     if abilityId in allSkills:
         skill = allSkills[abilityId]
-        print("        name    : ", skill["name"])
-        print("        slot    : ", skill["slot"])
+        print("        name    : ", skill.get("name"))
+        print("        slot    : ", skill.get("slot"))
     else:
         print("        name    : <Not in allskills>")
     # Nearby
