@@ -227,6 +227,11 @@ namespace DanceDanceRotationModule
             return _notesView?.GetNotesContainer();
         }
 
+        public bool IsNotesWindowVisible()
+        {
+            return _notesWindow.Visible;
+        }
+
         public void ToggleNotesWindow()
         {
             Logger.Trace("ToggleNotesWindow");

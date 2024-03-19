@@ -126,7 +126,7 @@ namespace DanceDanceRotationModule.Views
             stopButton.BasicTooltipText = "Reset";
             stopButton.Click += delegate
             {
-                _notesContainer.Reset();
+                _notesContainer.Stop();
             };
 
             // MARK: Play/Pause Button

@@ -40,6 +40,7 @@ namespace DanceDanceRotationModule.Storage
         internal SettingEntry<bool> ShowHotkeys { get; private set; }
         internal SettingEntry<bool> ShowOnlyCharacterClassSongs { get; private set; }
         internal SettingEntry<bool> CompactMode { get; private set; }
+        internal SettingEntry<bool> StartSongsWithFirstSkill { get; private set; }
         internal SettingEntry<int> ShowNextAbilitiesCount { get; private set; }
 
         private void InitGeneral(SettingCollection settings)
@@ -86,6 +87,11 @@ namespace DanceDanceRotationModule.Storage
                 false,
                 () => "Compact Mode",
                 () => "If enabled, notes will try to be in a single lane and only shifted to other lanes to avoid collisions. Does NOT work with Ability Bar orientation.");
+
+            StartSongsWithFirstSkill = generalSettings.DefineSetting("StartSongsWithFirstSkill",
+                true,
+                () => "Start with first skill",
+                () => "If enabled, the song can be started by pressing the hotkey for the first ability.\nNotes will be shifted so the first note is already in the 'Perfect' location.\nThis has no effect if the song is set to start later than the beginning.");
 
             ShowNextAbilitiesCount = generalSettings.DefineSetting("ShowNextAbilitiesCount",
                 0,
@@ -164,11 +170,14 @@ namespace DanceDanceRotationModule.Storage
                 }
                 else
                 {
-                    DanceDanceRotationModule.Instance
-                        .GetNotesContainer()
-                        ?.OnHotkeyPressed(
-                            noteType
-                        );
+                    if (DanceDanceRotationModule.Instance.IsNotesWindowVisible())
+                    {
+                        DanceDanceRotationModule.Instance
+                            .GetNotesContainer()
+                            ?.OnHotkeyPressed(
+                                noteType
+                            );
+                    }
                 }
             };
             return retval;
@@ -243,7 +252,7 @@ namespace DanceDanceRotationModule.Storage
             {
                 DanceDanceRotationModule.Instance
                     .GetNotesContainer()
-                    ?.Reset();
+                    ?.Stop();
             };
         }
 
@@ -353,6 +362,7 @@ namespace DanceDanceRotationModule.Storage
             ClearSettingChanged(ShowHotkeys);
             ClearSettingChanged(ShowOnlyCharacterClassSongs);
             ClearSettingChanged(ShowNextAbilitiesCount);
+            ClearSettingChanged(StartSongsWithFirstSkill);
             ClearSettingChanged(SwapWeapons);
             ClearSettingChanged(Dodge);
             ClearSettingChanged(Weapon1);

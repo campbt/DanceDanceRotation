@@ -44,6 +44,7 @@ namespace DanceDanceRotationModule.Views
             public void Reset()
             {
                 IsStarted = false;
+                IsPaused = false;
                 SequenceIndex = 0;
                 StartTime = TimeSpan.Zero;
                 AbilityIconIndex = 0;
@@ -238,7 +239,7 @@ namespace DanceDanceRotationModule.Views
                             NoteWidth * 1.5
                         );
 
-                        TimeToReachEndMs = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond * 1000;
+                        TimeToReachEndMs = Math.Abs(NewNotePosition.X + (NoteWidth/2) - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
                             (int)(perfectPosition - (NoteWidth / 2.0)),
@@ -259,7 +260,7 @@ namespace DanceDanceRotationModule.Views
                             (1-PerfectPosition) * width,
                             width - (NoteWidth * 1.5)
                         );
-                        TimeToReachEndMs = (NewNotePosition.X - perfectPosition) / NotePositionChangePerSecond * 1000;
+                        TimeToReachEndMs = Math.Abs(NewNotePosition.X + (NoteWidth/2) - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
                             (int)(perfectPosition - (NoteWidth / 2.0)),
@@ -282,7 +283,7 @@ namespace DanceDanceRotationModule.Views
                             (1-PerfectPosition) * (height - NextAbilityIconsHeight),
                             height - (NoteHeight * 1.5) - NextAbilityIconsHeight
                         );
-                        TimeToReachEndMs = (NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond * 1000;
+                        TimeToReachEndMs = Math.Abs(NewNotePosition.Y + (NoteHeight/2) - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
                             HorizontalPadding,
@@ -304,7 +305,7 @@ namespace DanceDanceRotationModule.Views
                             NextAbilityIconsHeight + (PerfectPosition * (height - NextAbilityIconsHeight)),
                             NextAbilityIconsHeight + (NoteHeight * 1.5)
                         );
-                        TimeToReachEndMs = ((NewNotePosition.Y - perfectPosition) / NotePositionChangePerSecond * 1000);
+                        TimeToReachEndMs = Math.Abs((NewNotePosition.Y + (NoteHeight/2) - perfectPosition) / NotePositionChangePerSecond * 1000);
 
                         TargetLocation = new Point(
                             HorizontalPadding,
@@ -409,6 +410,14 @@ namespace DanceDanceRotationModule.Views
             )
             {
                 float moveAmount = (float)(NotePositionChangePerSecond * (gameTime.ElapsedGameTime.Milliseconds) / 1000.0);
+                return GetNoteChangeLocation(moveAmount);
+            }
+
+            /** Returns the amount a note should move given an update */
+            public Vector2 GetNoteChangeLocation(
+                float moveAmount
+            )
+            {
 
                 switch (Orientation)
                 {
@@ -1006,11 +1015,18 @@ namespace DanceDanceRotationModule.Views
                 ShouldDispose = false;
 
                 // Note: The time to dispose at is when the timeInRotation reaches this note +
-                //       the time it takes to move to the end. BUT, because the timeInRotation is
-                //       potentially slowed time by the PlaybackRate being < 1.0, this means the
-                //       timeToReachEndMs needs to be changed to match the.
+                //       the time it takes to move to the end.
+                //       BUT, the AbilityIcon::Update() method is passed in a "timeInRotation" variable
+                //       *which is scaled by playbackRate*. This means that since that variable is
+                //       used to calculate the TimeToReachEndMs, which is NOT scaled by PlaybackRate,
+                //       the TimeToDisposeAt must scale it down to match.
+                // Ex:
+                //     With rate=1.0, a note might be disposed at: 1 (TimeInRotation) + 2 (TimeToReachEnd)
+                //     With rate=0.5, the timeInRotation variable is still accurate, so 1 (TimeInRotation), but
+                //                    the TimeToReachEnd, when using timeInRotation, needs to just be 1, since
+                //                    timeInRotation is incrementing at 0.5x speed compared to the movement time.
                 TimeToDisposeAt = Note.TimeInRotation.TotalMilliseconds
-                                  + _windowInfo.TimeToReachEndMs * songData.PlaybackRate;
+                        + _windowInfo.TimeToReachEndMs * songData.PlaybackRate;
             }
 
             public void Update(GameTime gameTime, TimeSpan timeInRotation)
@@ -1085,8 +1101,10 @@ namespace DanceDanceRotationModule.Views
             DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.SettingChanged +=
                 delegate
                 {
+                    Logger.Trace("ShowNextAbilitiesCount Updated. Resetting and recalculating layout and creating new target and lines");
                     Reset();
                     RecalculateLayout();
+                    AddInitialNotes();
                 };
             DanceDanceRotationModule.Settings.Orientation.SettingChanged +=
                 delegate(object sender, ValueChangedEventArgs<NotesOrientation> args)
@@ -1094,6 +1112,15 @@ namespace DanceDanceRotationModule.Views
                     Logger.Trace("Orientation Updated. Resetting and recalculating layout and creating new target and lines");
                     Reset();
                     RecalculateLayout();
+                    AddInitialNotes();
+                };
+            DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.SettingChanged +=
+                delegate
+                {
+                    Logger.Trace("StartSongsWithFirstSkill Updated. Resetting and recalculating layout and creating new target and lines");
+                    Reset();
+                    RecalculateLayout();
+                    AddInitialNotes();
                 };
             DanceDanceRotationModule.Settings.CompactMode.SettingChanged +=
                 delegate(object sender, ValueChangedEventArgs<bool> args)
@@ -1118,6 +1145,7 @@ namespace DanceDanceRotationModule.Views
                             }
 
                             RecalculateLayout();
+                            AddInitialNotes();
                             break;
                         case NotesOrientation.AbilityBarStyle:
                             Logger.Trace($"CompactMode Updated, but the orientation is {DanceDanceRotationModule.Settings.Orientation.Value}, which is not supported");
@@ -1156,6 +1184,7 @@ namespace DanceDanceRotationModule.Views
         {
             base.OnResized(e);
             Reset();
+            AddInitialNotes();
         }
 
         public void SetNoteSequence(
@@ -1175,6 +1204,7 @@ namespace DanceDanceRotationModule.Views
                     _songData,
                     DanceDanceRotationModule.Settings.Orientation.Value
                 );
+                AddInitialNotes();
             }
         }
 
@@ -1184,11 +1214,13 @@ namespace DanceDanceRotationModule.Views
             {
                 ScreenNotification.ShowNotification("Stopped");
                 Reset();
+                AddInitialNotes();
             }
             else
             {
                 ScreenNotification.ShowNotification("Starting");
                 Reset();
+                AddInitialNotes();
                 Play();
             }
         }
@@ -1201,42 +1233,7 @@ namespace DanceDanceRotationModule.Views
             }
             _timeLabel.Visible = false;
 
-            if (_info.IsStarted == false)
-            {
-                // Start from stopped
-                Logger.Trace("Starting Notes");
-
-                _info.IsStarted = true;
-                _info.StartTime = _lastGameTime;
-
-                if (_songData.StartAtSecond > 0)
-                {
-                    TimeSpan startTime = TimeSpan.FromSeconds(_songData.StartAtSecond);
-
-                    // Adjust the current index up so the first notes don't spawn in a clump
-                    foreach (Note note in _currentSequence)
-                    {
-                        if (note.TimeInRotation < startTime)
-                        {
-                            _info.SequenceIndex += 1;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    // Set StartTime back in time to begin later in the song. This must be adjusted by the rate to be accurate
-                    startTime = startTime.Divide(
-                        new decimal(_songData.PlaybackRate)
-                    );
-                    _info.StartTime -= startTime;
-                }
-
-                OnStartStop?.Invoke(this, _info.IsStarted);
-                AddInitialAbilityIcons();
-            }
-            else if (_info.IsPaused)
+            if (_info.IsPaused)
             {
                 // Resume from paused
                 Logger.Trace("Resuming Notes");
@@ -1244,6 +1241,11 @@ namespace DanceDanceRotationModule.Views
                 _info.IsPaused = false;
                 _info.StartTime += _lastGameTime - _info.PausedTime;
                 HideAllTooltips();
+            }
+            if (_info.IsStarted == false)
+            {
+                _info.IsStarted = true;
+                OnStartStop?.Invoke(this, _info.IsStarted);
             }
         }
 
@@ -1267,16 +1269,187 @@ namespace DanceDanceRotationModule.Views
             }
         }
 
-        public void Reset()
+
+        public void Stop()
         {
-            if (_info.IsStarted)
+            Reset();
+            AddInitialNotes();
+            ShowAllTooltips();
+        }
+
+        private void Reset()
+        {
+            lock (_lock)
             {
-                Logger.Trace("Reset");
-                _info.IsStarted = false;
-                _info.IsPaused = false;
+                bool isStarted = _info.IsStarted;
                 _info.Reset();
                 _timeLabel.Visible = false;
-                OnStartStop?.Invoke(this, _info.IsStarted);
+
+                if (isStarted)
+                {
+                    Logger.Trace("Reset");
+                    OnStartStop?.Invoke(this, _info.IsStarted);
+                }
+
+            }
+        }
+
+        /**
+         * This method should be called after a reset and loading a new song
+         * It will effectively start the song at the _songData.StartAtSecond
+         * time, and then pause it after a duration. So, this spawns in some
+         * initial notes (and ability icons for the static rotation display)
+         * and moves them the appropriate amount.
+         * Movement time is based on StartAtSecond:
+         *   If start=0s: t=_windowInfo.TimeToReachEndMs, which means that
+         *                the first note, which should always be 0:00 in the rotation,
+         *                will be placed at the "Perfect" position
+         *   If start>0s: t=_windowInfo.TimeToReachEndMs - 1s, which means that
+         *                hitting play will take 1s before the StartAtSecond is hit
+         *                (so if a note exists at StartAtSecond, it will be hit 1s after
+         *                play, but songs may not have notes at StartAtSecond,
+         *                so the first note may take longer to hit)
+         */
+        private void AddInitialNotes()
+        {
+            lock (_lock)
+            {
+
+                // Set up the initial notes so the first note is at t=0
+                if (_currentSequence.Count != 0)
+                {
+
+                    TimeSpan startTime = TimeSpan.FromSeconds(_songData.StartAtSecond);
+                    if (_songData.StartAtSecond > 0)
+                    {
+                        // Adjust the current index up so the first notes don't spawn in a clump
+                        foreach (Note note in _currentSequence)
+                        {
+                            if (note.TimeInRotation < startTime)
+                            {
+                                _info.SequenceIndex += 1;
+                                _info.AbilityIconIndex += 1;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    // totalMoveTime simply is the max time to move notes over by
+                    // If totalMoveTime is 3s, then we effectively advance time by 3s.
+                    // This is only affected by the Note Pace (which affects TimeToReachEndMs)
+                    // Be aware that the max time is only given to the first note spawned.
+                    // Later notes are moved by less time based on how far they spawn after the first note
+                    TimeSpan totalMoveTime;
+                    if (
+                        DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value &&
+                        _songData.StartAtSecond <= 0
+                    )
+                    {
+                        // T=0:00 start means the first note is placed at the start
+                        // To do this, the totalMoveTime must be the entire TimeToReachEnd
+                        // This assumes that the first note in a song is always at t=0:00
+                        totalMoveTime = TimeSpan.FromMilliseconds(_windowInfo.TimeToReachEndMs);
+                    }
+                    else
+                    {
+                        // When a song starts later, it may not have a note that is cast at that exact
+                        // start time. So, it shouldn't be set up to have a note right at the start position
+                        // Instead, shift notes so that the startTime is hit exactly 1s after start, if possible
+                        if (_windowInfo.TimeToReachEndMs >= 1.0)
+                        {
+                            totalMoveTime = TimeSpan.FromMilliseconds(_windowInfo.TimeToReachEndMs - 1000);
+                        }
+                        else
+                        {
+                            // Edge Case: The Note Pace is so fast that the start time hits before even 1s.
+                            //            In this case, shift time over by half
+                            totalMoveTime = TimeSpan.FromMilliseconds(_windowInfo.TimeToReachEndMs / 2);
+                        }
+                    }
+
+                    _info.StartTime = _lastGameTime;
+                    startTime = startTime.Divide(
+                        new decimal(_songData.PlaybackRate)
+                    );
+                    startTime = startTime.Add(
+                        totalMoveTime
+                            // .Multiply(
+                            //     new decimal(_songData.PlaybackRate)
+                            // )
+                    );
+                    _info.StartTime -= startTime;
+
+                    // Pause now so the _info.StartTime can be adjusted correctly later when the notes start moving
+                    _info.IsPaused = true;
+                    _info.PausedTime = _lastGameTime;
+
+                    // Determine which notes need to be spawned in initially
+                    // This is only affected by the PlaybackRate
+                    TimeSpan endTimeRotation = totalMoveTime
+                        .Multiply(
+                            new decimal(_songData.PlaybackRate)
+                        )
+                        .Add(
+                            TimeSpan.FromSeconds(_songData.StartAtSecond)
+                        );
+                    while (
+                        _info.SequenceIndex < _currentSequence.Count &&
+                        _currentSequence[_info.SequenceIndex].TimeInRotation < endTimeRotation
+                    )
+                    {
+                        Note nextNote = _currentSequence[_info.SequenceIndex];
+                        AddNote(nextNote, _info.SequenceIndex);
+                        _info.SequenceIndex += 1;
+                    }
+
+                    if (_info.ActiveNotes.Count > 0)
+                    {
+
+                        for (int index = 0; index < _info.ActiveNotes.Count; index++)
+                        {
+                            ActiveNote activeNote = _info.ActiveNotes[index];
+                            TimeSpan timeInRotation = activeNote.Note.TimeInRotation;
+
+                            // Moving the note is a bit complicated to match how the system works
+                            // => Note Pace (speed of notes) affects the totalMoveTime, so that variable should increase with it
+                            //      This affects totalMoveTime because the notes move faster/slower across. But, timeInRotation
+                            //      is unchanged because that is used for spawning a note, which is not affected by pace
+                            // => Note Rate (PlaybackRate) does not affect totalMoveTime, but it does affect the timeInRotation
+                            //      This does not affect totalMoveTime as it only changes the spawn rate, which is timeInRotation
+                            //
+                            // So, when Note Rate is reduced, the spawn rate is slowed down by that rate. (Ex: A note at t=1s in rotation spawns at t=2s)
+                            // But, once spawned, the note would move based on the Note Pace, and is no longer slowed down by the Rate,
+                            //
+                            // To determine how much to move a note, you have to factor in both the time spent *before* it was spawned,
+                            // which is the Rate portion, and the time spent *after* spawned.
+                            //
+                            // |-- No Movement --|-- Movement --|
+                            // (Pre Spawn Time)  |  (Post Spawn Time)
+                            //   (time / Rate)   |  (time)
+                            //
+                            // Ex: PlaybackRate = 0.5, StartAtSecond = 10
+                            // Note A: Starts at 10s: This has 0s in PreSpawnTime, so it is moved the full totalMoveTime * NotePositionChangePerSecond
+                            //
+                            // Note B: Starts at 11s: This has 1s in PreSpawnTime, but since the rate is 0.5, that means that
+                            //                        had this played out, it would have actually spent 2s of gameTime waiting to spawn,
+                            //                        then be moved for the rest of the totalMoveTime at an unscaled rate.
+                            //                        So, it's movement is (totalMoveTime - ((11s-10s) / 0.5)) * NotePositionChangePerSecond
+                            double moveBase = (_windowInfo.NotePositionChangePerSecond *
+                                (totalMoveTime.TotalMilliseconds - ((timeInRotation.TotalMilliseconds - (_songData.StartAtSecond * 1000.0)) / _songData.PlaybackRate))
+                                / 1000.0);
+                            Vector2 moveAmount = _windowInfo.GetNoteChangeLocation(
+                                (float)(moveBase)
+                            );
+                            activeNote.Update(moveAmount);
+                        }
+
+                        AddInitialAbilityIcons();
+                    }
+                }
+
             }
         }
 
@@ -1303,26 +1476,6 @@ namespace DanceDanceRotationModule.Views
             double playbackRate = _songData.PlaybackRate;
             timeInRotation = timeInRotation.Multiply(new decimal(playbackRate));
 
-            // Check to add notes
-            if (_info.SequenceIndex < _currentSequence.Count)
-            {
-                Note nextNote = _currentSequence[_info.SequenceIndex];
-                if (nextNote.TimeInRotation < timeInRotation)
-                {
-                    AddNote(nextNote, _info.SequenceIndex);
-                    _info.SequenceIndex += 1;
-                }
-            }
-            else
-            {
-                // Check if song has ended and all notes are gone
-                if (_info.ActiveNotes.Count == 0)
-                {
-                    Logger.Trace("No more active notes. Resetting.");
-                    Reset();
-                }
-            }
-
             // Update Active Notes and remove any that want to be destroyed
             Vector2 moveAmount = _windowInfo.GetNoteChangeLocation(gameTime);
             for (int index = _info.ActiveNotes.Count - 1; index >= 0; index--)
@@ -1348,10 +1501,28 @@ namespace DanceDanceRotationModule.Views
                 }
             }
 
-            // if (_info.AbilityIcons.Count == 0)
-            // {
-            //     AddInitialAbilityIcons();
-            // }
+            // Check to add notes
+            if (_info.SequenceIndex < _currentSequence.Count)
+            {
+                Note nextNote = _currentSequence[_info.SequenceIndex];
+                if (nextNote.TimeInRotation < timeInRotation)
+                {
+                    AddNote(nextNote, _info.SequenceIndex);
+                    _info.SequenceIndex += 1;
+                }
+            }
+            else
+            {
+                // Check if song has ended and all notes are gone
+                if (_info.ActiveNotes.Count == 0)
+                {
+                    Logger.Trace("No more active notes. Resetting.");
+                    Reset();
+                    AddInitialNotes();
+                    return;
+                }
+            }
+
             for (int index = _info.AbilityIcons.Count - 1; index >= 0; index--)
             {
                 AbilityIcon abilityIcon = _info.AbilityIcons[index];
@@ -1379,7 +1550,22 @@ namespace DanceDanceRotationModule.Views
         {
             if (_info.IsStarted == false)
             {
-                return;
+                // Songs that start at the 0th second can be started by pressing the first note
+                if (
+                    DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value &&
+                    _songData.StartAtSecond == 0 &&
+                    _info.ActiveNotes.Count > 0 &&
+                    // The first note of a song should always be 0, but this is a sanity check
+                    _info.ActiveNotes[0].Note.TimeInRotation.TotalMilliseconds == 0 &&
+                    _info.ActiveNotes[0].OnHotkeyPressed()
+                )
+                {
+                    Play();
+                }
+                else
+                {
+                    return;
+                }
             }
 
             foreach (var activeNote in _info.ActiveNotes)
@@ -1812,7 +1998,7 @@ namespace DanceDanceRotationModule.Views
             var totalAbilityIcons = DanceDanceRotationModule.Settings.ShowNextAbilitiesCount.Value;
             if (totalAbilityIcons > 0)
             {
-                for (int index = 0, size = Math.Min(totalAbilityIcons, _currentSequence.Count); index < size; index++)
+                for (int index = _info.AbilityIconIndex, size = Math.Min(_info.AbilityIconIndex + totalAbilityIcons, _currentSequence.Count); index < size; index++)
                 {
                     AddAbilityIcon(_currentSequence[index]);
                     _info.AbilityIconIndex += 1;
