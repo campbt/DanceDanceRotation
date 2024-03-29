@@ -1557,6 +1557,7 @@ namespace DanceDanceRotationModule.Views
                     _info.ActiveNotes.Count > 0 &&
                     // The first note of a song should always be 0, but this is a sanity check
                     _info.ActiveNotes[0].Note.TimeInRotation.TotalMilliseconds == 0 &&
+                    _info.ActiveNotes[0].Note.NoteType == noteType &&
                     _info.ActiveNotes[0].OnHotkeyPressed()
                 )
                 {
