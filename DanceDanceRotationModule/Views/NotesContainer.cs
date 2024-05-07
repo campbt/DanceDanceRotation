@@ -696,17 +696,18 @@ namespace DanceDanceRotationModule.Views
                     return false;
                 }
 
-                if (XPosition > _windowInfo.HitRangeBoo.Max)
-                {
-                    // Ignore presses not even in consideration
-                    return false;
-                }
-
                 HitType hitType;
                 var axisToCheck =
                     _windowInfo.IsVerticalOrientation()
                         ? YPosition
                         : XPosition;
+
+                if (axisToCheck > _windowInfo.HitRangeBoo.Max)
+                {
+                    // Ignore presses not even in consideration
+                    return false;
+                }
+
                 if (_windowInfo.HitRangePerfect.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Perfect;
