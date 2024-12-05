@@ -33,69 +33,85 @@ def fetchSkillIds():
     return response.json()
 
 #
+# Creates a request chunk to avoid hitting 414 (Request-URI Too Long) errors
+# This is a helper function for fetchSkills
+#
+def createRequestChunk(ids, startIndex, endIndex):
+    idsToRequest = ""
+    for index in range(startIndex,endIndex):
+        if index != startIndex:
+            idsToRequest += ","
+        idsToRequest += str(ids[index])
+    return idsToRequest
+
+#
 # Makes multiple requests to fetch the requested ability ID jsons and writes the json
 # into an output file
 #
 def fetchSkills(ids, outputFile):
-
     # The API allows requesting multiple IDs at once, so block it with this stepSize
     # This is the step size used by the wiki tool
     stepSize = 200
-
+    
     outputFile = open(ALL_SKILLS_FILENAME, "w")
-
     maxIndex = len(ids) - 1
 
     isFirstSkill = True
     outputFile.write("{\n")
-    for startIndex in range(0,len(ids),stepSize):
-        idsToRequest = ""
-        endIndex = min(startIndex + stepSize, maxIndex)
-        for index in range(startIndex,maxIndex):
-            if index != startIndex:
-                idsToRequest += ","
-            idsToRequest += str(ids[index])
+    
+    for startIndex in range(0, len(ids), stepSize):
+        idsToRequest = []  # Use a list instead of string concatenation
+        endIndex = min(startIndex + stepSize, maxIndex + 1)  # Fix the endIndex calculation
+        
+        # Collect IDs for this batch
+        idsToRequest = ids[startIndex:endIndex]
+        
+        # Join IDs with commas
+        ids_string = ",".join(str(id) for id in idsToRequest)
+        
+        print(f"Making Fetch: {ids[startIndex]} -> {ids[endIndex-1]}")
+        
+        response = requests.get(url=f"https://api.guildwars2.com/v2/skills?ids={ids_string}")
+        
+        if response.status_code != 200:
+            print(f"Error with request: {response.status_code}")
+            print(f"Response: {response.text[:200]}")
+            continue
+            
+        try:
+            jsonResponse = response.json()
+            professionSkillsFound = 0
+            for skillJson in jsonResponse:
+                skillId = skillJson.get("id")
+                if not skillId:
+                    print("Skill Has No ID:\n" + str(skillJson))
+                    continue
 
-        print("Making Fetch: " + str(ids[index]) + " -> " + str(ids[endIndex]))
+                professions = skillJson.get("professions", [])
+                if not professions:
+                    continue
 
-        response = requests.get(url="https://api.guildwars2.com/v2/skills?ids=" + idsToRequest)
-        jsonResponse = response.json()
-        professionSkillsFound = 0
-        for skillJson in jsonResponse:
-            skillId = None
-            if "id" in skillJson:
-                skillId = skillJson["id"]
-            else:
-                print("Skill Has No ID:\n" + skillJson)
-                continue
-
-            if "professions" in skillJson:
-                professions = skillJson["professions"]
-            else:
-                # Treat it as a skill with no professions, probably like a monster ability
-                # print("Skill (id: " + str(skillId) + ") has no Professions\n")
-                continue
-
-            if len(professions) > 0:
-                professionSkillsFound += 1
-                prettyJson = ""
-                if isFirstSkill:
+                if len(professions) > 0:
+                    professionSkillsFound += 1
+                    prettyJson = ""
+                    if not isFirstSkill:
+                        prettyJson += ","
                     isFirstSkill = False
-                else:
-                    prettyJson += ","
-                prettyJson += "\n\"" + str(skillId) + "\": "
-                prettyJson += json.dumps(
-                    skillJson,
-                    sort_keys=True,
-                    indent=4,
-                    separators=(',', ': ')
-                )
-
-                outputFile.write(
-                    prettyJson
-                )
-        print("Found " + str(professionSkillsFound) + " Profession Skills")
-        time.sleep(SLEEP_TIME)
+                    prettyJson += f'\n"{skillId}": '
+                    prettyJson += json.dumps(
+                        skillJson,
+                        sort_keys=True,
+                        indent=4,
+                        separators=(',', ': ')
+                    )
+                    outputFile.write(prettyJson)
+            
+            print(f"Found {professionSkillsFound} Profession Skills")
+            time.sleep(SLEEP_TIME)
+            
+        except json.JSONDecodeError as e:
+            print(f"JSON Decode Error: {e}")
+            continue
 
     outputFile.write("\n}")
     outputFile.close()
@@ -158,8 +174,8 @@ def getImageFileName(iconUrl):
 
 # MARK: Main
 
-# allIds = fetchSkillIds()
-# print("Found " + str(len(allIds)) + " IDs. Starting fetch")
-# fetchSkills(allIds)
+allIds = fetchSkillIds()
+print("Found " + str(len(allIds)) + " IDs. Starting fetch")
+fetchSkills(allIds, ALL_SKILLS_FILENAME)
 
 createAbilityInfoTable()
