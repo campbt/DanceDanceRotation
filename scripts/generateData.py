@@ -167,7 +167,7 @@ def getImageFileName(iconUrl):
     startIndex = iconUrl.rindex("/") + 1
     return int(iconUrl[
         startIndex:len(iconUrl)
-    ].replace("/","_").replace(".png",""))
+    ].replace("/","_").split(".")[0])
 
 
 ###########################
