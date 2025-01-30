@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security.Cryptography;
 using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
@@ -83,6 +84,7 @@ namespace DanceDanceRotationModule.Views
         private Image _remapUtilityImage2;
         private Image _remapUtilityImage3;
         private Image _rotateRemapButton;
+        private Checkbox _noMissModeCheckbox;
         private Label _playbackRateLabel;
         private TrackBar _playbackRateTrackbar;
         private Label _startAtLabel;
@@ -299,6 +301,66 @@ namespace DanceDanceRotationModule.Views
                 Title = "Practice Settings",
                 CanCollapse = true,
                 Parent = rootPanel
+            };
+
+            // No Miss Mode
+
+            FlowPanel noMissModeSection = new FlowPanel()
+            {
+                HeightSizingMode = SizingMode.AutoSize,
+                WidthSizingMode = SizingMode.Fill,
+                FlowDirection = ControlFlowDirection.SingleLeftToRight,
+                Parent = practiceSettingsSection
+            };
+            _noMissModeCheckbox = new Checkbox()
+            {
+                Padding = new Thickness(26, 26),
+                Parent = noMissModeSection
+            };
+            _noMissModeCheckbox.CheckedChanged +=
+                delegate(object sender, CheckChangedEvent checkChangedEvent)
+                {
+                    if (_song != null)
+                    {
+                        DanceDanceRotationModule.SongRepo
+                            .UpdateData(
+                                _song.Id,
+                                songData =>
+                                {
+                                    songData.NoMissMode = checkChangedEvent.Checked;
+                                    return songData;
+                                }
+                            );
+                    }
+                };
+            FlowPanel noMissModeTextSection = new FlowPanel()
+            {
+                HeightSizingMode = SizingMode.AutoSize,
+                WidthSizingMode = SizingMode.Fill,
+                FlowDirection = ControlFlowDirection.SingleTopToBottom,
+                Padding = new Thickness(0, 20),
+                Parent = noMissModeSection
+            };
+            new Label()
+            {
+                Text = "No Miss Mode",
+                Width = 100,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont14,
+                TextColor = Color.LightGray,
+                Parent = noMissModeTextSection
+            };
+            new Label()
+            {
+                Text = "Notes will automatically pause in the perfect position and resume when hit. Great for learning the rotation keys without worrying about timing.",
+                WrapText = true,
+                Width = 260,
+                // Height = 50,
+                // AutoSizeWidth = true,
+                AutoSizeHeight = true,
+                Font = GameService.Content.DefaultFont12,
+                TextColor = Color.LightGray,
+                Parent = noMissModeTextSection
             };
 
             // Playback Rate - (Note Speed)
@@ -654,6 +716,7 @@ namespace DanceDanceRotationModule.Views
                 _remapUtilityImage2.Texture = Resources.Instance.UnknownAbilityIcon;
                 _remapUtilityImage3.Texture = Resources.Instance.UnknownAbilityIcon;
                 SetRemappingEnabled();
+                _noMissModeCheckbox.Checked = false;
                 _playbackRateTrackbar.Value = 100;
                 _startAtTrackbar.Value = 0;
                 _notePaceTrackBar.Value = SongData.DefaultNotePositionChangePerSecond;
@@ -695,6 +758,7 @@ namespace DanceDanceRotationModule.Views
             GetRemappedAbilityTexture(_song.Utility2, _songData.Utility2Mapping);
             GetRemappedAbilityTexture(_song.Utility3, _songData.Utility3Mapping);
 
+            _noMissModeCheckbox.Checked = _songData.NoMissMode;
             _playbackRateTrackbar.Value = (int)Math.Round(_songData.PlaybackRate * 100);
             _startAtTrackbar.Value = _songData.StartAtSecond;
             _startAtTrackbar.MaxValue =

@@ -1,6 +1,7 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
+using DanceDanceRotationModule.Model;
 using DanceDanceRotationModule.Storage;
 using DanceDanceRotationModule.Util;
 using Microsoft.Xna.Framework;
@@ -131,29 +132,27 @@ namespace DanceDanceRotationModule.Views
 
             // MARK: Play/Pause Button
 
-            var playPauseButton = new Image(
+            _playPauseButton = new Image(
                 Resources.Instance.ButtonPlay
             )
             {
                 Size = ControlExtensions.ImageButtonSmallSize,
                 Parent = _topPanel
             };
-            ControlExtensions.ConvertToButton(playPauseButton);
-            playPauseButton.BasicTooltipText = "Play";
-            playPauseButton.Click += delegate
+            ControlExtensions.ConvertToButton(_playPauseButton);
+            _playPauseButton.BasicTooltipText = "Play";
+            _playPauseButton.Click += delegate
             {
                 if (_notesContainer.IsStarted() == false || _notesContainer.IsPaused())
                 {
                     _notesContainer.Play();
-                    playPauseButton.Texture = Resources.Instance.ButtonPause;
-                    playPauseButton.BasicTooltipText = "Pause";
                 }
                 else
                 {
                     _notesContainer.Pause();
-                    playPauseButton.Texture = Resources.Instance.ButtonPlay;
-                    playPauseButton.BasicTooltipText = "Play";
                 }
+
+                UpdatePlayButton();
             };
 
             // MARK: Song Title
@@ -175,10 +174,19 @@ namespace DanceDanceRotationModule.Views
             DanceDanceRotationModule.SongRepo.OnSelectedSongChanged +=
                 delegate(object sender, SelectedSongInfo songInfo)
                 {
-                    activeSongName.Text =
+                    var songName =
                         songInfo.Song != null
                             ? songInfo.Song.Name
                             : "--";
+
+                    var noMissMode =
+                        songInfo.Data.NoMissMode
+                            ? "  (No Miss Mode)"
+                            : "";
+
+                    activeSongName.Text = songName + noMissMode;
+
+                    UpdatePlayButton();
                 };
 
             _notesContainer= new NotesContainer()
@@ -193,11 +201,32 @@ namespace DanceDanceRotationModule.Views
             _notesContainer.OnStartStop +=
                 delegate(object sender, bool isStarted)
                 {
-                    if (isStarted == false)
-                    {
-                        playPauseButton.Texture = Resources.Instance.ButtonPlay;
-                    }
+                    UpdatePlayButton();
                 };
+        }
+
+        private void UpdatePlayButton()
+        {
+            var songData = DanceDanceRotationModule.SongRepo.GetSongData(
+                DanceDanceRotationModule.SongRepo.GetSelectedSongId()
+            );
+            if (songData.NoMissMode)
+            {
+                _playPauseButton.Texture = Resources.Instance.ButtonPlay;
+                _playPauseButton.BasicTooltipText = "Play Disabled in No Miss Mode. Press note key.";
+            }
+            else if (_notesContainer != null && _notesContainer.IsStarted() && _notesContainer.IsPaused() == false)
+            {
+                _playPauseButton.Texture = Resources.Instance.ButtonPause;
+                _playPauseButton.BasicTooltipText = "Pause";
+            }
+            else
+            {
+                _playPauseButton.Texture = Resources.Instance.ButtonPlay;
+                _playPauseButton.BasicTooltipText = "Play";
+            }
+
+            _playPauseButton.Enabled = songData.NoMissMode == false;
         }
 
         public void Update(GameTime gameTime)
@@ -220,5 +249,6 @@ namespace DanceDanceRotationModule.Views
 
         private NotesContainer _notesContainer;
         private FlowPanel _topPanel;
+        private Image _playPauseButton;
     }
 }

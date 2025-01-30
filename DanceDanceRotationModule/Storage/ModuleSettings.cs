@@ -91,7 +91,7 @@ namespace DanceDanceRotationModule.Storage
             StartSongsWithFirstSkill = generalSettings.DefineSetting("StartSongsWithFirstSkill",
                 true,
                 () => "Start with first skill",
-                () => "If enabled, the song can be started by pressing the hotkey for the first ability.\nNotes will be shifted so the first note is already in the 'Perfect' location.\nThis has no effect if the song is set to start later than the beginning.");
+                () => "If enabled, the song can be started by pressing the hotkey for the first ability.\nNotes will be shifted so the first note is already in the 'Perfect' location.\nIf start time is after 0s, the first note after the start time is shifted to be the start position.");
 
             ShowNextAbilitiesCount = generalSettings.DefineSetting("ShowNextAbilitiesCount",
                 0,

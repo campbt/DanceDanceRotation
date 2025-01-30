@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using Blish_HUD;
 using Blish_HUD.Content;
@@ -18,7 +21,7 @@ using Image = Blish_HUD.Controls.Image;
 
 namespace DanceDanceRotationModule.Views
 {
-    public class NotesContainer : Container
+    public class NotesContainer : BlishContainer
     {
         private static readonly Logger Logger = Logger.GetLogger<NotesContainer>();
 
@@ -475,6 +478,7 @@ namespace DanceDanceRotationModule.Views
 
             private WindowInfo _windowInfo;
             internal Note Note { get; set; }
+            private NotesContainer _notesContainer;
             internal Image Image { get; set; }
             internal Label Label { get; set; }
             // XPosition/YPosition is stored here as a double instead of only using the Image,
@@ -494,11 +498,12 @@ namespace DanceDanceRotationModule.Views
                 WindowInfo windowInfo,
                 Note note,
                 int lane,
-                BlishContainer parent
+                NotesContainer parent
             )
             {
                 _windowInfo = windowInfo;
                 this.Note = note;
+                _notesContainer = parent;
 
                 var keyBinding = DanceDanceRotationModule.Settings
                     .GetKeyBindingForNoteType(
@@ -637,7 +642,10 @@ namespace DanceDanceRotationModule.Views
             {
                 XPosition += positionChange.X;
                 YPosition += positionChange.Y;
+
                 if (
+                     // When setting up notes, don't allow auto hits.
+                    _notesContainer.IsStarted() &&
                     _isHit == false &&
                     DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1 &&
@@ -649,6 +657,17 @@ namespace DanceDanceRotationModule.Views
                     //               No hit text needs to be made
                     _isHit = true;
                     PlayHitAnimation();
+                }
+                else if (
+                    _notesContainer._songData.NoMissMode &&
+                    _notesContainer._info.IsPaused == false &&
+                    _isHit == false &&
+                    IsPastPerfect()
+                )
+                {
+                    // No Miss Mode: Pause the song when a hittable note is at the perfect position
+                    //               Auto hit notes are covered before this if, so they shouldn't cause a pause.
+                    _notesContainer.Pause();
                 }
                 else if (IsPastDestroy())
                 {
@@ -688,11 +707,15 @@ namespace DanceDanceRotationModule.Views
                 }
 
                 if (
+                    _notesContainer.IsStarted() &&
                     DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
                     Note.NoteType == NoteType.Weapon1
                 )
                 {
                     // Ignore presses on the Weapon1 skills if auto hit weapon 1 is active
+                    // *Unless* the notes container has not started. In that case, the first note
+                    // may actually be an AutoHit Weapon1, and that can be manually hit to start the song
+                    // NoMissMode actually requires this since you can't start the song any other way.
                     return false;
                 }
 
@@ -708,30 +731,50 @@ namespace DanceDanceRotationModule.Views
                     return false;
                 }
 
+
                 if (_windowInfo.HitRangePerfect.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Perfect;
-                    ScreenNotification.ShowNotification("Perfect");
                 }
                 else if (_windowInfo.HitRangeGreat.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Great;
-                    ScreenNotification.ShowNotification("Great");
                 }
                 else if (_windowInfo.HitRangeGood.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Good;
-                    ScreenNotification.ShowNotification("Good");
                 }
                 else if (_windowInfo.HitRangeBoo.IsInBetween(axisToCheck))
                 {
                     hitType = HitType.Boo;
-                    ScreenNotification.ShowNotification("Boo");
                 }
                 else
                 {
                     hitType = HitType.Miss;
                     // ScreenNotification.ShowNotification("Miss");
+                }
+
+                // Show Notification at top
+                // Since No Miss Mode has no timings, it's not really worth showing "Perfect" at the top for them.
+                if (_notesContainer._songData.NoMissMode == false)
+                {
+                    switch (hitType)
+                    {
+                        case HitType.Perfect:
+                            ScreenNotification.ShowNotification("Perfect");
+                            break;
+                        case HitType.Great:
+                            ScreenNotification.ShowNotification("Great");
+                            break;
+                        case HitType.Good:
+                            ScreenNotification.ShowNotification("Good");
+                            break;
+                        case HitType.Boo:
+                            ScreenNotification.ShowNotification("Boo");
+                            break;
+                        case HitType.Miss:
+                            break;
+                    }
                 }
 
                 // Misses are IGNORED. If the user is too late, the Miss is automatic (the note traveled too far).
@@ -749,6 +792,11 @@ namespace DanceDanceRotationModule.Views
             {
                 Image.Dispose();
                 Label.Dispose();
+            }
+
+            public bool IsHit()
+            {
+                return _isHit;
             }
 
             private void SetHit(HitType hitType)
@@ -834,6 +882,16 @@ namespace DanceDanceRotationModule.Views
             {
                 Image.BasicTooltipText = "";
                 Label.BasicTooltipText = "";
+            }
+
+            /** Returns true if this active note is at or past the "Perfect" position, depending on orientation */
+            public bool IsHittable()
+            {
+                var axisToCheck =
+                    _windowInfo.IsVerticalOrientation()
+                        ? YPosition
+                        : XPosition;
+                return _windowInfo.HitRangeBoo.IsInBetween(axisToCheck);
             }
 
             /** Returns true if this active note is at or past the "Perfect" position, depending on orientation */
@@ -1310,6 +1368,8 @@ namespace DanceDanceRotationModule.Views
          *                (so if a note exists at StartAtSecond, it will be hit 1s after
          *                play, but songs may not have notes at StartAtSecond,
          *                so the first note may take longer to hit)
+         *                If the user has the StartWithFirstSkill option checked, then
+         *                it will be t=_windowInfo.TimeToReachEndMs like the start=0s case.
          */
         private void AddInitialNotes()
         {
@@ -1320,13 +1380,13 @@ namespace DanceDanceRotationModule.Views
                 if (_currentSequence.Count != 0)
                 {
 
-                    TimeSpan startTime = TimeSpan.FromSeconds(_songData.StartAtSecond);
+                    TimeSpan initialStartTime = TimeSpan.FromSeconds(_songData.StartAtSecond);
                     if (_songData.StartAtSecond > 0)
                     {
                         // Adjust the current index up so the first notes don't spawn in a clump
                         foreach (Note note in _currentSequence)
                         {
-                            if (note.TimeInRotation < startTime)
+                            if (note.TimeInRotation < initialStartTime)
                             {
                                 _info.SequenceIndex += 1;
                                 _info.AbilityIconIndex += 1;
@@ -1335,6 +1395,15 @@ namespace DanceDanceRotationModule.Views
                             {
                                 break;
                             }
+                        }
+
+                        // Shift the start time to the first valid note, so it will spawn at t=0
+                        if (
+                            (_songData.NoMissMode || DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value) &&
+                            _currentSequence.Count > _info.SequenceIndex  // IndexOutOfBounds check
+                        )
+                        {
+                            initialStartTime = _currentSequence[_info.SequenceIndex].TimeInRotation;
                         }
                     }
 
@@ -1345,8 +1414,7 @@ namespace DanceDanceRotationModule.Views
                     // Later notes are moved by less time based on how far they spawn after the first note
                     TimeSpan totalMoveTime;
                     if (
-                        DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value &&
-                        _songData.StartAtSecond <= 0
+                        (_songData.NoMissMode || DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value)
                     )
                     {
                         // T=0:00 start means the first note is placed at the start
@@ -1371,6 +1439,7 @@ namespace DanceDanceRotationModule.Views
                         }
                     }
 
+                    TimeSpan startTime = initialStartTime;
                     _info.StartTime = _lastGameTime;
                     startTime = startTime.Divide(
                         new decimal(_songData.PlaybackRate)
@@ -1394,7 +1463,7 @@ namespace DanceDanceRotationModule.Views
                             new decimal(_songData.PlaybackRate)
                         )
                         .Add(
-                            TimeSpan.FromSeconds(_songData.StartAtSecond)
+                            initialStartTime
                         );
                     while (
                         _info.SequenceIndex < _currentSequence.Count &&
@@ -1439,7 +1508,7 @@ namespace DanceDanceRotationModule.Views
                             //                        then be moved for the rest of the totalMoveTime at an unscaled rate.
                             //                        So, it's movement is (totalMoveTime - ((11s-10s) / 0.5)) * NotePositionChangePerSecond
                             double moveBase = (_windowInfo.NotePositionChangePerSecond *
-                                (totalMoveTime.TotalMilliseconds - ((timeInRotation.TotalMilliseconds - (_songData.StartAtSecond * 1000.0)) / _songData.PlaybackRate))
+                                (totalMoveTime.TotalMilliseconds - ((timeInRotation.TotalMilliseconds - (initialStartTime.TotalMilliseconds)) / _songData.PlaybackRate))
                                 / 1000.0);
                             Vector2 moveAmount = _windowInfo.GetNoteChangeLocation(
                                 (float)(moveBase)
@@ -1549,15 +1618,19 @@ namespace DanceDanceRotationModule.Views
          */
         public void OnHotkeyPressed(NoteType noteType)
         {
+            if (_info == null)
+            {
+                return;
+            }
+
             if (_info.IsStarted == false)
             {
-                // Songs that start at the 0th second can be started by pressing the first note
                 if (
-                    DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value &&
-                    _songData.StartAtSecond == 0 &&
+                    // If this setting is true, the first note should be shifted into the t=0 position already
+                    // If the song is in NoMissMode, it also must have the note shifted (because there is no play button)
+                    (_songData.NoMissMode || DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value) &&
+                    // These checks check if the hotkey is for this first ability
                     _info.ActiveNotes.Count > 0 &&
-                    // The first note of a song should always be 0, but this is a sanity check
-                    _info.ActiveNotes[0].Note.TimeInRotation.TotalMilliseconds == 0 &&
                     _info.ActiveNotes[0].Note.NoteType == noteType &&
                     _info.ActiveNotes[0].OnHotkeyPressed()
                 )
@@ -1576,6 +1649,13 @@ namespace DanceDanceRotationModule.Views
                 {
                     if (activeNote.OnHotkeyPressed())
                     {
+                        if (
+                            _songData.NoMissMode &&
+                            _info.IsPaused
+                        )
+                        {
+                            Play();
+                        }
                         break;
                     }
                 }
@@ -1617,7 +1697,11 @@ namespace DanceDanceRotationModule.Views
             );
             activeNote.OnHit += delegate(object sender, HitType hitType)
             {
-                AddHitText(activeNote, hitType);
+                // Since No Miss Mode has no timings, showing "Perfect" is not really necessary
+                if (_songData.NoMissMode == false)
+                {
+                    AddHitText(activeNote, hitType);
+                }
             };
 
             _info.ActiveNotes.Add(

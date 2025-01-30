@@ -22,6 +22,8 @@ namespace DanceDanceRotationModule.Model
         public UtilitySkillMapping Utility1Mapping { get; set; }
         public UtilitySkillMapping Utility2Mapping { get; set; }
         public UtilitySkillMapping Utility3Mapping { get; set; }
+        /* Auto-pause notes on perfect and play when pressed */
+        public bool NoMissMode { get; set; }
         /* Should adjust the speed of the notes based this rate. 1.0 == normal speed. 0.5 is slower. */
         public float PlaybackRate { get; set; }
         /* Should start with notes at this second. */
@@ -38,6 +40,7 @@ namespace DanceDanceRotationModule.Model
             Utility1Mapping = UtilitySkillMapping.One;
             Utility2Mapping = UtilitySkillMapping.Two;
             Utility3Mapping = UtilitySkillMapping.Three;
+            NoMissMode = false;
             PlaybackRate = 1.0f;
             StartAtSecond = 0;
             NotePositionChangePerSecond = DefaultNotePositionChangePerSecond;
