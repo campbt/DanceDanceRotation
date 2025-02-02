@@ -39,7 +39,8 @@ namespace DanceDanceRotationModule.Storage
         internal SettingEntry<bool> ShowAbilityIconsForNotes { get; private set; }
         internal SettingEntry<bool> ShowHotkeys { get; private set; }
         internal SettingEntry<bool> ShowOnlyCharacterClassSongs { get; private set; }
-        internal SettingEntry<bool> CompactMode { get; private set; }
+        // internal SettingEntry<bool> CompactMode { get; private set; }
+        internal SettingEntry<CompactStyle> CompactStyle { get; private set; }
         internal SettingEntry<bool> StartSongsWithFirstSkill { get; private set; }
         internal SettingEntry<int> ShowNextAbilitiesCount { get; private set; }
 
@@ -54,7 +55,7 @@ namespace DanceDanceRotationModule.Storage
 
             Orientation = generalSettings.DefineSetting("NotesOrientation",
                 NotesOrientation.RightToLeft,
-                () => "Notes Orientation".PadRight(34),
+                () => "Notes Orientation".PadRight(32),
                 () => "Sets the direction notes will travel while playing.");
 
             BackgroundOpacity = generalSettings.DefineSetting("BackgroundOpacity",
@@ -62,6 +63,11 @@ namespace DanceDanceRotationModule.Storage
                 () => "Background Transparency",
                 () => "Sets the transparency of the notes background. Min=0% Max=100%");
             BackgroundOpacity.SetRange(0.0f, 1.0f);
+
+            StartSongsWithFirstSkill = generalSettings.DefineSetting("StartSongsWithFirstSkill",
+                true,
+                () => "Start with first skill",
+                () => "If enabled, the song can be started by pressing the hotkey for the first ability.\nNotes will be shifted so the first note is already in the 'Perfect' location.\nIf start time is after 0s, the first note after the start time is shifted to be the start position.");
 
             AutoHitWeapon1 = generalSettings.DefineSetting("AutoHitWeapon1",
                 true,
@@ -83,15 +89,16 @@ namespace DanceDanceRotationModule.Storage
                 () => "Only show current profession songs",
                 () => "If enabled, the song list will only show songs for the current profession");
 
-            CompactMode = generalSettings.DefineSetting("CompactMode",
-                false,
-                () => "Compact Mode",
-                () => "If enabled, notes will try to be in a single lane and only shifted to other lanes to avoid collisions. Does NOT work with Ability Bar orientation.");
+            // Deprecated Setting - Replaced with [CompactStyle]
+            // CompactMode = generalSettings.DefineSetting("CompactMode",
+            //     false,
+            //     () => "Compact Mode",
+            //     () => "If enabled, notes will try to be in a single lane and only shifted to other lanes to avoid collisions. Does NOT work with Ability Bar orientation.");
 
-            StartSongsWithFirstSkill = generalSettings.DefineSetting("StartSongsWithFirstSkill",
-                true,
-                () => "Start with first skill",
-                () => "If enabled, the song can be started by pressing the hotkey for the first ability.\nNotes will be shifted so the first note is already in the 'Perfect' location.\nIf start time is after 0s, the first note after the start time is shifted to be the start position.");
+            CompactStyle = generalSettings.DefineSetting("CompactStyle",
+                Model.CompactStyle.Regular,
+                () => "Compact Mode".PadRight(28),
+                () => "Adjusts how notes are distributed in the lanes.\nRegular - Notes will go to lane based on their hotkey.\nCompact - Notes will try to go to one lane, but be shifted down to prevent overlap.\nUltra Compact - All notes will be in one lane. Overlap may be significant, so use Show next abilities.\n\nThis has no effect in Ability Bar Orientation.");
 
             ShowNextAbilitiesCount = generalSettings.DefineSetting("ShowNextAbilitiesCount",
                 0,

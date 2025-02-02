@@ -127,13 +127,19 @@ namespace DanceDanceRotationModule.Views
                     case NotesOrientation.TopToBottom:
                     case NotesOrientation.BottomToTop:
                     default:
-                        if (DanceDanceRotationModule.Settings.CompactMode.Value)
+                        switch (DanceDanceRotationModule.Settings.CompactStyle.Value)
                         {
-                            LaneCount = 3;
-                        }
-                        else
-                        {
-                            LaneCount = 6;
+                            case CompactStyle.Regular:
+                                LaneCount = 6;
+                                break;
+                            case CompactStyle.Compact:
+                                LaneCount = 3;
+                                break;
+                            case CompactStyle.UltraCompact:
+                                LaneCount = 1;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
                         break;
                 }
@@ -479,7 +485,7 @@ namespace DanceDanceRotationModule.Views
             private WindowInfo _windowInfo;
             internal Note Note { get; set; }
             private NotesContainer _notesContainer;
-            internal Image Image { get; set; }
+            public Image Image { get; set; }
             internal Label Label { get; set; }
             // XPosition/YPosition is stored here as a double instead of only using the Image,
             // because Image can only be in int positions, and the GameTime may need to
@@ -498,6 +504,7 @@ namespace DanceDanceRotationModule.Views
                 WindowInfo windowInfo,
                 Note note,
                 int lane,
+                int index,
                 NotesContainer parent
             )
             {
@@ -528,7 +535,8 @@ namespace DanceDanceRotationModule.Views
                 {
                     Size = windowInfo.GetNewNoteSize(),
                     Location = _windowInfo.GetNewNoteLocation(lane),
-                    ZIndex = 2,
+                    // Make earlier notes be on top of later notes
+                    ZIndex = 5000 - index,
                     Opacity = 0.7f,
                     Parent = parent
                 };
@@ -540,6 +548,7 @@ namespace DanceDanceRotationModule.Views
                 if (isMiniIcon)
                 {
                     var oldSize = Image.Size;
+                    // Mini icons should always be behind non-mini ones, and it's not important which one overlaps which.
                     Image.ZIndex = 1;
                     Image.Size = _windowInfo.GetNewNoteSizeSmall();
                     Image.Location = new Point(
@@ -593,6 +602,7 @@ namespace DanceDanceRotationModule.Views
                 {
                     Text = hotkeyText,
                     TextColor = Color.White,
+                    ZIndex = 10000,
                     Font = font,
                     StrokeText = true,
                     ShowShadow = true,
@@ -1085,7 +1095,7 @@ namespace DanceDanceRotationModule.Views
                 //                    the TimeToReachEnd, when using timeInRotation, needs to just be 1, since
                 //                    timeInRotation is incrementing at 0.5x speed compared to the movement time.
                 TimeToDisposeAt = Note.TimeInRotation.TotalMilliseconds
-                        + _windowInfo.TimeToReachEndMs * songData.PlaybackRate;
+                        + _windowInfo.TimeToReachEndMs * songData.PlaybackRate + 50; // +50 fixes this icon disappearing before press in NoMissMode
             }
 
             public void Update(GameTime gameTime, TimeSpan timeInRotation)
@@ -1181,8 +1191,8 @@ namespace DanceDanceRotationModule.Views
                     RecalculateLayout();
                     AddInitialNotes();
                 };
-            DanceDanceRotationModule.Settings.CompactMode.SettingChanged +=
-                delegate(object sender, ValueChangedEventArgs<bool> args)
+            DanceDanceRotationModule.Settings.CompactStyle.SettingChanged +=
+                delegate(object sender, ValueChangedEventArgs<CompactStyle> args)
                 {
                     switch (DanceDanceRotationModule.Settings.Orientation.Value)
                     {
@@ -1673,26 +1683,31 @@ namespace DanceDanceRotationModule.Views
             note.NoteType = _songData.RemapNoteType(note.NoteType);
 
             int lane;
-            if (
-                DanceDanceRotationModule.Settings.CompactMode.Value &&
-                _windowInfo.Orientation != NotesOrientation.AbilityBarStyle
-            )
+            switch (DanceDanceRotationModule.Settings.CompactStyle.Value)
             {
-                // See method for more details on how CompactMode is implemented.
-                lane = GetCompactModeLane(note, index);
-            }
-            else
-            {
-                lane = NoteTypeExtensions.NoteLane(
-                    _windowInfo.Orientation,
-                    note.NoteType
-                );
+                case CompactStyle.Regular:
+                    lane = NoteTypeExtensions.NoteLane(
+                        _windowInfo.Orientation,
+                        note.NoteType
+                    );
+                    break;
+                case CompactStyle.Compact:
+                    // See method for more details on how CompactMode is implemented.
+                    lane = GetCompactModeLane(note, index);
+                    break;
+                case CompactStyle.UltraCompact:
+                    // All notes go to the first lane
+                    lane = 0;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             var activeNote = new ActiveNote(
                 _windowInfo,
                 note,
                 lane,
+                index,
                 this
             );
             activeNote.OnHit += delegate(object sender, HitType hitType)
