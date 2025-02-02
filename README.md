@@ -52,6 +52,12 @@ This setting determines the direction notes move. You can use:
 
 Sets the transparency of the main window.
 
+#### Start with first skill
+
+When enabled, the first note to be played will be shifted so it is on the perfect position. The song can then be started by simply pressing that hotkey.
+
+If the song's start time is not 0s, then the first note after the desired start time will be shifted.
+
 #### Auto Hit Weapon 1
 
 If enabled, the Weapon 1 ability will automatically be hit in the module, even if you don't hit the hotkey for it, which is what happens if Weapon 1 is set to auto cast (which it generally should be). Some skills, like Mirage Ambushes, still must be pressed because the game does not auto cast them.
@@ -72,6 +78,18 @@ If enabled, the hotkey set in the module's setting will be overlaid on top of th
 
 If enabled, the Song List will only show songs of the loaded character's profession
 
+#### Compact Mode
+
+Allows contracting the number of displayed lanes and where notes are placed.
+
+**Regular**: 6 lanes. Notes are placed in a lane based on their ability type.                                                                                                                                                       |
+
+**Compact**: 3 lanes. Notes are placed in the first lane, but may be shifted to other lanes to prevent overlap.                                                                                                                     |
+![ddrCompactMode](https://github.com/user-attachments/assets/75e8315a-0216-4b8d-813a-6c4a82597678)
+
+**Ultra Compact**: 1 lane. Notes are placed in the first lane. There may be significant overlap. This is better if using the Next Abilities feature, or practicing with No Miss Mode. Adjust note pace to higher values to lower overlap. |
+![ddrCompactMode](https://github.com/user-attachments/assets/f430d682-a9d9-4f1d-8ebb-7ca71c27d66e)
+
 #### Show next abilities
 
 This setting will place the next X ability icons that need to be pressed in its own section. It does not move like standard notes. Use the slider to select how many abilities to show. 
@@ -88,7 +106,11 @@ Each song has additional settings that can be adjusted for just that song. You c
 
 To slow down the song, open the song details window and find the "Practice Settings" section. Setting this slider allows changing the playback rate, speed of the notes (animation speed), and the start time.
 
-![ddrUsage1](https://user-images.githubusercontent.com/1414123/227801872-0946f253-cc06-4302-a6ab-da4be194c9d9.png)
+![ddrUsage1](https://github.com/user-attachments/assets/f6e851ab-e440-4cff-b373-87f978f6f37c)
+
+**No Miss Mode**: When enabled, the song will automatically pause when a note reaches the "perfect" position. It will then resume when that note's hotkey is pressed. This is a great way to practice a new rotation and learn the hotkey order to press without having to worry about getting the timing right.
+
+![noMissMode](https://github.com/user-attachments/assets/a09f2a18-d371-4bee-a14d-6ce420033a63)
 
 **Note Speed**: How fast the notes *spawn*, so adjusting this down will slow down how fast you have to press the keys. 100% is performing the rotation at max speed.
 
