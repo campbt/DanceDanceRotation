@@ -94,6 +94,7 @@ namespace DanceDanceRotationModule.Views
             /** Where a note should be at when it is "perfect" */
 
             internal int NextAbilityIconsHeight { get; private set; }
+            internal int NextAbilityIconsWidth { get; private set; }
             internal Point NextAbilityIconsLocation { get; private set; }
             internal Point TargetLocation { get; private set; }
 
@@ -162,8 +163,31 @@ namespace DanceDanceRotationModule.Views
                 if (nextAbilitiesCount > 0)
                 {
                     // Show ability icons section as an extra "lane"
-                    NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1)) / (LaneCount + 1);
-                    NextAbilityIconsHeight = NoteHeight;
+                    switch (Orientation)
+                    {
+                        case NotesOrientation.RightToLeft:
+                        case NotesOrientation.LeftToRight:
+                            // Horizontal
+                            NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1)) / (LaneCount + 1);
+                            NextAbilityIconsHeight = NoteHeight;
+                            NextAbilityIconsWidth = NoteHeight;
+                            break;
+                        case NotesOrientation.TopToBottom:
+                        case NotesOrientation.BottomToTop:
+                            // Vertical
+                            NoteHeight = (width - (2*HorizontalPadding) - LaneSpacing * (LaneCount - 1)) / (LaneCount + 1);
+                            NextAbilityIconsWidth = NoteWidth;
+                            NextAbilityIconsHeight = NoteWidth;
+                            break;
+                        case NotesOrientation.AbilityBarStyle:
+                            // Horizontal - But no extra lane
+                            NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1)) / (LaneCount);
+                            NextAbilityIconsHeight = NoteHeight;
+                            NextAbilityIconsWidth = NoteHeight;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
 
                     switch (Orientation)
                     {
@@ -180,13 +204,19 @@ namespace DanceDanceRotationModule.Views
                             );
                             break;
                         case NotesOrientation.TopToBottom:
-                        case NotesOrientation.AbilityBarStyle:
                             NextAbilityIconsLocation = new Point(
-                                HorizontalPadding,
-                                height - NoteHeight
+                                0,
+                                (int)(height * (1-PerfectPosition)) - (NoteHeight / 2) - ((nextAbilitiesCount-1) * NoteHeight)
                             );
                             break;
                         case NotesOrientation.BottomToTop:
+                            NextAbilityIconsLocation = new Point(
+                                0,
+                                (int)(height * PerfectPosition) - (NoteHeight / 2)
+                            );
+                            break;
+                        case NotesOrientation.AbilityBarStyle:
+                            // NextAbilities are horizontal at the top, even though notes are vertical
                             NextAbilityIconsLocation = new Point(
                                 HorizontalPadding,
                                 0
@@ -202,6 +232,7 @@ namespace DanceDanceRotationModule.Views
                     NoteHeight = (height - (2*VerticalPadding) - LaneSpacing * (LaneCount - 1)) / LaneCount;
                     NextAbilityIconsLocation = new Point(0, 0);
                     NextAbilityIconsHeight = 0;
+                    NextAbilityIconsWidth = 0;
                 }
 
                 if (Orientation == NotesOrientation.AbilityBarStyle)
@@ -213,7 +244,9 @@ namespace DanceDanceRotationModule.Views
                 }
                 else if (IsVerticalOrientation())
                 {
-                    NoteWidth = (width - (2*HorizontalPadding) - LaneSpacing * (LaneCount - 1)) / LaneCount;
+                    // If next abilities are shown, count that as an extra "lane"
+                    NoteWidth = (width - (2*HorizontalPadding) - LaneSpacing * (LaneCount - 1))
+                                / (LaneCount + (NextAbilityIconsHeight > 0 ? 1 : 0));
                     NoteHeight = NoteWidth;
                     CenterPadding = 0;
                 }
@@ -280,7 +313,6 @@ namespace DanceDanceRotationModule.Views
 
                         break;
                     case NotesOrientation.TopToBottom:
-                    case NotesOrientation.AbilityBarStyle:
                         // New notes spawn at the edge of the window on the Top
                         // NextAbility are at the bottom
                         NewNotePosition = new Point(
@@ -289,17 +321,17 @@ namespace DanceDanceRotationModule.Views
                         );
 
                         perfectPosition = (int)Math.Min(
-                            (1-PerfectPosition) * (height - NextAbilityIconsHeight),
-                            height - (NoteHeight * 1.5) - NextAbilityIconsHeight
+                            (1-PerfectPosition) * height,
+                            height - (NoteHeight * 1.5)
                         );
                         TimeToReachEndMs = Math.Abs(NewNotePosition.Y + (NoteHeight/2) - perfectPosition) / NotePositionChangePerSecond * 1000;
 
                         TargetLocation = new Point(
-                            HorizontalPadding,
+                            HorizontalPadding + NextAbilityIconsWidth,
                             (int)(perfectPosition - (NoteHeight / 2.0))
                         );
 
-                        DestroyNotePosition = height - NextAbilityIconsHeight;
+                        DestroyNotePosition = height;
 
                         break;
                     case NotesOrientation.BottomToTop:
@@ -311,18 +343,39 @@ namespace DanceDanceRotationModule.Views
                         );
 
                         perfectPosition = (int)Math.Max(
-                            NextAbilityIconsHeight + (PerfectPosition * (height - NextAbilityIconsHeight)),
-                            NextAbilityIconsHeight + (NoteHeight * 1.5)
+                            PerfectPosition * height,
+                            NoteHeight * 1.5
                         );
                         TimeToReachEndMs = Math.Abs((NewNotePosition.Y + (NoteHeight/2) - perfectPosition) / NotePositionChangePerSecond * 1000);
 
                         TargetLocation = new Point(
-                            HorizontalPadding,
+                            HorizontalPadding + NextAbilityIconsWidth,
                             (int)(perfectPosition - (NoteHeight / 2.0))
                         );
 
-                        DestroyNotePosition = NextAbilityIconsHeight;
+                        DestroyNotePosition = 0 - NoteHeight;
 
+                        break;
+                    case NotesOrientation.AbilityBarStyle:
+                        // New notes spawn at the edge of the window on the Top
+                        // NextAbility are at the top
+                        NewNotePosition = new Point(
+                            0, // Calculated later based on lane
+                            0 - NoteHeight
+                        );
+
+                        perfectPosition = (int)Math.Min(
+                            (1-PerfectPosition) * height,
+                            height - (NoteHeight * 1.5)
+                        );
+                        TimeToReachEndMs = Math.Abs(NewNotePosition.Y + (NoteHeight/2) - perfectPosition) / NotePositionChangePerSecond * 1000;
+
+                        TargetLocation = new Point(
+                            HorizontalPadding, //  + NextAbilityIconsWidth intentionally not here because the NextAbilityIcons is above it
+                            (int)(perfectPosition - (NoteHeight / 2.0))
+                        );
+
+                        DestroyNotePosition = height;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -391,7 +444,13 @@ namespace DanceDanceRotationModule.Views
                     case NotesOrientation.TopToBottom:
                         // Spawns on Top side
                         return new Point(
-                            HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
+                            HorizontalPadding + NextAbilityIconsWidth + (lane * (NoteWidth + LaneSpacing)),
+                            NewNotePosition.Y
+                        );
+                    case NotesOrientation.BottomToTop:
+                        // Spawns on Top side
+                        return new Point(
+                            HorizontalPadding + NextAbilityIconsWidth + (lane * (NoteWidth + LaneSpacing)),
                             NewNotePosition.Y
                         );
                     case NotesOrientation.AbilityBarStyle:
@@ -400,12 +459,6 @@ namespace DanceDanceRotationModule.Views
                             (lane >= LaneCount / 2)
                                 ? HorizontalPadding + CenterPadding + (lane * (NoteWidth + LaneSpacing))
                                 : HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
-                            NewNotePosition.Y
-                        );
-                    case NotesOrientation.BottomToTop:
-                        // Spawns on Top side
-                        return new Point(
-                            HorizontalPadding + (lane * (NoteWidth + LaneSpacing)),
                             NewNotePosition.Y
                         );
                     default:
@@ -481,6 +534,7 @@ namespace DanceDanceRotationModule.Views
             private const float FadeInTime = 0.7f;
             private const float HitAnimationTime = 0.2f;
             private const int HitAnimationScaleDivisor = 4;
+            private const int FirstActiveZIndex = 5000;
 
             private WindowInfo _windowInfo;
             internal Note Note { get; set; }
@@ -535,8 +589,8 @@ namespace DanceDanceRotationModule.Views
                 {
                     Size = windowInfo.GetNewNoteSize(),
                     Location = _windowInfo.GetNewNoteLocation(lane),
-                    // Make earlier notes be on top of later notes
-                    ZIndex = 5000 - index,
+                    // Make earlier notes be on top of later notes. -1 puts it beneath the text
+                    ZIndex = FirstActiveZIndex - index*2 - 1,
                     Opacity = 0.7f,
                     Parent = parent
                 };
@@ -602,7 +656,8 @@ namespace DanceDanceRotationModule.Views
                 {
                     Text = hotkeyText,
                     TextColor = Color.White,
-                    ZIndex = 10000,
+                    // Make earlier notes be on top of later notes. This is 1 higher than its background's ZIndex
+                    ZIndex = FirstActiveZIndex - index*2,
                     Font = font,
                     StrokeText = true,
                     ShowShadow = true,
@@ -1683,21 +1738,38 @@ namespace DanceDanceRotationModule.Views
             note.NoteType = _songData.RemapNoteType(note.NoteType);
 
             int lane;
-            switch (DanceDanceRotationModule.Settings.CompactStyle.Value)
+            switch (DanceDanceRotationModule.Settings.Orientation.Value)
             {
-                case CompactStyle.Regular:
+                case NotesOrientation.RightToLeft:
+                case NotesOrientation.LeftToRight:
+                case NotesOrientation.TopToBottom:
+                case NotesOrientation.BottomToTop:
+                    switch (DanceDanceRotationModule.Settings.CompactStyle.Value)
+                    {
+                        case CompactStyle.Regular:
+                            lane = NoteTypeExtensions.NoteLane(
+                                _windowInfo.Orientation,
+                                note.NoteType
+                            );
+                            break;
+                        case CompactStyle.Compact:
+                            // See method for more details on how CompactMode is implemented.
+                            lane = GetCompactModeLane(note, index);
+                            break;
+                        case CompactStyle.UltraCompact:
+                            // All notes go to the first lane
+                            lane = 0;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+                case NotesOrientation.AbilityBarStyle:
+                    // AbilityBarStyle ignores CompactStyle
                     lane = NoteTypeExtensions.NoteLane(
                         _windowInfo.Orientation,
                         note.NoteType
                     );
-                    break;
-                case CompactStyle.Compact:
-                    // See method for more details on how CompactMode is implemented.
-                    lane = GetCompactModeLane(note, index);
-                    break;
-                case CompactStyle.UltraCompact:
-                    // All notes go to the first lane
-                    lane = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2126,15 +2198,60 @@ namespace DanceDanceRotationModule.Views
             var size = _windowInfo.NoteWidth;
             var xPos = _windowInfo.NextAbilityIconsLocation.X;
             var yPos = _windowInfo.NextAbilityIconsLocation.Y;
-            for (int index = 0; index < _info.AbilityIcons.Count; index++)
+
+            switch (_windowInfo.Orientation)
             {
-                AbilityIcon abilityIconImage = _info.AbilityIcons[index];
-                abilityIconImage.Image.Size = new Point(size, size);
-                abilityIconImage.Image.Location = new Point(
-                    xPos,
-                    yPos
-                );
-                xPos += size;
+                case NotesOrientation.RightToLeft:
+                case NotesOrientation.AbilityBarStyle:
+                    for (int index = 0; index < _info.AbilityIcons.Count; index++)
+                    {
+                        AbilityIcon abilityIconImage = _info.AbilityIcons[index];
+                        abilityIconImage.Image.Size = new Point(size, size);
+                        abilityIconImage.Image.Location = new Point(
+                            xPos,
+                            yPos
+                        );
+                        xPos += size;
+                    }
+                    break;
+                case NotesOrientation.LeftToRight:
+                    for (int index = _info.AbilityIcons.Count - 1; index >= 0; index--)
+                    {
+                        AbilityIcon abilityIconImage = _info.AbilityIcons[index];
+                        abilityIconImage.Image.Size = new Point(size, size);
+                        abilityIconImage.Image.Location = new Point(
+                            xPos,
+                            yPos
+                        );
+                        xPos += size;
+                    }
+                    break;
+                case NotesOrientation.TopToBottom:
+                    for (int index = _info.AbilityIcons.Count - 1; index >= 0; index--)
+                    {
+                        AbilityIcon abilityIconImage = _info.AbilityIcons[index];
+                        abilityIconImage.Image.Size = new Point(size, size);
+                        abilityIconImage.Image.Location = new Point(
+                            xPos,
+                            yPos
+                        );
+                        yPos += size;
+                    }
+                    break;
+                case NotesOrientation.BottomToTop:
+                    for (int index = 0; index < _info.AbilityIcons.Count; index++)
+                    {
+                        AbilityIcon abilityIconImage = _info.AbilityIcons[index];
+                        abilityIconImage.Image.Size = new Point(size, size);
+                        abilityIconImage.Image.Location = new Point(
+                            xPos,
+                            yPos
+                        );
+                        yPos += size;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
