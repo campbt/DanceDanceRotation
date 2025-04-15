@@ -774,7 +774,8 @@ namespace DanceDanceRotationModule.Views
                 if (
                     _notesContainer.IsStarted() &&
                     DanceDanceRotationModule.Settings.AutoHitWeapon1.Value &&
-                    Note.NoteType == NoteType.Weapon1
+                    Note.NoteType == NoteType.Weapon1 &&
+                    Note.OverrideAuto == false
                 )
                 {
                     // Ignore presses on the Weapon1 skills if auto hit weapon 1 is active
