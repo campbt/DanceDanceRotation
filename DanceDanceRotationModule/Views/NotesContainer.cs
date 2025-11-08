@@ -1697,7 +1697,7 @@ namespace DanceDanceRotationModule.Views
                     (_songData.NoMissMode || DanceDanceRotationModule.Settings.StartSongsWithFirstSkill.Value) &&
                     // These checks check if the hotkey is for this first ability
                     _info.ActiveNotes.Count > 0 &&
-                    _info.ActiveNotes[0].Note.NoteType == noteType &&
+                    (_info.ActiveNotes[0].Note.NoteType == noteType || _info.ActiveNotes[0].Note.NoteType == NoteType.Unknown) &&
                     _info.ActiveNotes[0].OnHotkeyPressed()
                 )
                 {
@@ -1707,6 +1707,21 @@ namespace DanceDanceRotationModule.Views
                 {
                     return;
                 }
+            }
+
+            // Special: Unknown notes need to be hittable in NoMissMode, otherwise the user will just get stuck
+            if (
+                _songData.NoMissMode &&
+                _info.ActiveNotes.Count >= 1 &&
+                _info.ActiveNotes[0].Note.NoteType == NoteType.Unknown &&
+                _info.ActiveNotes[0].OnHotkeyPressed()
+            )
+            {
+                if (_info.IsPaused)
+                {
+                    Play();
+                }
+                return;
             }
 
             foreach (var activeNote in _info.ActiveNotes)
