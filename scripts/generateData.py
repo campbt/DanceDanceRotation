@@ -1,3 +1,4 @@
+import argparse
 import requests
 import json
 import time
@@ -120,7 +121,7 @@ def fetchSkills(ids, outputFile):
 
 #
 # Creates the abilityInfo.json lookup info for the module
-# This requires an allSkills.json file, which is NOT
+# This requires an allSkills.json file
 #
 def createAbilityInfoTable():
     abilityIdToImageId = {}
@@ -174,8 +175,19 @@ def getImageFileName(iconUrl):
 
 # MARK: Main
 
-allIds = fetchSkillIds()
-print("Found " + str(len(allIds)) + " IDs. Starting fetch")
-fetchSkills(allIds, ALL_SKILLS_FILENAME)
+parser = argparse.ArgumentParser(description="generateData")
+parser.add_argument(
+    '--skip-fetch', 
+    action='store_true',
+    help='Skips fetching and generating allSkills.json, assumes it is already made and up to date'
+)
+args = parser.parse_args()
+
+if args.skip_fetch:
+    print("Argument '--skip-fetch' detected. Skipping skill data fetch and allSkills.json generation")
+else:
+    allIds = fetchSkillIds()
+    print("Found " + str(len(allIds)) + " IDs. Starting fetch")
+    fetchSkills(allIds, ALL_SKILLS_FILENAME)
 
 createAbilityInfoTable()
