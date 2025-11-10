@@ -1,8 +1,8 @@
 {
   "name": "Power Scrapper [SC]",
-  "description": "Build and rotation created by Snow Crows.\n\nPublished Sep 22, 2022\nUpdated Aug 30, 2024\nRaids - January 2024 Balance",
-  "logUrl": "https://dps.report/VMeG-20240703-153531_golem",
-  "buildChatCode": "[&DQMGNyYvKz0qDyoPhgCGAK4SBwEmAa4SmAGJAQAAAAAAAAAAAAAAAAAAAAA=]",
+  "description": "",
+  "logUrl": "https://dps.report/UHe7-20250702-183202_golem",
+  "buildChatCode": "[&DQMGOyYvKz3ZEgAAhgAAACYBAAAHAQAAmAEAAAAAAAAAAAAAAAAAAAAAAAA=]",
   "buildUrl": "https://snowcrows.com/builds/raids/engineer/power-scrapper",
   "decodedBuildTemplate": {
     "profession": 3,
@@ -11,7 +11,7 @@
         "id": 6,
         "traits": [
           3,
-          1,
+          2,
           3
         ]
       },
@@ -34,22 +34,22 @@
     ],
     "skills": {
       "terrestrial": {
-        "heal": 3882,
+        "heal": 4825,
         "utilities": [
           134,
-          4782,
-          294
+          294,
+          263
         ],
         "elite": 408
       },
       "aquatic": {
-        "heal": 3882,
+        "heal": 0,
         "utilities": [
-          134,
-          263,
-          4782
+          0,
+          0,
+          0
         ],
-        "elite": 393
+        "elite": 0
       }
     },
     "specific": [
@@ -74,1329 +74,1437 @@
   "notes": [
     {
       "time": 0,
-      "duration": 558,
-      "noteType": "Weapon5",
-      "abilityId": 30713
-    },
-    {
-      "time": 200,
-      "duration": 685,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 645,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 1243,
-      "duration": 682,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 1443,
-      "duration": 685,
-      "noteType": "Weapon4",
-      "abilityId": 5809
-    },
-    {
-      "time": 2125,
-      "duration": 668,
-      "noteType": "Weapon5",
-      "abilityId": 5806
-    },
-    {
-      "time": 2810,
-      "duration": 285,
-      "noteType": "Profession5",
-      "abilityId": 56920
-    },
-    {
-      "time": 3478,
-      "duration": 476,
-      "noteType": "Profession2",
-      "abilityId": 5810
-    },
-    {
-      "time": 4038,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 4239,
-      "duration": 481,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 4720,
-      "duration": 645,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 5365,
-      "duration": 397,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 5762,
-      "duration": 313,
-      "noteType": "Profession3",
-      "abilityId": 31167
-    },
-    {
-      "time": 5962,
-      "duration": 674,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 6556,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 7036,
-      "duration": 395,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 7236,
-      "duration": 648,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 7631,
-      "duration": 566,
-      "noteType": "Profession1",
-      "abilityId": 21661
-    },
-    {
-      "time": 7786,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 8644,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 8753,
-      "duration": 486,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 9239,
-      "duration": 645,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 9884,
-      "duration": 431,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 10315,
-      "duration": 479,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 10794,
-      "duration": 649,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 11443,
-      "duration": 438,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 11881,
-      "duration": 42,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 11923,
-      "duration": 675,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 12121,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 12599,
-      "duration": 565,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 13163,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 13281,
-      "duration": 480,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 13761,
-      "duration": 638,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 14399,
-      "duration": 449,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 14638,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 30800
-    },
-    {
-      "time": 14848,
-      "duration": 482,
-      "noteType": "Weapon2",
-      "abilityId": 30885
-    },
-    {
-      "time": 15330,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 15330,
-      "duration": 164,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 15494,
-      "duration": 901,
-      "noteType": "Profession4",
-      "abilityId": 6164
-    },
-    {
-      "time": 15694,
-      "duration": 521,
-      "noteType": "Utility2",
-      "abilityId": 29921
-    },
-    {
-      "time": 16244,
-      "duration": 0,
-      "noteType": "Profession4",
-      "abilityId": 6166
-    },
-    {
-      "time": 16594,
-      "duration": 585,
-      "noteType": "Weapon5",
-      "abilityId": 30713
-    },
-    {
-      "time": 17501,
-      "duration": 85,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 17586,
-      "duration": 734,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 17759,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 18320,
-      "duration": 442,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 18520,
-      "duration": 677,
-      "noteType": "Weapon4",
-      "abilityId": 5809
-    },
-    {
-      "time": 18962,
-      "duration": 484,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 19070,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 19922,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 20114,
-      "duration": 478,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 20592,
-      "duration": 645,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 21237,
-      "duration": 443,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 21680,
-      "duration": 477,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 22157,
-      "duration": 636,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 22793,
-      "duration": 203,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 23236,
-      "duration": 45,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 23281,
-      "duration": 677,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 23401,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 23958,
-      "duration": 680,
-      "noteType": "Weapon5",
-      "abilityId": 5806
-    },
-    {
-      "time": 24158,
-      "duration": 681,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 24838,
-      "duration": 286,
-      "noteType": "Profession5",
-      "abilityId": 56920
-    },
-    {
-      "time": 25519,
-      "duration": 668,
-      "noteType": "Profession2",
-      "abilityId": 5810
-    },
-    {
-      "time": 25805,
-      "duration": 607,
-      "noteType": "Profession1",
-      "abilityId": 21661
-    },
-    {
-      "time": 26879,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 26960,
-      "duration": 485,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 27445,
-      "duration": 629,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 28074,
-      "duration": 484,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 28558,
-      "duration": 362,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 28758,
-      "duration": 701,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 29200,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 29308,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 29621,
-      "duration": 662,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 29821,
-      "duration": 602,
-      "noteType": "Profession3",
-      "abilityId": 31167
-    },
-    {
-      "time": 30882,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 30916,
-      "duration": 488,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 31404,
-      "duration": 633,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 32037,
-      "duration": 488,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 32525,
-      "duration": 914,
-      "noteType": "Profession4",
-      "abilityId": 6164
-    },
-    {
-      "time": 32725,
-      "duration": 520,
-      "noteType": "Utility2",
-      "abilityId": 29921
-    },
-    {
-      "time": 33275,
-      "duration": 0,
-      "noteType": "Profession4",
-      "abilityId": 6166
-    },
-    {
-      "time": 33639,
       "duration": 559,
       "noteType": "Weapon5",
       "abilityId": 30713
     },
     {
-      "time": 34159,
-      "duration": 681,
+      "time": 200,
+      "duration": 700,
       "noteType": "Weapon2",
       "abilityId": 30088
     },
     {
-      "time": 34718,
+      "time": 891,
       "duration": 0,
       "noteType": "Utility1",
       "abilityId": 6020
     },
     {
-      "time": 35199,
-      "duration": 676,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 35399,
-      "duration": 480,
-      "noteType": "Weapon4",
-      "abilityId": 5809
-    },
-    {
-      "time": 36355,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 36559,
-      "duration": 482,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 37041,
-      "duration": 650,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 37691,
-      "duration": 424,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 38115,
-      "duration": 482,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 38597,
-      "duration": 639,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 39236,
-      "duration": 452,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 39688,
-      "duration": 36,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 39724,
-      "duration": 313,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 40073,
-      "duration": 43,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 40116,
-      "duration": 680,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 40401,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 40474,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 40796,
-      "duration": 684,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 40996,
-      "duration": 560,
-      "noteType": "Weapon5",
-      "abilityId": 5806
-    },
-    {
-      "time": 42040,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 42158,
-      "duration": 483,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 42641,
-      "duration": 631,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 43272,
-      "duration": 505,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 43777,
-      "duration": 660,
-      "noteType": "Profession1",
-      "abilityId": 21661
-    },
-    {
-      "time": 44437,
-      "duration": 484,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 44921,
-      "duration": 637,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 45558,
-      "duration": 395,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 45953,
-      "duration": 688,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 46120,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 46641,
-      "duration": 675,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 46841,
-      "duration": 284,
-      "noteType": "Profession5",
-      "abilityId": 56920
-    },
-    {
-      "time": 47516,
-      "duration": 678,
-      "noteType": "Profession2",
-      "abilityId": 5810
-    },
-    {
-      "time": 47971,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 30800
-    },
-    {
-      "time": 48278,
-      "duration": 436,
-      "noteType": "Weapon2",
-      "abilityId": 30885
-    },
-    {
-      "time": 48713,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 48796,
-      "duration": 83,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 48879,
-      "duration": 935,
-      "noteType": "Profession4",
-      "abilityId": 6164
-    },
-    {
-      "time": 49079,
-      "duration": 341,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 49629,
-      "duration": 0,
-      "noteType": "Profession4",
-      "abilityId": 6166
-    },
-    {
-      "time": 50014,
-      "duration": 527,
-      "noteType": "Utility2",
-      "abilityId": 29921
-    },
-    {
-      "time": 50355,
-      "duration": 556,
-      "noteType": "Weapon5",
-      "abilityId": 30713
-    },
-    {
-      "time": 50564,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 51238,
-      "duration": 355,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 51593,
-      "duration": 680,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 51923,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 52273,
-      "duration": 686,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 52473,
-      "duration": 693,
-      "noteType": "Weapon4",
-      "abilityId": 5809
-    },
-    {
-      "time": 53159,
-      "duration": 503,
-      "noteType": "Profession3",
-      "abilityId": 31167
-    },
-    {
-      "time": 54154,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 54238,
-      "duration": 481,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 54719,
-      "duration": 638,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 55357,
-      "duration": 452,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 55809,
-      "duration": 470,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 56279,
-      "duration": 473,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 56918,
-      "duration": 398,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 57316,
-      "duration": 680,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 57446,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 57996,
-      "duration": 677,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 58196,
-      "duration": 528,
-      "noteType": "Weapon5",
-      "abilityId": 5806
-    },
-    {
-      "time": 59201,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 59357,
-      "duration": 486,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 59843,
-      "duration": 630,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 60473,
-      "duration": 405,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 60878,
-      "duration": 361,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 61239,
-      "duration": 485,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 61628,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 61724,
-      "duration": 629,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 62353,
-      "duration": 447,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 62800,
-      "duration": 81,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 62881,
+      "time": 1259,
       "duration": 674,
       "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 63156,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 63555,
-      "duration": 679,
-      "noteType": "Profession1",
-      "abilityId": 21661
-    },
-    {
-      "time": 63755,
-      "duration": 524,
-      "noteType": "Weapon2",
       "abilityId": 5807
     },
     {
-      "time": 64758,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 64917,
-      "duration": 480,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 65397,
-      "duration": 642,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 66039,
-      "duration": 440,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 66479,
-      "duration": 923,
-      "noteType": "Profession4",
-      "abilityId": 6164
-    },
-    {
-      "time": 66679,
-      "duration": 514,
-      "noteType": "Utility2",
-      "abilityId": 29921
-    },
-    {
-      "time": 67229,
-      "duration": 0,
-      "noteType": "Profession4",
-      "abilityId": 6166
-    },
-    {
-      "time": 67602,
-      "duration": 560,
-      "noteType": "Weapon5",
-      "abilityId": 30713
-    },
-    {
-      "time": 68476,
-      "duration": 38,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 68514,
-      "duration": 682,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 68720,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 69196,
-      "duration": 687,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 69396,
-      "duration": 676,
+      "time": 1459,
+      "duration": 672,
       "noteType": "Weapon4",
       "abilityId": 5809
     },
     {
-      "time": 70083,
-      "duration": 283,
-      "noteType": "Profession5",
-      "abilityId": 56920
-    },
-    {
-      "time": 70759,
-      "duration": 640,
-      "noteType": "Profession2",
-      "abilityId": 5810
-    },
-    {
-      "time": 71482,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 71482,
-      "duration": 473,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 71955,
-      "duration": 643,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 72598,
-      "duration": 439,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 73037,
-      "duration": 37,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 73074,
-      "duration": 361,
-      "noteType": "Utility3",
-      "abilityId": 6161
-    },
-    {
-      "time": 73435,
-      "duration": 83,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 73518,
-      "duration": 481,
-      "noteType": "Profession3",
-      "abilityId": 31167
-    },
-    {
-      "time": 73718,
-      "duration": 690,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 73824,
-      "duration": 0,
-      "noteType": "Utility3",
-      "abilityId": 6162
-    },
-    {
-      "time": 74431,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 74804,
-      "duration": 669,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 75004,
-      "duration": 684,
+      "time": 2133,
+      "duration": 686,
       "noteType": "Weapon5",
       "abilityId": 5806
     },
     {
-      "time": 75762,
-      "duration": 0,
-      "noteType": "Elite",
-      "abilityId": 30800
+      "time": 2805,
+      "duration": 272,
+      "noteType": "Profession5",
+      "abilityId": 56920
     },
     {
-      "time": 76157,
-      "duration": 523,
-      "noteType": "Weapon2",
-      "abilityId": 30885
+      "time": 3491,
+      "duration": 538,
+      "noteType": "Profession2",
+      "abilityId": 5810
     },
     {
-      "time": 76680,
+      "time": 4100,
       "duration": 0,
       "noteType": "WeaponSwap",
       "abilityId": -2
     },
     {
-      "time": 76718,
-      "duration": 474,
+      "time": 4253,
+      "duration": 481,
       "noteType": "Weapon1",
       "abilityId": 30501
     },
     {
-      "time": 77192,
-      "duration": 652,
+      "time": 4735,
+      "duration": 633,
       "noteType": "Weapon1",
       "abilityId": 29785
     },
     {
-      "time": 77844,
+      "time": 5368,
       "duration": 433,
       "noteType": "Weapon1",
       "abilityId": 30489
     },
     {
-      "time": 78277,
-      "duration": 481,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 78758,
-      "duration": 635,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 79393,
-      "duration": 445,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 79838,
-      "duration": 682,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 80159,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 80520,
-      "duration": 678,
-      "noteType": "Profession1",
-      "abilityId": 21661
-    },
-    {
-      "time": 80720,
-      "duration": 530,
-      "noteType": "Weapon2",
-      "abilityId": 5807
-    },
-    {
-      "time": 81728,
-      "duration": 0,
-      "noteType": "WeaponSwap",
-      "abilityId": -2
-    },
-    {
-      "time": 81874,
-      "duration": 478,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 82352,
-      "duration": 643,
-      "noteType": "Weapon1",
-      "abilityId": 29785
-    },
-    {
-      "time": 82995,
-      "duration": 402,
-      "noteType": "Weapon1",
-      "abilityId": 30489
-    },
-    {
-      "time": 83397,
-      "duration": 924,
-      "noteType": "Profession4",
-      "abilityId": 6164
-    },
-    {
-      "time": 83597,
-      "duration": 511,
+      "time": 5840,
+      "duration": 358,
       "noteType": "Utility2",
-      "abilityId": 29921
-    },
-    {
-      "time": 84147,
-      "duration": 0,
-      "noteType": "Profession4",
-      "abilityId": 6166
-    },
-    {
-      "time": 84521,
-      "duration": 562,
-      "noteType": "Weapon5",
-      "abilityId": 30713
-    },
-    {
-      "time": 85394,
-      "duration": 45,
-      "noteType": "Weapon1",
-      "abilityId": 30501
-    },
-    {
-      "time": 85439,
-      "duration": 674,
-      "noteType": "Weapon2",
-      "abilityId": 30088
-    },
-    {
-      "time": 85693,
-      "duration": 0,
-      "noteType": "Utility1",
-      "abilityId": 6020
-    },
-    {
-      "time": 86113,
-      "duration": 449,
-      "noteType": "Utility3",
       "abilityId": 6161
     },
     {
-      "time": 86313,
-      "duration": 677,
-      "noteType": "Weapon4",
-      "abilityId": 5809
+      "time": 6040,
+      "duration": 678,
+      "noteType": "Weapon2",
+      "abilityId": 30088
     },
     {
-      "time": 86762,
-      "duration": 523,
+      "time": 6239,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 6405,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 6590,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 6876,
+      "duration": 683,
       "noteType": "Weapon2",
       "abilityId": 5807
     },
     {
-      "time": 86863,
+      "time": 7004,
       "duration": 0,
       "noteType": "Utility3",
-      "abilityId": 6162
+      "abilityId": 5812
     },
     {
-      "time": 87761,
+      "time": 7559,
+      "duration": 601,
+      "noteType": "Weapon2",
+      "abilityId": 5823
+    },
+    {
+      "time": 7719,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 8160,
+      "duration": 522,
+      "noteType": "Weapon2",
+      "abilityId": 30885
+    },
+    {
+      "time": 8681,
       "duration": 0,
       "noteType": "WeaponSwap",
       "abilityId": -2
     },
     {
-      "time": 87919,
-      "duration": 478,
+      "time": 8722,
+      "duration": 483,
       "noteType": "Weapon1",
       "abilityId": 30501
     },
     {
-      "time": 88397,
+      "time": 9205,
       "duration": 636,
       "noteType": "Weapon1",
       "abilityId": 29785
     },
     {
-      "time": 89033,
-      "duration": 448,
+      "time": 9841,
+      "duration": 445,
       "noteType": "Weapon1",
       "abilityId": 30489
     },
     {
-      "time": 89481,
-      "duration": 474,
+      "time": 10286,
+      "duration": 472,
       "noteType": "Weapon1",
       "abilityId": 30501
     },
     {
-      "time": 89955,
-      "duration": 642,
+      "time": 10758,
+      "duration": 649,
       "noteType": "Weapon1",
       "abilityId": 29785
     },
     {
-      "time": 90597,
-      "duration": 331,
+      "time": 11407,
+      "duration": 427,
       "noteType": "Weapon1",
       "abilityId": 30489
     },
     {
-      "time": 91076,
-      "duration": 696,
+      "time": 11834,
+      "duration": 683,
       "noteType": "Weapon2",
       "abilityId": 30088
     },
     {
-      "time": 91194,
+      "time": 12240,
       "duration": 0,
       "noteType": "Utility1",
       "abilityId": 6020
     },
     {
-      "time": 91772,
-      "duration": 666,
+      "time": 12517,
+      "duration": 685,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 12795,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 13202,
+      "duration": 517,
+      "noteType": "Weapon3",
+      "abilityId": 5822
+    },
+    {
+      "time": 13797,
+      "duration": 405,
+      "noteType": "Heal",
+      "abilityId": 30357
+    },
+    {
+      "time": 14202,
+      "duration": 597,
+      "noteType": "Weapon5",
+      "abilityId": 5813
+    },
+    {
+      "time": 14402,
+      "duration": 655,
+      "noteType": "Weapon4",
+      "abilityId": 76530
+    },
+    {
+      "time": 14999,
+      "duration": 906,
+      "noteType": "Profession3",
+      "abilityId": 6164
+    },
+    {
+      "time": 15654,
+      "duration": 361,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 16204,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 16440,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 16721,
+      "duration": 84,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 16757,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 16805,
+      "duration": 557,
+      "noteType": "Weapon5",
+      "abilityId": 30713
+    },
+    {
+      "time": 17005,
+      "duration": 684,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 17110,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 17720,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 18046,
+      "duration": 713,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 18246,
+      "duration": 681,
+      "noteType": "Weapon4",
+      "abilityId": 5809
+    },
+    {
+      "time": 18332,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 18959,
+      "duration": 679,
+      "noteType": "Weapon5",
+      "abilityId": 5806
+    },
+    {
+      "time": 19680,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 20119,
+      "duration": 600,
+      "noteType": "Weapon2",
+      "abilityId": 5823
+    },
+    {
+      "time": 20358,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 20719,
+      "duration": 641,
+      "noteType": "Weapon2",
+      "abilityId": 30885
+    },
+    {
+      "time": 21360,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 21360,
+      "duration": 488,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 21848,
+      "duration": 634,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 22482,
+      "duration": 443,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 22925,
+      "duration": 113,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 23038,
+      "duration": 676,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 23242,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 23714,
+      "duration": 691,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 23914,
+      "duration": 282,
+      "noteType": "Profession5",
+      "abilityId": 56920
+    },
+    {
+      "time": 24605,
+      "duration": 672,
       "noteType": "Profession2",
       "abilityId": 5810
+    },
+    {
+      "time": 24887,
+      "duration": 449,
+      "noteType": "Profession1",
+      "abilityId": 29505
+    },
+    {
+      "time": 25808,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 25808,
+      "duration": 467,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 26275,
+      "duration": 642,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 26917,
+      "duration": 523,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 26956,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 27440,
+      "duration": 599,
+      "noteType": "Weapon2",
+      "abilityId": 5823
+    },
+    {
+      "time": 27640,
+      "duration": 363,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 28116,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 28402,
+      "duration": 238,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 28442,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 28640,
+      "duration": 678,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 28789,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 29004,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 29318,
+      "duration": 682,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 29565,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 30000,
+      "duration": 479,
+      "noteType": "Weapon3",
+      "abilityId": 5822
+    },
+    {
+      "time": 30597,
+      "duration": 362,
+      "noteType": "Heal",
+      "abilityId": 30357
+    },
+    {
+      "time": 30959,
+      "duration": 643,
+      "noteType": "Weapon5",
+      "abilityId": 5813
+    },
+    {
+      "time": 31159,
+      "duration": 601,
+      "noteType": "Weapon4",
+      "abilityId": 76530
+    },
+    {
+      "time": 31845,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 32203,
+      "duration": 553,
+      "noteType": "Weapon2",
+      "abilityId": 30885
+    },
+    {
+      "time": 32403,
+      "duration": 926,
+      "noteType": "Profession3",
+      "abilityId": 6164
+    },
+    {
+      "time": 32996,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 33506,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 33682,
+      "duration": 561,
+      "noteType": "Weapon5",
+      "abilityId": 30713
+    },
+    {
+      "time": 34243,
+      "duration": 43,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 34286,
+      "duration": 673,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 34444,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 34959,
+      "duration": 683,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 35159,
+      "duration": 680,
+      "noteType": "Weapon4",
+      "abilityId": 5809
+    },
+    {
+      "time": 35199,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 35842,
+      "duration": 674,
+      "noteType": "Weapon5",
+      "abilityId": 5806
+    },
+    {
+      "time": 36597,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 36996,
+      "duration": 606,
+      "noteType": "Weapon2",
+      "abilityId": 5823
+    },
+    {
+      "time": 37602,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 37636,
+      "duration": 491,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 38127,
+      "duration": 630,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 38757,
+      "duration": 407,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 39164,
+      "duration": 360,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 39524,
+      "duration": 360,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 39567,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 39884,
+      "duration": 681,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 39914,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 40250,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 40565,
+      "duration": 686,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 40844,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 41251,
+      "duration": 568,
+      "noteType": "Weapon2",
+      "abilityId": 30885
+    },
+    {
+      "time": 41819,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 41844,
+      "duration": 478,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 42322,
+      "duration": 633,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 42955,
+      "duration": 457,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 43412,
+      "duration": 472,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 43884,
+      "duration": 638,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 44522,
+      "duration": 438,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 44960,
+      "duration": 39,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 44999,
+      "duration": 283,
+      "noteType": "Profession5",
+      "abilityId": 56920
+    },
+    {
+      "time": 45282,
+      "duration": 197,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 45479,
+      "duration": 685,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 45675,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 46165,
+      "duration": 677,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 46317,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 46842,
+      "duration": 475,
+      "noteType": "Weapon3",
+      "abilityId": 5822
+    },
+    {
+      "time": 47442,
+      "duration": 356,
+      "noteType": "Heal",
+      "abilityId": 30357
+    },
+    {
+      "time": 47798,
+      "duration": 597,
+      "noteType": "Weapon5",
+      "abilityId": 5813
+    },
+    {
+      "time": 47998,
+      "duration": 608,
+      "noteType": "Weapon4",
+      "abilityId": 76530
+    },
+    {
+      "time": 48595,
+      "duration": 918,
+      "noteType": "Profession3",
+      "abilityId": 6164
+    },
+    {
+      "time": 49203,
+      "duration": 358,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 49753,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 50040,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 50279,
+      "duration": 85,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 50319,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 50364,
+      "duration": 551,
+      "noteType": "Weapon5",
+      "abilityId": 30713
+    },
+    {
+      "time": 50671,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 50915,
+      "duration": 208,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 51123,
+      "duration": 680,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 51360,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 51803,
+      "duration": 680,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 52003,
+      "duration": 677,
+      "noteType": "Weapon4",
+      "abilityId": 5809
+    },
+    {
+      "time": 52118,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 52683,
+      "duration": 683,
+      "noteType": "Weapon5",
+      "abilityId": 5806
+    },
+    {
+      "time": 53360,
+      "duration": 680,
+      "noteType": "Profession2",
+      "abilityId": 5810
+    },
+    {
+      "time": 53923,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 54523,
+      "duration": 556,
+      "noteType": "Weapon2",
+      "abilityId": 30885
+    },
+    {
+      "time": 55079,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 55124,
+      "duration": 478,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 55602,
+      "duration": 643,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 56245,
+      "duration": 433,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 56678,
+      "duration": 682,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 56924,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 57360,
+      "duration": 684,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 57725,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 58044,
+      "duration": 597,
+      "noteType": "Weapon2",
+      "abilityId": 5823
+    },
+    {
+      "time": 58640,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 58682,
+      "duration": 481,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 59163,
+      "duration": 634,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 59797,
+      "duration": 404,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 60201,
+      "duration": 360,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 60561,
+      "duration": 480,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 60603,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 60951,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 61041,
+      "duration": 640,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 61681,
+      "duration": 437,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 62118,
+      "duration": 160,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 62278,
+      "duration": 679,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 62486,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 62957,
+      "duration": 688,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 63277,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 63645,
+      "duration": 472,
+      "noteType": "Weapon3",
+      "abilityId": 5822
+    },
+    {
+      "time": 64233,
+      "duration": 363,
+      "noteType": "Heal",
+      "abilityId": 30357
+    },
+    {
+      "time": 64597,
+      "duration": 604,
+      "noteType": "Weapon5",
+      "abilityId": 5813
+    },
+    {
+      "time": 64797,
+      "duration": 601,
+      "noteType": "Weapon4",
+      "abilityId": 76530
+    },
+    {
+      "time": 65401,
+      "duration": 917,
+      "noteType": "Profession3",
+      "abilityId": 6164
+    },
+    {
+      "time": 66197,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 66552,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 66719,
+      "duration": 481,
+      "noteType": "Weapon2",
+      "abilityId": 30885
+    },
+    {
+      "time": 67200,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 67200,
+      "duration": 118,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 67318,
+      "duration": 565,
+      "noteType": "Weapon5",
+      "abilityId": 30713
+    },
+    {
+      "time": 67883,
+      "duration": 44,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 67927,
+      "duration": 677,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 68203,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 68604,
+      "duration": 757,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 68804,
+      "duration": 677,
+      "noteType": "Weapon4",
+      "abilityId": 5809
+    },
+    {
+      "time": 68964,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 69561,
+      "duration": 680,
+      "noteType": "Weapon5",
+      "abilityId": 5806
+    },
+    {
+      "time": 70361,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 70718,
+      "duration": 598,
+      "noteType": "Weapon2",
+      "abilityId": 5823
+    },
+    {
+      "time": 70918,
+      "duration": 530,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 71715,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 71845,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 71846,
+      "duration": 471,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 72066,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 72317,
+      "duration": 641,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 72958,
+      "duration": 444,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 73402,
+      "duration": 75,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 73477,
+      "duration": 689,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 73720,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 74166,
+      "duration": 677,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 74366,
+      "duration": 279,
+      "noteType": "Profession5",
+      "abilityId": 56920
+    },
+    {
+      "time": 75043,
+      "duration": 603,
+      "noteType": "Profession2",
+      "abilityId": 5810
+    },
+    {
+      "time": 75724,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 75794,
+      "duration": 493,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 76287,
+      "duration": 635,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 76922,
+      "duration": 439,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 77361,
+      "duration": 480,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 77841,
+      "duration": 639,
+      "noteType": "Weapon1",
+      "abilityId": 29785
+    },
+    {
+      "time": 78481,
+      "duration": 438,
+      "noteType": "Weapon1",
+      "abilityId": 30489
+    },
+    {
+      "time": 78919,
+      "duration": 236,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 79155,
+      "duration": 685,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 79320,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 79840,
+      "duration": 675,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 80074,
+      "duration": 0,
+      "noteType": "Utility3",
+      "abilityId": 5812
+    },
+    {
+      "time": 80515,
+      "duration": 494,
+      "noteType": "Weapon3",
+      "abilityId": 5822
+    },
+    {
+      "time": 81122,
+      "duration": 356,
+      "noteType": "Heal",
+      "abilityId": 30357
+    },
+    {
+      "time": 81478,
+      "duration": 602,
+      "noteType": "Weapon5",
+      "abilityId": 5813
+    },
+    {
+      "time": 81678,
+      "duration": 596,
+      "noteType": "Weapon4",
+      "abilityId": 76530
+    },
+    {
+      "time": 82280,
+      "duration": 925,
+      "noteType": "Profession3",
+      "abilityId": 6164
+    },
+    {
+      "time": 82876,
+      "duration": 361,
+      "noteType": "Utility2",
+      "abilityId": 6161
+    },
+    {
+      "time": 83426,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 83757,
+      "duration": 0,
+      "noteType": "WeaponSwap",
+      "abilityId": -2
+    },
+    {
+      "time": 83962,
+      "duration": 75,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 84003,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 84037,
+      "duration": 569,
+      "noteType": "Weapon5",
+      "abilityId": 30713
+    },
+    {
+      "time": 84351,
+      "duration": 0,
+      "noteType": "Utility2",
+      "abilityId": 6162
+    },
+    {
+      "time": 84606,
+      "duration": 151,
+      "noteType": "Weapon1",
+      "abilityId": 30501
+    },
+    {
+      "time": 84757,
+      "duration": 683,
+      "noteType": "Weapon2",
+      "abilityId": 30088
+    },
+    {
+      "time": 85084,
+      "duration": 0,
+      "noteType": "Utility1",
+      "abilityId": 6020
+    },
+    {
+      "time": 85440,
+      "duration": 716,
+      "noteType": "Weapon2",
+      "abilityId": 5807
+    },
+    {
+      "time": 85639,
+      "duration": 0,
+      "noteType": "Profession3",
+      "abilityId": 6166
+    },
+    {
+      "time": 85640,
+      "duration": 726,
+      "noteType": "Weapon4",
+      "abilityId": 5809
+    },
+    {
+      "time": 86356,
+      "duration": 681,
+      "noteType": "Weapon5",
+      "abilityId": 5806
+    },
+    {
+      "time": 87159,
+      "duration": 0,
+      "noteType": "Elite",
+      "abilityId": 30800
+    },
+    {
+      "time": 87563,
+      "duration": 595,
+      "noteType": "Weapon2",
+      "abilityId": 30885
     }
   ]
 }
