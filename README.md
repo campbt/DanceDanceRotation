@@ -156,6 +156,8 @@ A notification text should display saying it was added successfully. If this fai
 
 Module created by **Shooper.7129**
 Big thanks to **Falson.5284** and **xRemainNameless.3842** for feedback and help with creating the song generation tool.
+Thanks to Freesnow for developing BlishHUD and providing support.
+Thanks to Gera for custom Gw2 API (Hardstuck)
 
 **Initial Songs Rotation Credits**
 * [Snow Crows](https://snowcrows.com/en/home) 
