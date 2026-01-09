@@ -193,7 +193,7 @@ def checkInvalidNotes(songInfos):
     print("==  Invalid Notes         ==")
     print("============================")
     print("Severity: Extreme")
-    print("  These are improbably formatted nots!")
+    print("  These are improperly formatted nots!")
     print("  Most likely a bug in the composer produced them, or manual edits did something wrong!")
     print("  These will probably break if loaded into the module, if it even allows them at all")
     print("")
@@ -208,6 +208,10 @@ def checkInvalidNotes(songInfos):
         song = songInfo["song"]
         invalidNotes = songInfo["invalidNotes"]
         print("{")
+        print(f"  {song['name']}")
+        print(f"  {song['logUrl']}")
+        print(f"  {song['buildChatCode']}")
+        print(f"  {song['buildUrl']}")
         print("    Invalid Notes:")
         for note in invalidNotes:
             for k,v in note.items():
@@ -410,10 +414,14 @@ def checkUnknownNotes(songInfos, hasError):
         print(f"  {song['buildChatCode']}")
         print(f"  {song['buildUrl']}")
         print(f"  Ability ID: {abilityId}")
-        skill = allSkills[str(abilityId)]
-        
-        skillName = skill.get('name')
-        slot = skill.get('slot')
+        if str(abilityId) in allSkills:
+            skill = allSkills[str(abilityId)]
+            skillName = skill.get('name')
+            slot = skill.get('slot')
+        else:
+            skillName = "(Unknown: ID=" + str(abilityId)
+            slot = "Unknown"
+            
         professionCode = song["decodedBuildTemplate"]["profession"]
     
         if slot == None:
